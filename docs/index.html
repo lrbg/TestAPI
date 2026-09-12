@@ -82,11 +82,14 @@
 
   <div class="aviso alerta">
     <p>
-      <strong>Observacion de partida.</strong> La especificacion entregada describe los endpoints y
-      lista sus parametros. No define contrato de respuesta, ni valores admitidos, ni codigos de
-      error, ni metodo de autenticacion. El comportamiento real se reconstruyo ejecutando mas de
-      150 peticiones contra el servicio. El resultado son 10 puntos sin definir y 12 desviaciones
-      comprobadas.
+      <strong>Observacion de partida.</strong> El enunciado remite a una
+      <a href="https://developers.thecatapi.com/view-account/ylX4blBYT9FaoVd6OhvR?report=FJkYOq9tW">especificacion
+      publicada por el proveedor</a> que declara siete parametros con su tipo y valor por defecto,
+      el metodo de autenticacion y el limite anonimo. Enunciado y especificacion no listan los mismos
+      parametros: el enunciado anade <code>size</code>, <code>mime_types</code> y <code>format</code>,
+      que el servicio ignora, y omite <code>breed_ids</code>, <code>category_ids</code> y
+      <code>sub_id</code>, de los cuales <code>breed_ids</code> es el unico filtro que funciona.
+      El comportamiento real se reconstruyo con mas de 170 peticiones: 17 desviaciones comprobadas.
     </p>
   </div>
 

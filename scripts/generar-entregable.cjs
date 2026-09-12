@@ -228,11 +228,13 @@ const portada = [
     children: [new TextRun({ text: 'Analisis, plan, casos con evidencia, priorizacion y automatizacion', size: 23, color: TENUE })],
   }),
   ficha([
-    ['Sistema probado', 'TheCatAPI version 1. GET /images/search y GET /breeds/search'],
+    ['Sistema probado', 'TheCatAPI version 1'],
+    ['Endpoints', 'GET https://api.thecatapi.com/v1/images/search\nGET https://api.thecatapi.com/v1/breeds/search'],
+    ['Especificacion', 'https://developers.thecatapi.com/view-account/ylX4blBYT9FaoVd6OhvR?report=FJkYOq9tW'],
     ['Tipo de prueba', 'Caja negra sobre el entorno de produccion'],
     ['Casos disenados', `${CASOS.length}`],
-    ['Peticiones ejecutadas', 'Mas de 150 durante el relevamiento y la captura de evidencia'],
-    ['Hallazgos', '12 desviaciones comprobadas. 5 de severidad alta'],
+    ['Peticiones ejecutadas', 'Mas de 170 durante el relevamiento y la captura de evidencia'],
+    ['Hallazgos', '17 desviaciones comprobadas. 5 de severidad alta'],
     ['Escenarios de carga', 'Humo, carga, estres, pico y resistencia'],
     ['Normas aplicadas', 'ISO/IEC 25010:2023; ISO/IEC/IEEE 29119-1, 2, 3 y 4; ISO/IEC 20000-1'],
     ['Repositorio', 'https://github.com/lrbg/TESTAPI'],
@@ -268,30 +270,62 @@ const resumen = [
 
   h2('1.2 Que se encontro'),
 
-  p('La especificacion describe los endpoints y lista sus parametros. No define nada mas. Esto es lo que falta:'),
+  p('El enunciado remite a una especificacion publicada por el proveedor:'),
+
+  ficha([
+    ['Especificacion', 'https://developers.thecatapi.com/view-account/ylX4blBYT9FaoVd6OhvR?report=FJkYOq9tW'],
+    ['Titulo', 'Basics: Getting Images'],
+    ['Que declara', 'Tabla de parametros con tipo y valor por defecto, ejemplo de respuesta, limite anonimo y canales de autenticacion'],
+  ], 2400),
+
+  espacio(150),
+
+  p('Esa pagina define mas de lo que el enunciado sugiere, y ahi aparece la primera discrepancia: el enunciado y la especificacion no listan los mismos parametros.'),
+
+  tabla(
+    ['Parametro', 'Lo declara la especificacion', 'Lo menciona el enunciado', 'Funciona'],
+    [
+      ['limit', 'Si, rango 1-100, por defecto 1', 'Si', 'Si'],
+      ['page', 'Si, 0-n, por defecto 0', 'Si', 'Si'],
+      ['order', 'Si, ASC/DESC/RAND, por defecto RAND', 'Si', 'Si'],
+      ['has_breeds', 'Si, 1 o 0, por defecto 0', 'Si', 'Si'],
+      ['breed_ids', 'Si, cadena separada por comas', 'No', 'Si'],
+      ['category_ids', 'Si, cadena separada por comas', 'No', 'No se observo efecto'],
+      ['sub_id', 'Si, cadena', 'No', 'No'],
+      ['size', 'No', 'Si', 'No'],
+      ['mime_types', 'No', 'Si', 'No'],
+      ['format', 'No', 'Si', 'No'],
+    ],
+    [1700, 3000, 2000, ANCHO_V - 6700]
+  ),
+
+  espacio(150),
+
+  p('Lo que la especificacion sigue sin definir, y que por tanto queda abierto:'),
 
   tabla(
     ['Falta', 'Consecuencia'],
     [
-      ['Contrato de respuesta', 'No hay forma de saber que campos son obligatorios'],
-      ['Valores validos de cada parametro', 'No se puede distinguir una entrada valida de una invalida'],
-      ['Codigos de error', 'No hay resultado esperado para las pruebas negativas'],
-      ['Metodo de autenticacion', 'El segundo ejercicio no se puede ejecutar tal como esta escrito'],
-      ['Limites de consumo', 'No se puede dimensionar la prueba de carga'],
-      ['Acuerdo de nivel de servicio', 'Los umbrales de tiempo son una estimacion'],
+      ['Contrato de respuesta para la busqueda de razas', 'El segundo endpoint no tiene ninguna documentacion asociada'],
+      ['Codigos de error y forma del cuerpo de error', 'No hay resultado esperado para las pruebas negativas'],
+      ['Valores validos de size, mime_types y format', 'El enunciado los lista y la especificacion no los reconoce'],
+      ['Condicion de los encabezados de paginacion', 'El enunciado dice que "pueden" aparecer, sin precisar cuando'],
+      ['Efecto de attach_image', 'Mismo caso, y el comportamiento observado lo contradice'],
+      ['Limites de consumo por plan', 'No se puede dimensionar la prueba de carga'],
+      ['Acuerdo de nivel de servicio', 'Los umbrales de tiempo son una estimacion propia'],
     ],
-    [3300, ANCHO_V - 3300]
+    [4000, ANCHO_V - 4000]
   ),
 
   espacio(160),
 
   nota(
-    'Bloqueante.',
-    'El endpoint de razas exige llave de API. Sin ella responde 403 a cualquier consulta. La especificacion no menciona la autenticacion en ningun punto. Este fue el primer resultado del relevamiento y obligo a disenar la suite con dos modos: anonimo y autenticado.',
-    ROJO
+    'Punto de partida.',
+    'El endpoint de razas exige llave de API: sin ella responde 403 a cualquier consulta. El enunciado de la evaluacion no lo menciona, pero la especificacion a la que remite si lo indica de forma expresa: "be sure to use your API Key from the welcome email as the x-api-key header, or ?api_key= query string parameter". Quien se quede en el enunciado concluye que el segundo ejercicio es inejecutable; quien abra el enlace encuentra la instruccion. La suite se diseno con los dos modos, anonimo y autenticado, porque la diferencia entre ambos resulto ser la fuente de varios hallazgos.',
+    AZUL
   ),
 
-  p('Se ejecutaron mas de 150 peticiones reales para reconstruir el comportamiento del servicio. Resultado: 10 puntos sin definir en la especificacion y 12 desviaciones comprobadas entre lo declarado y lo que el servicio hace.'),
+  p('Se ejecutaron mas de 170 peticiones reales contra el servicio. Resultado: 17 desviaciones comprobadas entre lo declarado y lo que el servicio hace, y 10 puntos que la especificacion sigue sin definir.'),
 
   h3('Hallazgos de severidad alta'),
 
@@ -299,10 +333,11 @@ const resumen = [
     ['Clave', 'Que ocurre', 'Impacto'],
     [
       ['H-01', 'attach_image no hace nada. Las respuestas con valor 0 y con valor 1 son identicas, incluido el mismo ETag.', 'Un cliente que use el parametro para reducir el tamano de la respuesta no obtiene ninguna reduccion.'],
-      ['H-02', 'Sin llave, el servicio entrega 10 elementos aunque se pidan 50. No avisa del recorte. Con llave entrega los 50.', 'El cliente no distingue entre "no hay mas datos" y "tu plan no alcanza". Pierde datos sin senal alguna.'],
-      ['H-03', 'mime_types no filtra. Al pedir png devuelve gif y jpg.', 'Un cliente que necesite un formato concreto recibe archivos que no puede procesar.'],
+      ['H-03', 'mime_types no filtra. Al pedir png devuelve gif y jpg. La especificacion no declara este parametro.', 'Un cliente que necesite un formato concreto recibe archivos que no puede procesar.'],
+      ['H-13', 'El filtro sub_id, declarado en la especificacion, no se aplica. Se piden 10 imagenes con un sub_id concreto y ninguna lo tiene.', 'Quien suba imagenes con un identificador propio no puede recuperarlas por el. La funcionalidad no existe.'],
+      ['H-16', 'El objeto raza tiene dos formas distintas segun venga dentro de una imagen o de la busqueda de razas.', 'Un cliente que reutilice el mismo modelo para ambos casos encontrara campos ausentes.'],
+      ['H-17', 'El enunciado lista tres parametros que la especificacion no declara y omite tres que si declara.', 'Se pueden disenar pruebas sobre funcionalidad inexistente y dejar sin cubrir la que si funciona.'],
       ['H-09', 'El contrato cambia con la llave: 4 campos sin ella, hasta 10 con ella. Tambien cambia el dominio de las imagenes.', 'Una validacion de esquema falla de forma intermitente si no fija el modo de autenticacion.'],
-      ['H-11', 'La llave se acepta en la URL como parametro api_key.', 'La credencial queda registrada en los accesos del servidor, en el historial del navegador y en los proxies intermedios.'],
     ],
     [800, 4400, ANCHO_V - 5200]
   ),
@@ -436,16 +471,21 @@ const analisis = [
     ['Clave', 'Severidad', 'Hallazgo', 'Caso'],
     [
       ['H-01', 'Alta', 'attach_image no tiene efecto.', 'BRD-N-06'],
-      ['H-02', 'Alta', 'La coleccion se recorta a 10 sin llave y sin avisar.', 'IMG-B-03'],
-      ['H-03', 'Alta', 'mime_types no filtra los resultados.', 'IMG-B-07'],
+      ['H-03', 'Alta', 'mime_types no filtra. La especificacion no declara el parametro.', 'IMG-B-07'],
       ['H-09', 'Alta', 'El contrato de respuesta cambia con la llave.', 'CTR-03'],
-      ['H-11', 'Alta', 'La llave se acepta en la cadena de consulta.', 'SEG-04'],
+      ['H-13', 'Alta', 'El filtro sub_id, declarado en la especificacion, no se aplica.', 'ESP-04'],
+      ['H-16', 'Alta', 'El objeto raza tiene dos formas distintas segun el recurso.', 'ESP-09'],
+      ['H-17', 'Alta', 'El enunciado y la especificacion no listan los mismos parametros.', 'ESP-10'],
+      ['H-02', 'Media', 'El recorte a 10 sin llave esta documentado, pero el mensaje de limit=101 lo contradice y ningun encabezado lo informa.', 'IMG-B-03'],
       ['H-04', 'Media', 'La validacion de parametros no es uniforme.', 'IMG-B-06'],
       ['H-05', 'Media', 'format no cambia la representacion devuelta.', 'IMG-B-10'],
       ['H-06', 'Media', 'Los encabezados de paginacion tienen una condicion no documentada.', 'IMG-B-11'],
       ['H-08', 'Media', 'Omitir q y enviarlo vacio dan respuestas opuestas.', 'BRD-F-10'],
       ['H-10', 'Media', 'El campo message cambia de tipo segun el codigo.', 'CTR-07'],
       ['H-12', 'Media', 'Hay direcciones de imagen con extension .false.', 'IMG-F-02'],
+      ['H-14', 'Media', 'El filtro category_ids no devuelve imagenes con categoria.', 'ESP-05'],
+      ['H-15', 'Media', 'La especificacion declara RAND y el mensaje de error enumera RANDOM.', 'ESP-06'],
+      ['H-11', 'Baja', 'La llave se acepta en la cadena de consulta. Es comportamiento documentado, con implicacion de seguridad.', 'SEG-04'],
       ['H-07', 'Baja', 'Un verbo no soportado responde 404 en lugar de 405.', 'IMG-N-07'],
     ],
     [800, 1200, ANCHO_V - 3300, 1300]
@@ -463,11 +503,11 @@ const analisis = [
   ),
 
   ...hallazgo(
-    'H-02', 'Alta', 'La coleccion se recorta sin avisar',
-    'El parametro limit acepta valores hasta 100, segun el propio mensaje de error del servicio.',
-    'Sin llave, una peticion de 50 elementos devuelve 10. No hay encabezado que indique el recorte. La misma peticion con llave devuelve 50.',
-    'Sin llave: GET /images/search?limit=50  ->  200, 10 elementos\nCon llave: GET /images/search?limit=50  ->  200, 50 elementos\nEn ninguno de los dos casos hay encabezado de truncamiento',
-    'El cliente no puede distinguir "no hay mas datos" de "tu plan no alcanza". Una paginacion construida sobre esa respuesta se detiene antes de tiempo y pierde datos.',
+    'H-02', 'Media', 'El recorte a 10 elementos sin llave esta documentado, pero el servicio se contradice',
+    'La especificacion lo dice de forma expresa: "there is a maximum of 10 without using an API Key". Tambien aclara que los parametros de consulta solo se aplican con una llave valida.',
+    'El recorte ocurre como esta documentado. El problema es la contradiccion: sin llave, limit=101 devuelve un 400 que afirma que el maximo es 100, cuando el maximo real para ese consumidor es 10. Y ningun encabezado informa del recorte.',
+    'Sin llave: GET /images/search?limit=50   ->  200, 10 elementos, sin encabezado de aviso\nSin llave: GET /images/search?limit=101  ->  400, "limit must not be greater than 100"\nCon llave: GET /images/search?limit=50   ->  200, 50 elementos',
+    'El mensaje de validacion induce a error sobre el limite que aplica al consumidor. Sin una senal en la respuesta, una paginacion se detiene antes de tiempo. Se reclasifica de alta a media porque el comportamiento base esta documentado.',
     'IMG-B-03'
   ),
 
@@ -490,12 +530,57 @@ const analisis = [
   ),
 
   ...hallazgo(
-    'H-11', 'Alta', 'La llave se acepta en la cadena de consulta',
-    'No se documenta el canal por el que debe viajar la credencial.',
-    'El servicio autentica igual con el encabezado x-api-key que con el parametro api_key en la URL.',
+    'H-11', 'Baja', 'La llave se acepta en la cadena de consulta',
+    'La especificacion lo admite de forma expresa: la llave se envia "as the x-api-key header, or ?api_key= query string parameter".',
+    'El servicio autentica por ambos canales, como esta documentado.',
     'GET /breeds/search?q=beng                        (sin llave)  ->  403\nGET /breeds/search?q=beng  con x-api-key valida   ->  200\nGET /breeds/search?q=beng&api_key=<llave valida>  ->  200',
-    'Una credencial en la URL queda registrada en los accesos del servidor, en el historial del navegador, en las cabeceras de referencia hacia terceros y en cualquier proxy intermedio. Deberia admitirse solo por encabezado.',
+    'No es un defecto: es una decision de diseno documentada. Se deja registrada como observacion de seguridad porque una credencial en la URL queda en los registros del servidor, el historial del navegador, las cabeceras de referencia y los proxies intermedios. Conviene que el consumidor use siempre el encabezado.',
     'SEG-04'
+  ),
+
+  ...hallazgo(
+    'H-13', 'Alta', 'El filtro sub_id no se aplica',
+    'La especificacion declara sub_id como "Filter images that have the sub_id value you used when uploading them".',
+    'El parametro se acepta y no filtra nada. De diez imagenes pedidas con un sub_id concreto, ninguna lo tiene.',
+    'GET /images/search?limit=10&sub_id=demo-9252f4\n  ->  200, valores de sub_id devueltos:\n      123, (ausente) x8, demo-c45459',
+    'Quien sube imagenes con un identificador propio no puede recuperarlas por el. La funcionalidad documentada no existe.',
+    'ESP-04'
+  ),
+
+  ...hallazgo(
+    'H-14', 'Media', 'El filtro category_ids no devuelve imagenes con categoria',
+    'La especificacion declara category_ids como filtro por identificadores de categoria.',
+    'La peticion responde 200, pero ninguno de los diez resultados trae categorias.',
+    'GET /images/search?limit=10&category_ids=1\n  ->  200, el arreglo categories viene vacio en los 10 elementos',
+    'Un cliente que filtre por categoria recibe resultados sin relacion con lo pedido. Antes de clasificarlo como defecto conviene confirmar con el proveedor si la credencial de demostracion tiene acceso a las categorias.',
+    'ESP-05'
+  ),
+
+  ...hallazgo(
+    'H-15', 'Media', 'La especificacion declara RAND y el mensaje de error enumera RANDOM',
+    'La tabla de parametros declara order con los valores ASC, DESC y RAND, siendo RAND el valor por defecto.',
+    'Ambos valores funcionan y aleatorizan. Pero el mensaje que devuelve el servicio ante un valor invalido enumera ASC, DESC y RANDOM, sin mencionar RAND.',
+    'GET /images/search?limit=5&order=RAND      ->  200, resultados distintos entre llamadas\nGET /images/search?limit=5&order=rand      ->  200\nGET /images/search?limit=2&order=SIDEWAYS  ->  400, "order must be one of the following values: ASC, DESC, RANDOM"',
+    'Quien siga el mensaje de error descartara el valor que la especificacion declara por defecto. Quien siga la especificacion no encontrara RAND en la lista de valores validos que le devuelve el servicio.',
+    'ESP-06'
+  ),
+
+  ...hallazgo(
+    'H-16', 'Alta', 'El objeto raza tiene dos formas distintas',
+    'La especificacion muestra un ejemplo de raza incrustada en una imagen, con alt_names y wikipedia_url.',
+    'La raza que viene dentro de una imagen y la que devuelve la busqueda de razas no tienen los mismos campos.',
+    'Dentro de una imagen: ... alt_names, wikipedia_url, reference_image_id\nEn la busqueda de razas: ... country_codes, weight, height, image\nNucleo comun: id, name, species_id, life_span, temperament, origin, description, bred_for, perfect_for, breed_group, history',
+    'Un cliente que reutilice el mismo modelo de datos para ambos casos encontrara campos ausentes segun de donde venga la raza. Conviene documentar las dos formas o unificarlas.',
+    'ESP-09'
+  ),
+
+  ...hallazgo(
+    'H-17', 'Alta', 'El enunciado y la especificacion no listan los mismos parametros',
+    'La especificacion declara siete parametros para la busqueda de imagenes: limit, page, order, has_breeds, breed_ids, category_ids y sub_id.',
+    'El enunciado de la evaluacion lista size, mime_types y format, que la especificacion no declara y el servicio ignora. Y omite breed_ids, category_ids y sub_id, de los cuales breed_ids funciona correctamente.',
+    'Solo en el enunciado: size, mime_types, format    ->  200, sin efecto observable\nSolo en la especificacion: breed_ids            ->  200, filtra correctamente\n                           category_ids, sub_id  ->  200, sin efecto observable',
+    'Es el hallazgo de mayor impacto sobre el propio trabajo de prueba: siguiendo solo el enunciado se disenan casos sobre funcionalidad que no existe y se deja sin cubrir el unico filtro que si funciona. Antes de cerrar el alcance hay que acordar cual de las dos fuentes rige.',
+    'ESP-10 y ESP-01'
   ),
 
   ...hallazgo(

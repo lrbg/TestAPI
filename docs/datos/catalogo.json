@@ -1908,6 +1908,226 @@
         "Accept: application/json"
       ],
       "auth": "con llave"
+    },
+    {
+      "id": "ESP-01",
+      "endpoint": "GET /images/search",
+      "tipo": "Funcional",
+      "prioridad": "Alta",
+      "riesgo": "RF-01",
+      "objetivo": "Verificar que el filtro breed_ids, declarado en la especificacion, devuelve unicamente imagenes de la raza pedida.",
+      "entrada": "limit=10 y breed_ids=beng. Con credencial.",
+      "esperado": "Codigo 200 con 10 elementos. Los 10 traen la raza beng en su arreglo breeds.",
+      "validaciones": [
+        "Codigo 200",
+        "Cardinalidad igual a 10",
+        "La raza beng aparece en cada elemento"
+      ],
+      "statusEsperado": "200",
+      "statusReal": "200",
+      "resultadoReal": "Correcto. El filtro se cumple en los 10 resultados. Es el unico filtro del endpoint que funciona.",
+      "peticiones": [
+        "GET /images/search?limit=10&breed_ids=beng"
+      ],
+      "auth": "con llave"
+    },
+    {
+      "id": "ESP-02",
+      "endpoint": "GET /images/search",
+      "tipo": "Funcional",
+      "prioridad": "Media",
+      "riesgo": "RF-01",
+      "objetivo": "Verificar que breed_ids admite varias razas separadas por coma.",
+      "entrada": "limit=10 y breed_ids=beng,abys.",
+      "esperado": "Codigo 200. Cada elemento corresponde a una de las dos razas solicitadas.",
+      "validaciones": [
+        "Codigo 200",
+        "Cada elemento pertenece a beng o a abys"
+      ],
+      "statusEsperado": "200",
+      "statusReal": "200",
+      "resultadoReal": "Correcto. Los resultados corresponden a las razas solicitadas.",
+      "peticiones": [
+        "GET /images/search?limit=10&breed_ids=beng,abys"
+      ],
+      "auth": "con llave"
+    },
+    {
+      "id": "ESP-03",
+      "endpoint": "GET /images/search",
+      "tipo": "Negativo",
+      "prioridad": "Media",
+      "riesgo": "RF-05",
+      "objetivo": "Verificar que un identificador de raza inexistente devuelve una coleccion vacia y no un error.",
+      "entrada": "limit=5 y breed_ids=razainexistente.",
+      "esperado": "Codigo 200 con coleccion vacia.",
+      "validaciones": [
+        "Codigo 200",
+        "Coleccion de longitud cero"
+      ],
+      "statusEsperado": "200",
+      "statusReal": "200",
+      "resultadoReal": "Correcto. Sin coincidencias devuelve coleccion vacia, no error.",
+      "peticiones": [
+        "GET /images/search?limit=5&breed_ids=razainexistente"
+      ],
+      "auth": "con llave"
+    },
+    {
+      "id": "ESP-04",
+      "endpoint": "GET /images/search",
+      "tipo": "Borde",
+      "prioridad": "Alta",
+      "riesgo": "RF-01",
+      "objetivo": "Comprobar si el filtro sub_id, declarado en la especificacion, restringe los resultados.",
+      "entrada": "limit=10 y sub_id=demo-9252f4.",
+      "esperado": "Codigo 200. Los resultados traen otros valores de sub_id o carecen del campo: el filtro no se aplica. Hallazgo H-13.",
+      "validaciones": [
+        "Codigo 200",
+        "Comparacion del sub_id de cada elemento con el solicitado",
+        "Registro del incumplimiento del filtro"
+      ],
+      "statusEsperado": "200",
+      "statusReal": "200",
+      "resultadoReal": "Se pidio sub_id=demo-9252f4 y ningun elemento lo trae. El filtro se acepta y no se aplica. Hallazgo H-13.",
+      "peticiones": [
+        "GET /images/search?limit=10&sub_id=demo-9252f4"
+      ],
+      "auth": "con llave"
+    },
+    {
+      "id": "ESP-05",
+      "endpoint": "GET /images/search",
+      "tipo": "Borde",
+      "prioridad": "Media",
+      "riesgo": "RF-01",
+      "objetivo": "Comprobar si el filtro category_ids devuelve imagenes con esa categoria.",
+      "entrada": "limit=10 y category_ids=1.",
+      "esperado": "Codigo 200. Ninguno de los 10 resultados trae categorias. Hallazgo H-14, sujeto a confirmar el alcance de la credencial.",
+      "validaciones": [
+        "Codigo 200",
+        "Conteo de elementos con categorias"
+      ],
+      "statusEsperado": "200",
+      "statusReal": "200",
+      "resultadoReal": "Ningun resultado trae categorias. Hallazgo H-14. Conviene confirmar si la credencial de demostracion tiene acceso a las categorias antes de clasificarlo como defecto.",
+      "peticiones": [
+        "GET /images/search?limit=10&category_ids=1"
+      ],
+      "auth": "con llave"
+    },
+    {
+      "id": "ESP-06",
+      "endpoint": "GET /images/search",
+      "tipo": "Funcional",
+      "prioridad": "Media",
+      "riesgo": "RF-03",
+      "objetivo": "Verificar que el valor RAND, que declara la especificacion, es aceptado y aleatoriza.",
+      "entrada": "Dos llamadas con limit=5 y order=RAND.",
+      "esperado": "Codigo 200 en ambas con 5 elementos. Las dos extracciones difieren. El mensaje de error del servicio enumera RANDOM y no RAND. Hallazgo H-15.",
+      "validaciones": [
+        "Codigo 200",
+        "Cardinalidad igual a 5",
+        "Variabilidad entre extracciones"
+      ],
+      "statusEsperado": "200",
+      "statusReal": "200, 200",
+      "resultadoReal": "El valor documentado RAND es aceptado. Resultados distintos de la llamada anterior: aleatoriza. El mensaje de error del servicio enumera ASC, DESC y RANDOM, sin mencionar RAND. Hallazgo H-15.",
+      "peticiones": [
+        "GET /images/search?limit=5&order=RAND (llamada 1)",
+        "GET /images/search?limit=5&order=RAND (llamada 2)"
+      ],
+      "auth": "con llave"
+    },
+    {
+      "id": "ESP-07",
+      "endpoint": "GET /images/search",
+      "tipo": "Borde",
+      "prioridad": "Baja",
+      "riesgo": "RF-01",
+      "objetivo": "Verificar que order no distingue mayusculas de minusculas.",
+      "entrada": "limit=3 y order=rand.",
+      "esperado": "Codigo 200 con 3 elementos.",
+      "validaciones": [
+        "Codigo 200",
+        "Cardinalidad igual a 3"
+      ],
+      "statusEsperado": "200",
+      "statusReal": "200",
+      "resultadoReal": "Correcto. El parametro no distingue mayusculas de minusculas.",
+      "peticiones": [
+        "GET /images/search?limit=3&order=rand"
+      ],
+      "auth": "con llave"
+    },
+    {
+      "id": "ESP-08",
+      "endpoint": "GET /images/{id}",
+      "tipo": "Funcional",
+      "prioridad": "Media",
+      "riesgo": "RT-04",
+      "objetivo": "Verificar que la consulta de una imagen por identificador devuelve el recurso del ejemplo documentado.",
+      "entrada": "Identificador 0XYvRd7oD, usado como ejemplo en la especificacion.",
+      "esperado": "Codigo 200 con un objeto, no una coleccion. Identificador, direccion https y dimensiones positivas.",
+      "validaciones": [
+        "Codigo 200",
+        "La respuesta es un objeto",
+        "Identificador coincidente",
+        "Direccion cifrada y dimensiones positivas"
+      ],
+      "statusEsperado": "200",
+      "statusReal": "200",
+      "resultadoReal": "Correcto. Coincide con el ejemplo de la especificacion.",
+      "peticiones": [
+        "GET /images/0XYvRd7oD"
+      ],
+      "auth": "con llave"
+    },
+    {
+      "id": "ESP-09",
+      "endpoint": "GET /images/{id} y GET /breeds/search",
+      "tipo": "Contrato",
+      "prioridad": "Alta",
+      "riesgo": "RT-04",
+      "objetivo": "Documentar que el objeto raza tiene dos formas distintas segun el recurso que lo devuelve.",
+      "entrada": "Una imagen con raza asociada y una busqueda de la misma raza.",
+      "esperado": "Codigo 200 en ambas. La raza dentro de la imagen trae alt_names y wikipedia_url; la de la busqueda trae country_codes, weight, height e image. Hallazgo H-16.",
+      "validaciones": [
+        "Comparacion de los conjuntos de campos",
+        "Presencia del nucleo comun en ambas formas"
+      ],
+      "statusEsperado": "200",
+      "statusReal": "200, 200",
+      "resultadoReal": "Forma A del objeto raza. Trae alt_names y wikipedia_url. Forma B. Trae country_codes, weight, height e image, pero no alt_names ni wikipedia_url. Dos formas de la misma entidad. Hallazgo H-16.",
+      "peticiones": [
+        "GET /images/0XYvRd7oD",
+        "GET /breeds/search?q=abys"
+      ],
+      "auth": "con llave"
+    },
+    {
+      "id": "ESP-10",
+      "endpoint": "GET /images/search",
+      "tipo": "Borde",
+      "prioridad": "Alta",
+      "riesgo": "RF-01",
+      "objetivo": "Verificar que los parametros que el enunciado lista pero la especificacion no declara son ignorados.",
+      "entrada": "size=small, mime_types=gif y format=src, en tres llamadas.",
+      "esperado": "Codigo 200 en las tres, con la misma coleccion JSON. Ninguno altera el resultado. Hallazgo H-17.",
+      "validaciones": [
+        "Codigo 200 en los tres casos",
+        "Tipo de contenido JSON",
+        "Coleccion valida"
+      ],
+      "statusEsperado": "200",
+      "statusReal": "200, 200, 200",
+      "resultadoReal": "Aceptado y no aplicado. Se pidio gif y llegaron jpg. Devuelve JSON. Los tres parametros que el enunciado lista y la especificacion no declara son inertes. Hallazgo H-17.",
+      "peticiones": [
+        "GET /images/search?limit=2&size=small",
+        "GET /images/search?limit=2&mime_types=gif",
+        "GET /images/search?limit=2&format=src"
+      ],
+      "auth": "con llave"
     }
   ]
 }

@@ -16,7 +16,8 @@ https://api.thecatapi.com/v1/breeds/search
 | Busqueda de razas | `GET https://api.thecatapi.com/v1/breeds/search` | **Obligatoria.** Sin llave responde 403 | `q`, `attach_image` |
 
 **URL base:** `https://api.thecatapi.com/v1`
-**Autenticacion:** encabezado `x-api-key`. Configurable con la variable `URL_BASE_API` y el secreto `CAT_API_KEY`.
+**Autenticacion:** encabezado `x-api-key`. La especificacion tambien admite `?api_key=` en la URL. Configurable con la variable `URL_BASE_API` y el secreto `CAT_API_KEY`.
+**Especificacion del proveedor:** https://developers.thecatapi.com/view-account/ylX4blBYT9FaoVd6OhvR?report=FJkYOq9tW
 
 Comprobacion rapida desde tu terminal:
 
@@ -75,19 +76,40 @@ Esto es lo que falta:
 
 | Falta | Consecuencia |
 | --- | --- |
-| Contrato de respuesta | No hay forma de saber que campos son obligatorios |
-| Valores validos de cada parametro | No se puede distinguir una entrada valida de una invalida |
-| Codigos de error | No hay resultado esperado para las pruebas negativas |
-| Metodo de autenticacion | El segundo ejercicio no se puede ejecutar tal como esta escrito |
-| Limites de consumo | No se puede dimensionar la prueba de carga |
-| Acuerdo de nivel de servicio | Los umbrales de tiempo son una estimacion |
+| Contrato de respuesta de `/breeds/search` | El segundo endpoint no tiene documentacion asociada |
+| Codigos y forma del cuerpo de error | No hay resultado esperado para las pruebas negativas |
+| Valores validos de `size`, `mime_types` y `format` | El enunciado los lista y la especificacion no los reconoce |
+| Condicion de los encabezados de paginacion | El enunciado dice que "pueden" aparecer, sin precisar cuando |
+| Efecto de `attach_image` | Mismo caso, y el comportamiento observado lo contradice |
+| Limites de consumo por plan | No se puede dimensionar la prueba de carga |
+| Acuerdo de nivel de servicio | Los umbrales de tiempo son una estimacion propia |
 
-El comportamiento real se reconstruyo ejecutando mas de 150 peticiones contra el servicio.
-El resultado son 10 puntos sin definir y 12 desviaciones comprobadas, 5 de severidad alta.
+### El enunciado y la especificacion no coinciden
 
-El hallazgo mas relevante aparecio en la primera peticion: **el recurso de razas exige credencial**.
-Sin ella responde 403 a cualquier consulta, de modo que el segundo ejercicio es inejecutable tal
-como esta redactado. La especificacion no lo menciona en ningun punto.
+| Parametro | Lo declara la especificacion | Lo menciona el enunciado | Funciona |
+| --- | --- | --- | --- |
+| `limit` | Si, 1-100, por defecto 1 | Si | Si |
+| `page` | Si, 0-n, por defecto 0 | Si | Si |
+| `order` | Si, ASC/DESC/RAND | Si | Si |
+| `has_breeds` | Si, 1 o 0 | Si | Si |
+| `breed_ids` | Si | **No** | **Si** |
+| `category_ids` | Si | **No** | No se observo efecto |
+| `sub_id` | Si | **No** | No |
+| `size` | **No** | Si | No |
+| `mime_types` | **No** | Si | No |
+| `format` | **No** | Si | No |
+
+Siguiendo solo el enunciado se disenan casos sobre funcionalidad que no existe y se deja sin cubrir
+`breed_ids`, el unico filtro del endpoint que funciona correctamente.
+
+El comportamiento real se reconstruyo ejecutando mas de 170 peticiones contra el servicio.
+El resultado son 17 desviaciones comprobadas, 5 de severidad alta.
+
+El recurso de razas **exige credencial**: sin ella responde 403 a cualquier consulta. El enunciado no
+lo menciona, pero la especificacion enlazada si lo indica de forma expresa. Quien se quede en el
+enunciado concluye que el segundo ejercicio es inejecutable; quien abre el enlace encuentra la
+instruccion. La suite cubre los dos modos, anonimo y autenticado, porque la diferencia entre ambos
+resulto ser la fuente de varios hallazgos.
 
 ---
 
@@ -249,16 +271,15 @@ declaran de forma explicita: un plan que no dice lo que deja fuera no es un plan
 
 | Tipo | Casos | Que verifica |
 | --- | --- | --- |
-| Funcional | 20 | El comportamiento declarado con entradas validas |
-| Negativo | 14 | El rechazo uniforme y accionable de lo invalido |
-| De borde | 12 | Los valores frontera de cada rango y las zonas sin especificacion |
-| De contrato | 11 | La forma de la respuesta, en sus dos variantes segun autenticacion |
+| Funcional | 24 | El comportamiento declarado con entradas validas |
+| Negativo | 15 | El rechazo uniforme y accionable de lo invalido |
+| De borde | 16 | Los valores frontera de cada rango y las zonas sin especificacion |
+| De contrato | 13 | La forma de la respuesta, en sus dos variantes segun autenticacion |
 | De seguridad | 12 | Control de acceso, entradas hostiles y fuga de informacion |
 | No funcional | 8 | Tiempo de respuesta, compresion, cache, origen cruzado, disponibilidad |
-| **Total** | **77** | Ejecutables en aproximadamente cinco minutos |
+| **Total** | **87** | Ejecutables en aproximadamente cinco minutos |
 
-De los 77 casos, 39 son de prioridad alta, 33 de prioridad media y 5 de prioridad baja.
-Los 77 tienen evidencia real capturada: peticion, respuesta y resultado.
+Los 87 tienen evidencia real capturada: peticion, respuesta y resultado.
 
 ### Cobertura de parametros
 
@@ -273,6 +294,9 @@ Los 77 tienen evidencia real capturada: peticion, respuesta y resultado.
 | `format` | si | no aplica | si | si | no aplica |
 | `q` | si | si | si | si | no aplica |
 | `attach_image` | si | no aplica | si | si | no aplica |
+| `breed_ids` | si | no aplica | si | si | no aplica |
+| `category_ids` | si | no aplica | no aplica | si | no aplica |
+| `sub_id` | si | no aplica | no aplica | si | no aplica |
 
 ---
 
@@ -408,16 +432,21 @@ completo, con su evidencia y su consecuencia, esta en el
 | Clave | Severidad | Hallazgo | Caso |
 | --- | --- | --- | --- |
 | H-01 | Alta | `attach_image` no tiene ningun efecto: las respuestas con 0 y con 1 son identicas byte a byte, y ambas incluyen el objeto `image` | `BRD-N-06` |
-| H-02 | Alta | La coleccion se trunca a diez elementos sin credencial, sin aviso alguno, aunque la validacion admite hasta cien | `IMG-B-03` |
-| H-03 | Alta | `mime_types` no restringe los resultados: `png` devuelve imagenes `.jpg` | `IMG-B-07` |
-| H-09 | Alta | El contrato de respuesta cambia segun la credencial: cuatro campos en modo anonimo, nueve en modo autenticado | `CTR-03` |
-| H-11 | Alta | La llave de API se acepta en la cadena de consulta (`?api_key=`), no solo en el encabezado | `SEG-04` |
+| H-03 | Alta | `mime_types` no restringe los resultados: `png` devuelve imagenes `.jpg`. La especificacion no declara el parametro | `IMG-B-07` |
+| H-09 | Alta | El contrato de respuesta cambia segun la credencial: cuatro campos en modo anonimo, hasta diez en modo autenticado | `CTR-03` |
+| H-13 | Alta | El filtro `sub_id`, declarado en la especificacion, no se aplica: ninguna de las diez imagenes devueltas lo tiene | `ESP-04` |
+| H-16 | Alta | El objeto raza tiene dos formas distintas segun venga dentro de una imagen o de la busqueda de razas | `ESP-09` |
+| H-17 | Alta | El enunciado y la especificacion no listan los mismos parametros | `ESP-10` |
+| H-02 | Media | El recorte a diez sin credencial esta documentado, pero `limit=101` devuelve un 400 que afirma que el maximo es 100, y ningun encabezado informa del recorte | `IMG-B-03` |
 | H-04 | Media | La validacion de parametros no es uniforme: `order` valida, `size` y `format` no | `IMG-B-06` |
+| H-14 | Media | El filtro `category_ids` no devuelve imagenes con categoria | `ESP-05` |
+| H-15 | Media | La especificacion declara `RAND` y el mensaje de error del servicio enumera `RANDOM` | `ESP-06` |
 | H-05 | Media | `format=src` no altera la representacion y sigue devolviendo JSON | `IMG-B-10` |
 | H-06 | Media | Los encabezados de paginacion solo aparecen con credencial y orden determinista, condicion no documentada | `IMG-B-11` |
 | H-08 | Media | Omitir `q` devuelve un listado; enviarlo vacio devuelve 400 | `BRD-F-10` |
 | H-10 | Media | El campo `message` del error es un arreglo en los 400 y una cadena en los 403 y 404 | `CTR-07` |
 | H-12 | Media | Hay direcciones de imagen con la extension literal `.false` en lugar de su formato real | `IMG-F-02` |
+| H-11 | Baja | La llave se acepta en la cadena de consulta. Es comportamiento documentado, se deja como observacion de seguridad | `SEG-04` |
 | H-07 | Baja | Un verbo no soportado responde 404 en lugar de 405 con encabezado `Allow` | `IMG-N-07` |
 
 ### Como conviven los hallazgos con una suite en verde

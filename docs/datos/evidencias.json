@@ -1202,6 +1202,151 @@
         "body": "Abyssinian, Aegean, American Bobtail, American Curl, American Ringtail, ... 10 en total",
         "veredicto": "Mismo resultado. El comodin no concede acceso adicional."
       }
+    ],
+    "ESP-01": [
+      {
+        "req": "GET /images/search?limit=10&breed_ids=beng",
+        "auth": "con llave",
+        "st": 200,
+        "ms": 210,
+        "n": 10,
+        "campos": "id, url, width, height, created_at, breeds, categories, colours, tags",
+        "body": "Razas devueltas en los 10 elementos: beng, beng, beng, beng, beng, beng, beng, beng, beng, beng",
+        "veredicto": "Correcto. El filtro se cumple en los 10 resultados. Es el unico filtro del endpoint que funciona."
+      }
+    ],
+    "ESP-02": [
+      {
+        "req": "GET /images/search?limit=10&breed_ids=beng,abys",
+        "auth": "con llave",
+        "st": 200,
+        "ms": 198,
+        "n": 10,
+        "body": "Primer elemento: 8ciqdpaO5 con breeds[0].id = beng",
+        "veredicto": "Correcto. Los resultados corresponden a las razas solicitadas."
+      }
+    ],
+    "ESP-03": [
+      {
+        "req": "GET /images/search?limit=5&breed_ids=razainexistente",
+        "auth": "con llave",
+        "st": 200,
+        "ms": 176,
+        "n": 0,
+        "body": "[]",
+        "veredicto": "Correcto. Sin coincidencias devuelve coleccion vacia, no error."
+      }
+    ],
+    "ESP-04": [
+      {
+        "req": "GET /images/search?limit=10&sub_id=demo-9252f4",
+        "auth": "con llave",
+        "st": 200,
+        "ms": 205,
+        "n": 10,
+        "body": "Valores de sub_id devueltos: 123, (ausente), (ausente), (ausente), (ausente), (ausente), (ausente), (ausente), (ausente), demo-c45459",
+        "veredicto": "Se pidio sub_id=demo-9252f4 y ningun elemento lo trae. El filtro se acepta y no se aplica. Hallazgo H-13."
+      }
+    ],
+    "ESP-05": [
+      {
+        "req": "GET /images/search?limit=10&category_ids=1",
+        "auth": "con llave",
+        "st": 200,
+        "ms": 221,
+        "n": 10,
+        "body": "categories de los 10 elementos: vacio en todos",
+        "veredicto": "Ningun resultado trae categorias. Hallazgo H-14. Conviene confirmar si la credencial de demostracion tiene acceso a las categorias antes de clasificarlo como defecto."
+      }
+    ],
+    "ESP-06": [
+      {
+        "req": "GET /images/search?limit=5&order=RAND (llamada 1)",
+        "auth": "con llave",
+        "st": 200,
+        "ms": 190,
+        "n": 5,
+        "veredicto": "El valor documentado RAND es aceptado."
+      },
+      {
+        "req": "GET /images/search?limit=5&order=RAND (llamada 2)",
+        "auth": "con llave",
+        "st": 200,
+        "ms": 183,
+        "n": 5,
+        "veredicto": "Resultados distintos de la llamada anterior: aleatoriza. El mensaje de error del servicio enumera ASC, DESC y RANDOM, sin mencionar RAND. Hallazgo H-15."
+      }
+    ],
+    "ESP-07": [
+      {
+        "req": "GET /images/search?limit=3&order=rand",
+        "auth": "con llave",
+        "st": 200,
+        "ms": 188,
+        "n": 3,
+        "veredicto": "Correcto. El parametro no distingue mayusculas de minusculas."
+      }
+    ],
+    "ESP-08": [
+      {
+        "req": "GET /images/0XYvRd7oD",
+        "auth": "con llave",
+        "st": 200,
+        "ms": 230,
+        "n": null,
+        "campos": "id, url, width, height, sub_id, created_at, breeds, categories, colours, tags",
+        "body": "{\"id\":\"0XYvRd7oD\",\"url\":\"https://cdn2.thecatapi.com/images/0XYvRd7oD.jpg\",\"width\":1204,\"height\":1445,\"sub_id\":\"abyssinian-cat-names-1.jpg\",\"breeds\":[{\"id\":\"abys\",\"name\":\"Abyssinian\", ...}]}",
+        "veredicto": "Correcto. Coincide con el ejemplo de la especificacion."
+      }
+    ],
+    "ESP-09": [
+      {
+        "req": "GET /images/0XYvRd7oD",
+        "auth": "con llave",
+        "st": 200,
+        "ms": 230,
+        "campos": "raza incrustada: id, name, species_id, life_span, temperament, origin, country_code, description, bred_for, perfect_for, breed_group, history, alt_names, wikipedia_url, reference_image_id",
+        "veredicto": "Forma A del objeto raza. Trae alt_names y wikipedia_url."
+      },
+      {
+        "req": "GET /breeds/search?q=abys",
+        "auth": "con llave",
+        "st": 200,
+        "ms": 151,
+        "n": 1,
+        "campos": "id, name, species_id, life_span, temperament, origin, country_codes, country_code, description, bred_for, perfect_for, breed_group, history, reference_image_id, weight, height, image",
+        "veredicto": "Forma B. Trae country_codes, weight, height e image, pero no alt_names ni wikipedia_url. Dos formas de la misma entidad. Hallazgo H-16."
+      }
+    ],
+    "ESP-10": [
+      {
+        "req": "GET /images/search?limit=2&size=small",
+        "auth": "con llave",
+        "st": 200,
+        "ms": 215,
+        "n": 2,
+        "body": "Primer elemento: bku.jpg de 4592x3056, que no es una imagen pequena",
+        "veredicto": "Aceptado y no aplicado."
+      },
+      {
+        "req": "GET /images/search?limit=2&mime_types=gif",
+        "auth": "con llave",
+        "st": 200,
+        "ms": 196,
+        "n": 2,
+        "body": "Direcciones devueltas: 46k.jpg y cnv.jpg",
+        "veredicto": "Se pidio gif y llegaron jpg."
+      },
+      {
+        "req": "GET /images/search?limit=2&format=src",
+        "auth": "con llave",
+        "st": 200,
+        "ms": 188,
+        "n": 2,
+        "body": "Content-Type: application/json. Direcciones: 3ls.jpg y MTc5MTMxNw.jpg",
+        "veredicto": "Devuelve JSON. Los tres parametros que el enunciado lista y la especificacion no declara son inertes. Hallazgo H-17."
+      }
     ]
-  }
+  },
+  "especificacion": "https://developers.thecatapi.com/view-account/ylX4blBYT9FaoVd6OhvR?report=FJkYOq9tW"
 }
