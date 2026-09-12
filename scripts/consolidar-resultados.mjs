@@ -76,7 +76,7 @@ function recorrerSuites(suites, archivoHeredado = '') {
         titulo,
         suite: suite.title ?? '',
         archivo,
-        estado: normalizarEstado(spec, ultimo),
+        estado: normalizarEstado(spec, ultimo, resultados),
         duracionMs: resultados.reduce((total, r) => total + (r.duration ?? 0), 0),
         reintentos: Math.max(0, resultados.length - 1),
         etiquetas,
@@ -91,7 +91,10 @@ function recorrerSuites(suites, archivoHeredado = '') {
   return casos;
 }
 
-function normalizarEstado(spec, ultimoResultado) {
+function normalizarEstado(spec, ultimoResultado, resultados = []) {
+  // Un reporte sin intentos registrados no es una prueba aprobada: el caso no
+  // llego a ejecutarse. Ocurre, por ejemplo, con un listado de la suite.
+  if (resultados.length === 0) return 'omitida';
   const estado = ultimoResultado.status;
   if (estado === 'skipped') return 'omitida';
   if (spec.ok === true && (ultimoResultado.retry ?? 0) > 0) return 'inestable';
@@ -246,6 +249,10 @@ function calcularVeredicto(funcional, desempeno) {
   const fallosDesempeno = desempeno.filter((d) => d.disponible && !d.aprobado).length;
 
   if (fallosFuncionales > 0 || fallosDesempeno > 0) return 'rechazado';
+  // Una suite que existe pero no ejecuto ningun caso no puede darse por buena.
+  if (funcional.disponible && funcional.total > 0 && funcional.aprobadas === 0) {
+    return 'rechazado';
+  }
   if ((funcional.desviaciones ?? []).length > 0 || (funcional.inestables ?? 0) > 0) {
     return 'con observaciones';
   }

@@ -197,7 +197,7 @@ Las pruebas, el portal y los documentos leen los mismos archivos de `docs/datos/
 
 ## Documentos
 
-Un solo documento, [`entregables/Evaluacion-QA-API.pdf`](entregables/Evaluacion-QA-API.pdf) (43 páginas), con los cinco entregables pedidos:
+Un solo documento, [`entregables/Evaluacion-QA-API.pdf`](entregables/Evaluacion-QA-API.pdf) (31 páginas), con los cinco entregables pedidos:
 
 | Capítulo | Qué contiene |
 | --- | --- |

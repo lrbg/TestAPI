@@ -52,17 +52,17 @@ const h1 = (t) => new Paragraph({
 });
 
 const h2 = (t) => new Paragraph({
-  heading: HeadingLevel.HEADING_2, spacing: { before: 250, after: 110 },
+  heading: HeadingLevel.HEADING_2, keepNext: true, spacing: { before: 250, after: 110 },
   children: [new TextRun({ text: t, size: 23, bold: true })],
 });
 
 const h3 = (t) => new Paragraph({
-  heading: HeadingLevel.HEADING_3, spacing: { before: 190, after: 90 },
+  heading: HeadingLevel.HEADING_3, keepNext: true, spacing: { before: 190, after: 90 },
   children: [new TextRun({ text: t, size: 20, bold: true, color: TENUE })],
 });
 
 const cod = (t) => new Paragraph({
-  spacing: { after: 0, line: 222 },
+  spacing: { after: 0, line: 206 },
   children: [new TextRun({ text: t, font: 'Consolas', size: 14 })],
 });
 
@@ -99,10 +99,10 @@ const BORDES = {
 const celda = (c, o = {}) => new TableCell({
   width: { size: o.ancho, type: WidthType.DXA },
   shading: o.fondo ? { type: ShadingType.CLEAR, fill: o.fondo } : undefined,
-  margins: { top: 55, bottom: 55, left: 90, right: 90 },
+  margins: { top: 42, bottom: 42, left: 80, right: 80 },
   verticalAlign: 'top',
   children: (Array.isArray(c) ? c : [c]).map((x) => x instanceof Paragraph ? x : new Paragraph({
-    spacing: { after: 0, line: 236 },
+    spacing: { after: 0, line: 218 },
     children: [new TextRun({ text: String(x), size: o.size ?? 16, bold: o.bold, color: o.color, font: o.font })],
   })),
 });
@@ -381,22 +381,16 @@ const analisis = [
 
   h3('Los seis de severidad alta, con su evidencia'),
 
-  ...HALL.filter((h) => h.severidad === 'Alta').flatMap((h) => [
-    new Paragraph({
-      spacing: { before: 200, after: 80 }, keepNext: true,
-      children: [
-        new TextRun({ text: h.clave, size: 20, bold: true, color: AZUL, font: 'Consolas' }),
-        new TextRun({ text: `   ${h.titulo}`, size: 20, bold: true }),
-      ],
-    }),
-    ficha([
-      ['Qué debería pasar', h.dice],
-      ['Qué pasa de verdad', h.hace],
-      ['Evidencia', String(h.evidencia).split('\n').map(cod)],
-      ['A quien le duele', h.impacto],
-      ['Caso', h.caso],
-    ], 2100),
-  ]),
+  tabla(
+    ['Clave', 'Qué debería pasar', 'Qué pasa de verdad', 'Evidencia'],
+    HALL.filter((h) => h.severidad === 'Alta').map((h) => [
+      h.clave,
+      h.dice,
+      h.hace,
+      String(h.evidencia).split('\n').flatMap((l) => partir(l, 46)).map(cod),
+    ]),
+    [700, 2600, 2900, ANCHO_V - 6200], ANCHO_V, 15
+  ),
 
   salto(),
 ];
@@ -608,19 +602,26 @@ const plan = [
 
 const estado = (c) => [`esperado ${c.statusEsperado ?? ''}`, `real ${c.statusReal ?? ''}`];
 
-const evidenciaDe = (c) => {
+/**
+ * Evidencia compacta. De cada peticion se deja siempre el codigo, el tiempo y
+ * el numero de elementos. El cuerpo y los encabezados solo se transcriben en
+ * los casos con desviacion, que son los que hay que poder revisar sin volver a
+ * ejecutar. El resto de cuerpos esta en el portal, caso por caso.
+ */
+const evidenciaDe = (c, conDetalle) => {
   const regs = EV[c.id] ?? [];
   const out = [];
   for (const r of regs) {
-    out.push(...partir(`${r.st}${r.ms !== undefined ? `  ${r.ms} ms` : ''}${r.n !== undefined && r.n !== null ? `  ${r.n} elem` : ''}`, 44).map(cod));
-    if (r.hdr) {
-      for (const [k, v] of Object.entries(r.hdr).filter(([k]) => /pagination|encoding|allow/.test(k))) {
-        out.push(...partir(`${k}: ${v}`, 44).map(cod));
+    const cabeza = `${r.st}${r.ms !== undefined ? `  ${r.ms} ms` : ''}${r.n !== undefined && r.n !== null ? `  ${r.n} elem` : ''}`;
+    out.push(...partir(cabeza, 40).map(cod));
+    if (conDetalle && r.hdr) {
+      for (const [k, v] of Object.entries(r.hdr).filter(([k]) => /pagination/.test(k))) {
+        out.push(...partir(`${k}: ${v}`, 40).map(cod));
       }
     }
-    if (r.body) out.push(...partir(String(r.body).slice(0, 200), 44).map(cod));
-    if (r.medicion) out.push(...partir(r.medicion, 44).map(cod));
-    out.push(cod(''));
+    if (r.campos) out.push(...partir(r.campos, 40).map(cod));
+    if (conDetalle && r.body) out.push(...partir(String(r.body).slice(0, 96), 40).map(cod));
+    if (r.medicion) out.push(...partir(r.medicion, 40).map(cod));
   }
   return out.length ? out : [cod('sin evidencia')];
 };
@@ -651,7 +652,7 @@ const fila = (c) => {
     c.prioridad,
     c.tipo,
     estado(c),
-    evidenciaDe(c),
+    evidenciaDe(c, Boolean(desv)),
     [new Paragraph({
       spacing: { after: 0 },
       children: (desv ? ['Desviación', desv[1]] : ['Correcto']).map((l, i) =>
@@ -661,7 +662,7 @@ const fila = (c) => {
 };
 
 const CABEZAL = ['ID', 'Endpoint', 'Objetivo', 'Parámetros de entrada', 'Resultado esperado', 'Validaciones', 'Prior.', 'Tipo', 'Status', 'Respuesta real', 'Veredicto'];
-const ANCHOS = [600, 1080, 1620, 1250, 1820, 1680, 560, 740, 700, 2450, 900];
+const ANCHOS = [600, 1080, 1720, 1250, 1900, 1780, 560, 740, 720, 1980, 880];
 
 const GRUPOS = [
   { t: '3.1 Ejercicio 1. Búsqueda de imágenes: camino principal', pre: 'IMG-F' },
@@ -688,12 +689,12 @@ const casos = [
 
   esp(160),
 
-  p('Los últimos tres campos no los pide el entregable, pero permiten comprobar cada caso sin volver a ejecutarlo: el status esperado frente al real, la respuesta obtenida y si hubo diferencia.'),
+  p('Los últimos tres campos no los pide el entregable, pero permiten comprobar cada caso sin volver a ejecutarlo: el status esperado frente al real, la respuesta obtenida y si hubo diferencia. De los casos con desviación se transcribe además el cuerpo devuelto. El resto de cuerpos, petición por petición, está en el portal.'),
 
   ...GRUPOS.flatMap((g) => {
     const lista = CASOS.filter((c) => c.id.startsWith(g.pre));
     if (!lista.length) return [];
-    return [salto(), h2(g.t), tabla(CABEZAL, lista.map(fila), ANCHOS, ANCHO_H, 14)];
+    return [esp(220), h2(g.t), tabla(CABEZAL, lista.map(fila), ANCHOS, ANCHO_H, 14)];
   }),
 
   salto(),
