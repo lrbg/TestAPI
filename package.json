@@ -21,7 +21,9 @@
     "historico": "node scripts/actualizar-historico.mjs",
     "sitio": "node scripts/generar-sitio.mjs",
     "triaje": "node scripts/triaje-issues.mjs",
-    "catalogo": "node scripts/generar-catalogo.mjs"
+    "catalogo": "node scripts/generar-catalogo.mjs",
+    "documento": "node scripts/generar-entregable.cjs",
+    "resumen": "node scripts/generar-resumen.cjs"
   },
   "devDependencies": {
     "@playwright/test": "1.49.1",
