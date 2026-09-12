@@ -1,0 +1,42 @@
+name: Ejecucion programada
+
+# Ejecucion diaria de los siete dias de la semana a las 16:00 hora de la
+# Ciudad de Mexico.
+#
+# Sobre la hora: GitHub interpreta toda expresion de calendario en tiempo
+# universal coordinado. Mexico dejo de aplicar horario de verano en 2022, de
+# modo que la Ciudad de Mexico permanece todo el ano en UTC menos seis horas.
+# Las 16:00 locales equivalen por tanto a las 22:00 UTC de forma estable, sin
+# necesidad de ajustar la expresion dos veces al ano.
+#
+# Sobre la puntualidad: el planificador de GitHub no garantiza el minuto exacto
+# y puede retrasar una ejecucion en periodos de alta demanda. Para una
+# verificacion diaria ese margen es irrelevante; si mas adelante la hora
+# resultara critica, convendria disparar el flujo desde un planificador propio.
+#
+# Esta es la unica via que alimenta el registro historico y el tablero de
+# incidencias, de modo que la serie temporal se construya siempre en las mismas
+# condiciones y sea comparable consigo misma.
+
+on:
+  schedule:
+    - cron: '0 22 * * *'
+
+permissions:
+  contents: write
+  issues: write
+  pages: write
+  id-token: write
+
+jobs:
+  verificacion:
+    name: Verificacion diaria
+    uses: ./.github/workflows/qa-core.yml
+    secrets: inherit
+    with:
+      suite: completa
+      escenario_desempeno: carga
+      publicar_portal: true
+      actualizar_historico: true
+      ejecutar_triaje: true
+      comentar_solicitud: false

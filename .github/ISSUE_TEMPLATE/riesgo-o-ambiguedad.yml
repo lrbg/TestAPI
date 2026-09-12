@@ -1,0 +1,72 @@
+name: Riesgo o ambiguedad
+description: Registrar un riesgo de calidad o un punto de la especificacion que impide decidir si un comportamiento es correcto
+title: '[RIESGO] '
+labels: ['area-contrato']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Un riesgo no es un defecto: es algo que todavia no ha fallado pero que puede hacerlo, o un
+        punto del contrato que nadie ha decidido. Registrarlo permite atenderlo antes de que se
+        convierta en un incidente.
+
+  - type: dropdown
+    id: tipo
+    attributes:
+      label: Naturaleza del registro
+      options:
+        - Ambiguedad de la especificacion
+        - Riesgo funcional
+        - Riesgo tecnico
+        - Dependencia externa o restriccion
+        - Informacion requerida antes de probar
+    validations:
+      required: true
+
+  - type: textarea
+    id: descripcion
+    attributes:
+      label: Descripcion
+      description: Que punto queda sin definir, o que puede fallar y en que circunstancias.
+    validations:
+      required: true
+
+  - type: textarea
+    id: consecuencia
+    attributes:
+      label: Consecuencia si se materializa
+      description: Que ocurre si nadie lo atiende.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: probabilidad
+    attributes:
+      label: Probabilidad estimada
+      options: [Alta, Media, Baja]
+    validations:
+      required: true
+
+  - type: dropdown
+    id: impacto
+    attributes:
+      label: Impacto estimado
+      options: [Alto, Medio, Bajo]
+    validations:
+      required: true
+
+  - type: textarea
+    id: mitigacion
+    attributes:
+      label: Mitigacion propuesta
+      description: Que caso de prueba, que decision o que informacion lo cerraria.
+    validations:
+      required: false
+
+  - type: input
+    id: bloquea
+    attributes:
+      label: Que bloquea
+      description: Actividad de prueba que no puede considerarse concluyente mientras esto siga abierto.
+    validations:
+      required: false

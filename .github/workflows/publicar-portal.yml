@@ -1,0 +1,64 @@
+name: Publicacion del portal
+
+# Vuelve a publicar el portal cuando cambia la documentacion o el catalogo de
+# casos, sin ejecutar la suite. Permite corregir una redaccion o anadir un caso
+# al catalogo sin gastar cuota del servicio bajo prueba.
+#
+# El registro historico no se toca: se lee de la rama de resultados y se
+# republica tal cual.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'scripts/generar-sitio.mjs'
+      - '.github/workflows/publicar-portal.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: publicacion-portal
+  cancel-in-progress: true
+
+jobs:
+  publicar:
+    name: Ensamblar y publicar
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.despliegue.outputs.page_url }}
+    steps:
+      - name: Obtener el codigo
+        uses: actions/checkout@v4
+
+      - name: Preparar el entorno de ejecucion
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Recuperar el registro historico
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          ref: resultados
+          path: historico
+
+      - name: Ensamblar el portal
+        run: node scripts/generar-sitio.mjs historico/historico.json
+
+      - name: Preparar la publicacion
+        uses: actions/configure-pages@v5
+
+      - name: Cargar el portal como artefacto
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: sitio
+
+      - name: Desplegar en GitHub Pages
+        id: despliegue
+        uses: actions/deploy-pages@v4

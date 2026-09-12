@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portal de calidad | Evaluacion tecnica de API</title>
+<meta name="description" content="Analisis, plan de pruebas, cobertura y reporte historico de la evaluacion de calidad de los endpoints de busqueda de imagenes y razas.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231f5c8b'/%3E%3Cpath d='M9 16.4l4.7 4.7L23 11.8' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="activos/estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="cabecera-interior">
+    <a class="marca" href="index.html">Portal de calidad<span>Evaluacion tecnica de API</span></a>
+    <nav class="navegacion">
+      <a href="index.html">Inicio</a>
+      <a href="analisis.html">Analisis</a>
+      <a href="plan.html">Plan de pruebas</a>
+      <a href="casos.html">Casos</a>
+      <a href="evidencia.html">Evidencia</a>
+      <a href="historico.html">Historico</a>
+      <a href="reporte-funcional/index.html">Ultimo reporte</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <h1>Aseguramiento de calidad de los endpoints de busqueda</h1>
+  <p class="entradilla">
+    Este portal concentra el analisis del servicio bajo prueba, el plan de pruebas que lo cubre,
+    el catalogo de casos con su respuesta esperada y el registro historico de cada ejecucion.
+    Se publica de forma automatica en cada corrida de la suite.
+  </p>
+
+  <div id="estado-actual"></div>
+
+  <h2>El requerimiento</h2>
+
+  <p>
+    Se solicito validar la calidad de dos endpoints de un servicio publico de consulta de imagenes
+    y razas de gatos, analizando la especificacion entregada y elaborando y ejecutando un plan de
+    pruebas funcional y tecnico.
+  </p>
+
+  <div class="envoltura-tabla">
+    <table>
+      <thead>
+        <tr><th>Recurso</th><th>Proposito declarado</th><th>Parametros contemplados</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="mono">GET /images/search</td>
+          <td>Buscar o devolver imagenes aleatorias</td>
+          <td><code>size</code>, <code>mime_types</code>, <code>format</code>, <code>has_breeds</code>, <code>order</code>, <code>page</code>, <code>limit</code></td>
+        </tr>
+        <tr>
+          <td class="mono">GET /breeds/search</td>
+          <td>Buscar razas por nombre</td>
+          <td><code>q</code>, <code>attach_image</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    La especificacion menciona ademas que la busqueda de imagenes puede devolver los encabezados
+    de paginacion <code>Pagination-Count</code>, <code>Pagination-Page</code> y
+    <code>Pagination-Limit</code>, y que la busqueda de razas puede devolver informacion de imagen
+    asociada cuando <code>attach_image</code> vale 1.
+  </p>
+
+  <div class="aviso alerta">
+    <p>
+      <strong>Observacion de partida.</strong> La especificacion entregada describe los endpoints y
+      lista sus parametros. No define contrato de respuesta, ni valores admitidos, ni codigos de
+      error, ni metodo de autenticacion. El comportamiento real se reconstruyo ejecutando mas de
+      150 peticiones contra el servicio. El resultado son 10 puntos sin definir y 12 desviaciones
+      comprobadas.
+    </p>
+  </div>
+
+  <h2>El flujo de aseguramiento</h2>
+
+  <p>
+    El flujo va del disparo de la ejecucion a la publicacion del resultado y al seguimiento de los
+    defectos, sin intervencion manual en ningun paso intermedio.
+  </p>
+
+  <ol class="pasos">
+    <li>
+      <strong>Disparo.</strong> La suite arranca por tres vias independientes: a demanda desde la
+      pestana de acciones, de forma automatica ante toda solicitud de incorporacion a la rama
+      principal, y de forma programada todos los dias a las 16:00 hora de la Ciudad de Mexico.
+    </li>
+    <li>
+      <strong>Ejecucion funcional.</strong> La suite de Playwright cubre los escenarios funcionales,
+      negativos, de borde, de contrato, de seguridad de superficie y las verificaciones no
+      funcionales de una sola peticion. Cada caso adjunta al reporte la peticion realizada, el
+      codigo de estado, los encabezados relevantes, el tiempo de respuesta y la respuesta obtenida.
+    </li>
+    <li>
+      <strong>Ejecucion de desempeno.</strong> Los escenarios de k6 miden el comportamiento temporal
+      y la capacidad del servicio. El escenario de humo y el de carga nominal forman parte de la
+      ejecucion habitual; los de estres, pico y resistencia se lanzan de forma deliberada.
+    </li>
+    <li>
+      <strong>Consolidacion.</strong> Los reportes de ambas herramientas se normalizan en un unico
+      resumen de ejecucion, del que se derivan el veredicto, el reporte historico y el triaje.
+    </li>
+    <li>
+      <strong>Triaje.</strong> El agente interpreta el resumen, abre una incidencia por cada fallo
+      nuevo con su evidencia y sus pasos de reproduccion, acumula las reapariciones sobre la
+      incidencia existente en lugar de duplicarla, y cierra por si mismo aquellas cuyo caso ha
+      vuelto a pasar.
+    </li>
+    <li>
+      <strong>Publicacion.</strong> El resultado se incorpora al registro historico y este portal se
+      vuelve a publicar con las cifras actualizadas y el reporte navegable de la ultima ejecucion.
+    </li>
+  </ol>
+
+  <h2>Cobertura</h2>
+
+  <p>
+    La cobertura se organiza segun el modelo de calidad de la norma ISO/IEC 25010:2023. Las
+    caracteristicas que quedan fuera se declaran de forma explicita, con su motivo.
+  </p>
+
+  <div class="envoltura-tabla">
+    <table>
+      <thead>
+        <tr>
+          <th>Caracteristica de calidad</th>
+          <th>Subcaracteristica</th>
+          <th>Como se verifica</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Adecuacion funcional</td>
+          <td>Completitud, correccion y pertinencia</td>
+          <td>Escenarios funcionales sobre ambos recursos y todos sus parametros</td>
+          <td><span class="distintivo exito">Cubierta</span></td>
+        </tr>
+        <tr>
+          <td>Eficiencia de desempeno</td>
+          <td>Comportamiento temporal y capacidad</td>
+          <td>Verificaciones de tiempo en la suite funcional y escenarios de k6</td>
+          <td><span class="distintivo exito">Cubierta</span></td>
+        </tr>
+        <tr>
+          <td>Compatibilidad</td>
+          <td>Interoperabilidad</td>
+          <td>Validacion de contrato por esquema y politica de origen cruzado</td>
+          <td><span class="distintivo exito">Cubierta</span></td>
+        </tr>
+        <tr>
+          <td>Fiabilidad</td>
+          <td>Madurez, disponibilidad y tolerancia a fallos</td>
+          <td>Series sostenidas de peticiones y escenario de resistencia</td>
+          <td><span class="distintivo exito">Cubierta</span></td>
+        </tr>
+        <tr>
+          <td>Seguridad</td>
+          <td>Confidencialidad e integridad</td>
+          <td>Control de acceso, entradas hostiles y fuga de informacion</td>
+          <td><span class="distintivo alerta">Parcial</span></td>
+        </tr>
+        <tr>
+          <td>Usabilidad</td>
+          <td>Proteccion frente a errores del usuario</td>
+          <td>Calidad y utilidad de los mensajes de error</td>
+          <td><span class="distintivo alerta">Parcial</span></td>
+        </tr>
+        <tr>
+          <td>Mantenibilidad</td>
+          <td>Modularidad y capacidad de prueba</td>
+          <td>No aplicable: no se dispone del codigo del servicio</td>
+          <td><span class="distintivo neutro">Fuera de alcance</span></td>
+        </tr>
+        <tr>
+          <td>Portabilidad</td>
+          <td>Instalabilidad y reemplazabilidad</td>
+          <td>No aplicable: servicio gestionado por un tercero</td>
+          <td><span class="distintivo neutro">Fuera de alcance</span></td>
+        </tr>
+        <tr>
+          <td>Flexibilidad</td>
+          <td>Escalabilidad</td>
+          <td>No verificable sin autorizacion del proveedor para cargas elevadas</td>
+          <td><span class="distintivo neutro">Fuera de alcance</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Marco normativo de referencia</h2>
+
+  <div class="envoltura-tabla">
+    <table>
+      <thead>
+        <tr><th>Norma</th><th>Aporte al trabajo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="mono">ISO/IEC 25010:2023</td>
+          <td>Modelo de calidad del producto. Ordena la cobertura por caracteristica y evita que la verificacion se reduzca a lo funcional.</td>
+        </tr>
+        <tr>
+          <td class="mono">ISO/IEC/IEEE 29119-1 y 29119-2</td>
+          <td>Conceptos y proceso de prueba. Sustentan la estructura del plan y el ciclo de diseno, ejecucion y cierre.</td>
+        </tr>
+        <tr>
+          <td class="mono">ISO/IEC/IEEE 29119-3</td>
+          <td>Documentacion de prueba. Define la forma del plan, de la especificacion de casos, de la bitacora de ejecucion, del reporte de incidencias y del informe de cierre.</td>
+        </tr>
+        <tr>
+          <td class="mono">ISO/IEC/IEEE 29119-4</td>
+          <td>Tecnicas de prueba. Particion de equivalencia, analisis de valores frontera y prueba basada en riesgo aplicadas al diseno de los casos.</td>
+        </tr>
+        <tr>
+          <td class="mono">ISO/IEC 20000-1</td>
+          <td>Gestion del servicio. Encuadra el acuerdo de nivel de servicio, la gestion de incidencias y el seguimiento continuo del desempeno.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</main>
+
+<footer class="pie">
+  <p>
+    Portal publicado automaticamente desde el repositorio en cada ejecucion de la suite.
+    <span id="sello-publicacion"></span>
+  </p>
+</footer>
+
+<script type="module">
+import { cargarDatos, fecha, numero, claseDeVeredicto } from './activos/portal.js';
+
+const contenedor = document.getElementById('estado-actual');
+
+const resumen = await cargarDatos('resumen.json');
+
+if (!resumen) {
+  contenedor.innerHTML = `
+    <div class="aviso">
+      <p>Todavia no se ha registrado ninguna ejecucion. El estado aparecera aqui en cuanto la suite corra por primera vez.</p>
+    </div>`;
+} else {
+  const f = resumen.funcional ?? {};
+  const desempeno = (resumen.desempeno ?? []).filter((d) => d.disponible);
+  const p95 = desempeno.length ? Math.max(...desempeno.map((d) => d.duracion?.p95 ?? 0)) : null;
+
+  contenedor.innerHTML = `
+    <div class="rejilla">
+      <div class="indicador">
+        <div class="etiqueta">Veredicto</div>
+        <div class="valor ${claseDeVeredicto(resumen.veredicto)}" style="font-size:19px">${resumen.veredicto ?? 'sin dato'}</div>
+        <div class="nota">Ejecucion ${resumen.ejecucion?.numero ?? '0'}, ${(resumen.ejecucion?.disparador ?? '').toLowerCase()}</div>
+      </div>
+      <div class="indicador">
+        <div class="etiqueta">Casos ejecutados</div>
+        <div class="valor">${numero(f.total)}</div>
+        <div class="nota">${numero(f.aprobadas)} aprobadas, ${numero(f.fallidas)} fallidas</div>
+      </div>
+      <div class="indicador">
+        <div class="etiqueta">Tasa de aprobacion</div>
+        <div class="valor ${f.fallidas > 0 ? 'fallo' : 'exito'}">${numero(f.tasaAprobacion, 1)}%</div>
+        <div class="nota">${numero(f.omitidas)} casos omitidos</div>
+      </div>
+      <div class="indicador">
+        <div class="etiqueta">Percentil 95</div>
+        <div class="valor">${p95 !== null ? numero(p95) + ' ms' : 'sin dato'}</div>
+        <div class="nota">Peor escenario de desempeno</div>
+      </div>
+      <div class="indicador">
+        <div class="etiqueta">Desviaciones abiertas</div>
+        <div class="valor ${(f.desviaciones ?? []).length ? 'alerta' : 'exito'}">${numero((f.desviaciones ?? []).length)}</div>
+        <div class="nota">Diferencias entre lo declarado y lo observado</div>
+      </div>
+      <div class="indicador">
+        <div class="etiqueta">Ultima ejecucion</div>
+        <div class="valor" style="font-size:15px;font-weight:550">${fecha(resumen.ejecucion?.fecha)}</div>
+        <div class="nota">Hora de la Ciudad de Mexico</div>
+      </div>
+    </div>`;
+
+  document.getElementById('sello-publicacion').textContent =
+    `Ultima actualizacion: ${fecha(resumen.ejecucion?.fecha)}.`;
+}
+</script>
+
+</body>
+</html>

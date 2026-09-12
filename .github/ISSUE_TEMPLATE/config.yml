@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Portal de calidad
+    url: https://lrbg.github.io/TESTAPI/
+    about: Analisis del API, plan de pruebas, catalogo de casos y reporte historico de ejecuciones.
+  - name: Catalogo de casos de prueba
+    url: https://lrbg.github.io/TESTAPI/casos.html
+    about: Consulte antes de reportar si el comportamiento ya esta documentado como hallazgo conocido.

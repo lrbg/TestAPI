@@ -1,0 +1,63 @@
+name: Ejecucion manual
+
+# Permite lanzar la verificacion a demanda desde la pestana de acciones,
+# eligiendo el conjunto de pruebas y el escenario de desempeno. Es la via
+# prevista para los escenarios de carga elevada, que no forman parte de la
+# ejecucion programada y requieren autorizacion del proveedor del servicio.
+
+on:
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: Conjunto de pruebas
+        type: choice
+        default: completa
+        options:
+          - completa
+          - funcional
+          - humo
+          - contrato
+          - seguridad
+          - desempeno
+      escenario_desempeno:
+        description: Escenario de desempeno. Los de estres, pico y resistencia requieren autorizacion del proveedor
+        type: choice
+        default: humo
+        options:
+          - humo
+          - carga
+          - estres
+          - pico
+          - resistencia
+      publicar_portal:
+        description: Publicar el portal actualizado en GitHub Pages
+        type: boolean
+        default: true
+      ejecutar_triaje:
+        description: Abrir y cerrar incidencias segun el resultado
+        type: boolean
+        default: false
+      actualizar_historico:
+        description: Incorporar esta ejecucion al registro historico
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  pages: write
+  id-token: write
+
+jobs:
+  verificacion:
+    name: Verificacion a demanda
+    uses: ./.github/workflows/qa-core.yml
+    secrets: inherit
+    with:
+      suite: ${{ inputs.suite }}
+      escenario_desempeno: ${{ inputs.escenario_desempeno }}
+      publicar_portal: ${{ inputs.publicar_portal }}
+      actualizar_historico: ${{ inputs.actualizar_historico }}
+      ejecutar_triaje: ${{ inputs.ejecutar_triaje }}
+      comentar_solicitud: false

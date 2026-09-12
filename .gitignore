@@ -1,0 +1,17 @@
+node_modules/
+resultados/
+sitio/
+historico/
+*.log
+npm-debug.log*
+.env
+.env.*
+.DS_Store
+.idea/
+.vscode/
+*.tar.gz
+k6-*-linux-amd64/
+test-results/
+playwright-report/
+comentario.md
+entregables/*.jpg

@@ -1,0 +1,168 @@
+{
+  "version": 1,
+  "descripcion": "Peticiones ejecutables de cada caso de prueba. Las usa scripts/capturar-evidencia.mjs para obtener la evidencia real que se publica en el portal y en el documento de entrega.",
+  "base": "https://api.thecatapi.com/v1",
+  "peticiones": {
+    "IMG-F-01": [{ "m": "GET", "u": "/images/search", "a": false }],
+    "IMG-F-02": [
+      { "m": "GET", "u": "/images/search?limit=1", "a": true },
+      { "m": "GET", "u": "/images/search?limit=10", "a": true }
+    ],
+    "IMG-F-03": [{ "m": "GET", "u": "/images/search?limit=10", "a": false }],
+    "IMG-F-04": [{ "m": "GET", "u": "/images/search?limit=10", "a": true }],
+    "IMG-F-05": [
+      { "m": "GET", "u": "/images/search?limit=10&order=RANDOM", "a": true },
+      { "m": "GET", "u": "/images/search?limit=10&order=RANDOM", "a": true }
+    ],
+    "IMG-F-06": [{ "m": "GET", "u": "/images/search?limit=5&has_breeds=1", "a": true }],
+    "IMG-F-07": [
+      { "m": "GET", "u": "/images/search?limit=3&order=ASC", "a": true },
+      { "m": "GET", "u": "/images/search?limit=3&order=DESC", "a": true },
+      { "m": "GET", "u": "/images/search?limit=3&order=RANDOM", "a": true }
+    ],
+    "IMG-F-08": [
+      { "m": "GET", "u": "/images/search?limit=5&order=ASC&page=0", "a": true },
+      { "m": "GET", "u": "/images/search?limit=5&order=ASC&page=1", "a": true }
+    ],
+    "IMG-F-09": [
+      { "m": "GET", "u": "/images/search?limit=5&order=ASC&page=0", "a": true },
+      { "m": "GET", "u": "/images/search?limit=5&order=ASC&page=0", "a": true }
+    ],
+    "IMG-F-10": [{ "m": "GET", "u": "/images/search?limit=5&order=DESC&page=0", "a": true }],
+    "IMG-F-11": [{ "m": "GET", "u": "/images/search?limit=100", "a": true }],
+    "IMG-F-12": [{ "m": "GET", "u": "/images/search?limit=5", "a": false }],
+
+    "IMG-N-01": [{ "m": "GET", "u": "/images/search?limit=0", "a": true }],
+    "IMG-N-02": [{ "m": "GET", "u": "/images/search?limit=-5", "a": true }],
+    "IMG-N-03": [{ "m": "GET", "u": "/images/search?limit=abc", "a": true }],
+    "IMG-N-04": [{ "m": "GET", "u": "/images/search?limit=101", "a": true }],
+    "IMG-N-05": [{ "m": "GET", "u": "/images/search?limit=5&order=ASC&page=-1", "a": true }],
+    "IMG-N-06": [{ "m": "GET", "u": "/images/search?limit=2&order=SIDEWAYS", "a": true }],
+    "IMG-N-07": [{ "m": "POST", "u": "/images/search", "a": true }],
+    "IMG-N-08": [{ "m": "GET", "u": "/images/busqueda-inexistente", "a": true }],
+    "IMG-N-09": [
+      { "m": "GET", "u": "/images/search?limit=0", "a": true },
+      { "m": "GET", "u": "/images/search?limit=2&order=ZZZ", "a": true },
+      { "m": "GET", "u": "/ruta/que/no/existe", "a": true }
+    ],
+    "IMG-N-10": [{ "m": "GET", "u": "/images/search?limit=abc", "a": true }],
+
+    "IMG-B-01": [
+      { "m": "GET", "u": "/images/search?limit=0", "a": true },
+      { "m": "GET", "u": "/images/search?limit=1", "a": true }
+    ],
+    "IMG-B-02": [
+      { "m": "GET", "u": "/images/search?limit=100", "a": true },
+      { "m": "GET", "u": "/images/search?limit=101", "a": true }
+    ],
+    "IMG-B-03": [
+      { "m": "GET", "u": "/images/search?limit=50", "a": false },
+      { "m": "GET", "u": "/images/search?limit=50", "a": true }
+    ],
+    "IMG-B-04": [{ "m": "GET", "u": "/images/search?limit=10&order=ASC&page=500000", "a": true }],
+    "IMG-B-05": [{ "m": "GET", "u": "/images/search?limit=10&order=ASC&page=1348", "a": true }],
+    "IMG-B-06": [{ "m": "GET", "u": "/images/search?size=gigantesco", "a": true }],
+    "IMG-B-07": [{ "m": "GET", "u": "/images/search?limit=10&mime_types=png", "a": true }],
+    "IMG-B-08": [{ "m": "GET", "u": "/images/search?mime_types=application%2Fpdf", "a": true }],
+    "IMG-B-09": [{ "m": "GET", "u": "/images/search?limit=3&parametro_inexistente=valor", "a": true }],
+    "IMG-B-10": [
+      { "m": "GET", "u": "/images/search?limit=1&format=json", "a": true },
+      { "m": "GET", "u": "/images/search?limit=1&format=src", "a": true }
+    ],
+    "IMG-B-11": [
+      { "m": "GET", "u": "/images/search?limit=5&order=RANDOM", "a": true },
+      { "m": "GET", "u": "/images/search?limit=5&order=ASC&page=0", "a": true }
+    ],
+
+    "BRD-F-01": [{ "m": "GET", "u": "/breeds/search?q=beng", "a": true }],
+    "BRD-F-02": [
+      { "m": "GET", "u": "/breeds/search?q=beng", "a": true },
+      { "m": "GET", "u": "/breeds/search?q=siam", "a": true },
+      { "m": "GET", "u": "/breeds/search?q=maine%20coon", "a": true },
+      { "m": "GET", "u": "/breeds/search?q=abys", "a": true }
+    ],
+    "BRD-F-03": [
+      { "m": "GET", "u": "/breeds/search?q=bengal", "a": true },
+      { "m": "GET", "u": "/breeds/search?q=BENGAL", "a": true },
+      { "m": "GET", "u": "/breeds/search?q=BeNgAl", "a": true }
+    ],
+    "BRD-F-04": [{ "m": "GET", "u": "/breeds/search?q=maine%20coon", "a": true }],
+    "BRD-F-05": [{ "m": "GET", "u": "/breeds/search?q=american", "a": true }],
+    "BRD-F-06": [{ "m": "GET", "u": "/breeds/search?q=siam", "a": true }],
+    "BRD-F-07": [{ "m": "GET", "u": "/breeds/search?q=a", "a": true }],
+    "BRD-F-08": [{ "m": "GET", "u": "/breeds/search?q=siam&attach_image=1", "a": true }],
+    "BRD-F-09": [
+      { "m": "GET", "u": "/breeds/search?q=beng", "a": true },
+      { "m": "GET", "u": "/breeds/search?q=beng", "a": true }
+    ],
+    "BRD-F-10": [{ "m": "GET", "u": "/breeds/search", "a": true }],
+
+    "BRD-N-01": [{ "m": "GET", "u": "/breeds/search?q=", "a": true }],
+    "BRD-N-02": [{ "m": "GET", "u": "/breeds/search?q=razainexistente", "a": true }],
+    "BRD-N-03": [{ "m": "GET", "u": "/breeds/search?q=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "a": true }],
+    "BRD-N-04": [
+      { "m": "GET", "u": "/breeds/search?q=a", "a": true },
+      { "m": "GET", "u": "/breeds/search?q=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "a": true },
+      { "m": "GET", "u": "/breeds/search?q=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "a": true }
+    ],
+    "BRD-N-05": [{ "m": "GET", "u": "/breeds/search?q=siam&attach_image=9", "a": true }],
+    "BRD-N-06": [
+      { "m": "GET", "u": "/breeds/search?q=siam&attach_image=1", "a": true },
+      { "m": "GET", "u": "/breeds/search?q=siam&attach_image=0", "a": true }
+    ],
+    "BRD-N-07": [{ "m": "POST", "u": "/breeds/search?q=beng", "a": true }],
+    "BRD-N-08": [{ "m": "GET", "u": "/breeds/search?q=", "a": true }],
+
+    "CTR-01": [{ "m": "GET", "u": "/images/search?limit=10", "a": false }],
+    "CTR-02": [{ "m": "GET", "u": "/images/search?limit=10", "a": true }],
+    "CTR-03": [
+      { "m": "GET", "u": "/images/search?limit=1", "a": false },
+      { "m": "GET", "u": "/images/search?limit=1", "a": true }
+    ],
+    "CTR-04": [{ "m": "GET", "u": "/breeds/search?q=a", "a": true }],
+    "CTR-05": [
+      { "m": "GET", "u": "/images/search?limit=0", "a": true },
+      { "m": "GET", "u": "/breeds/search?q=", "a": true },
+      { "m": "GET", "u": "/recurso/inexistente", "a": true }
+    ],
+    "CTR-06": [
+      { "m": "GET", "u": "/images/search?limit=1", "a": true },
+      { "m": "GET", "u": "/breeds/search?q=beng", "a": true },
+      { "m": "GET", "u": "/images/search?limit=0", "a": true }
+    ],
+    "CTR-07": [
+      { "m": "GET", "u": "/images/search?limit=0", "a": true },
+      { "m": "GET", "u": "/recurso/inexistente", "a": true }
+    ],
+
+    "SEG-01": [{ "m": "GET", "u": "/breeds/search?q=beng", "a": false }],
+    "SEG-02": [{ "m": "GET", "u": "/breeds/search?q=beng", "a": "invalida" }],
+    "SEG-03": [
+      { "m": "GET", "u": "/breeds/search?q=beng", "a": "vacia" },
+      { "m": "GET", "u": "/breeds/search?q=beng", "a": "blanco" }
+    ],
+    "SEG-04": [{ "m": "GET", "u": "/breeds/search?q=beng&api_key=DEMO-API-KEY", "a": false }],
+    "SEG-05": [
+      { "m": "GET", "u": "/breeds/search?q=%27%20OR%201%3D1--", "a": true },
+      { "m": "GET", "u": "/breeds/search?q=%27%3B%20SELECT%201--", "a": true },
+      { "m": "GET", "u": "/breeds/search?q=%25", "a": true }
+    ],
+    "SEG-06": [{ "m": "GET", "u": "/breeds/search?q=%3Cscript%3Ealert(1)%3C%2Fscript%3E", "a": true }],
+    "SEG-07": [{ "m": "GET", "u": "/breeds/search?q=..%2F..%2F..%2Fetc%2Fpasswd", "a": true }],
+    "SEG-08": [{ "m": "GET", "u": "/images/search?limit=5", "a": true }],
+    "SEG-09": [{ "m": "GET", "u": "/breeds/search?q=beng", "a": true }],
+    "SEG-10": [{ "m": "GET", "u": "/images/search?limit=1", "a": true }],
+
+    "NFN-01": [{ "m": "GET", "u": "/images/search?limit=1", "a": true, "repetir": 10 }],
+    "NFN-02": [{ "m": "GET", "u": "/breeds/search?q=beng", "a": true, "repetir": 10 }],
+    "NFN-03": [
+      { "m": "GET", "u": "/images/search?limit=1", "a": true, "repetir": 5 },
+      { "m": "GET", "u": "/images/search?limit=100", "a": true, "repetir": 5 }
+    ],
+    "NFN-04": [{ "m": "GET", "u": "/images/search?limit=100", "a": true }],
+    "NFN-05": [{ "m": "GET", "u": "/images/search?limit=1", "a": true }],
+    "NFN-06": [{ "m": "GET", "u": "/images/search?limit=1&order=RANDOM", "a": true, "repetir": 5 }],
+    "NFN-07": [{ "m": "GET", "u": "/images/search?limit=1", "a": true, "repetir": 20 }],
+    "NFN-08": [{ "m": "GET", "u": "/breeds/search?q=beng", "a": true }]
+  }
+}

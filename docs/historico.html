@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reporte historico | Portal de calidad</title>
+<meta name="description" content="Registro acumulado de las ejecuciones de la suite: resultados funcionales, evolucion del desempeno y tendencia de la calidad.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231f5c8b'/%3E%3Cpath d='M9 16.4l4.7 4.7L23 11.8' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="activos/estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="cabecera-interior">
+    <a class="marca" href="index.html">Portal de calidad<span>Evaluacion tecnica de API</span></a>
+    <nav class="navegacion">
+      <a href="index.html">Inicio</a>
+      <a href="analisis.html">Analisis</a>
+      <a href="plan.html">Plan de pruebas</a>
+      <a href="casos.html">Casos</a>
+      <a href="evidencia.html">Evidencia</a>
+      <a href="historico.html">Historico</a>
+      <a href="reporte-funcional/index.html">Ultimo reporte</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <h1>Reporte historico</h1>
+  <p class="entradilla">
+    Registro de cada ejecucion de la suite. Lo util es la tendencia: un caso que empieza a fallar o
+    un percentil 95 que sube de forma sostenida avisan antes de que el problema llegue a produccion.
+  </p>
+
+  <div class="rejilla" id="indicadores"></div>
+
+  <h2>Resultados por ejecucion</h2>
+  <div class="tarjeta"><div id="gr-resultados"></div></div>
+
+  <h2>Evolucion del tiempo de respuesta</h2>
+  <p>
+    Percentil 95 de cada escenario de desempeno a lo largo del tiempo. Se usa el percentil 95 y no el
+    promedio porque el promedio esconde los tiempos altos que sufre una parte de los clientes.
+  </p>
+  <div class="tarjeta"><div id="gr-desempeno"></div></div>
+
+  <h2>Detalle de las ejecuciones</h2>
+  <div id="tabla-ejecuciones"></div>
+
+</main>
+
+<footer class="pie">
+  <p>Portal publicado automaticamente desde el repositorio en cada ejecucion de la suite.</p>
+</footer>
+
+<script type="module">
+import {
+  cargarDatos,
+  fecha,
+  numero,
+  escapar,
+  claseDeVeredicto,
+  graficaDeResultados,
+  graficaDeDesempeno,
+} from './activos/portal.js';
+
+const historico = (await cargarDatos('historico.json')) ?? [];
+
+const indicadores = document.getElementById('indicadores');
+const tabla = document.getElementById('tabla-ejecuciones');
+
+if (historico.length === 0) {
+  indicadores.innerHTML = `
+    <div class="aviso" style="grid-column:1/-1">
+      <p>Todavia no hay ejecuciones registradas. El historico se construye solo a partir de la primera corrida de la suite.</p>
+    </div>`;
+  document.getElementById('gr-resultados').innerHTML = '<p class="tenue">Sin datos.</p>';
+  document.getElementById('gr-desempeno').innerHTML = '<p class="tenue">Sin datos.</p>';
+  tabla.innerHTML = '';
+} else {
+  const ultima = historico[historico.length - 1];
+  const conFuncional = historico.filter((e) => e.funcional);
+
+  const aprobadas = historico.filter((e) => e.veredicto === 'aprobado').length;
+  const estabilidad = (aprobadas / historico.length) * 100;
+
+  const promedioAprobacion =
+    conFuncional.length > 0
+      ? conFuncional.reduce((t, e) => t + (e.funcional.tasaAprobacion ?? 0), 0) / conFuncional.length
+      : 0;
+
+  const p95Ultimo = (ultima.desempeno ?? []).length
+    ? Math.max(...ultima.desempeno.map((d) => d.p95 ?? 0))
+    : null;
+
+  /* Comparacion del percentil 95 actual con la media de las diez ejecuciones
+     anteriores, que es lo que convierte un numero suelto en una tendencia. */
+  const anteriores = historico.slice(-11, -1).flatMap((e) => (e.desempeno ?? []).map((d) => d.p95)).filter((v) => typeof v === 'number');
+  const referencia = anteriores.length ? anteriores.reduce((a, b) => a + b, 0) / anteriores.length : null;
+  const variacion = referencia && p95Ultimo ? ((p95Ultimo - referencia) / referencia) * 100 : null;
+
+  indicadores.innerHTML = `
+    <div class="indicador">
+      <div class="etiqueta">Ejecuciones registradas</div>
+      <div class="valor">${numero(historico.length)}</div>
+      <div class="nota">Desde ${fecha(historico[0].fecha, false)}</div>
+    </div>
+    <div class="indicador">
+      <div class="etiqueta">Estabilidad del flujo</div>
+      <div class="valor ${estabilidad >= 90 ? 'exito' : estabilidad >= 70 ? 'alerta' : 'fallo'}">${numero(estabilidad, 1)}%</div>
+      <div class="nota">${numero(aprobadas)} ejecuciones aprobadas</div>
+    </div>
+    <div class="indicador">
+      <div class="etiqueta">Aprobacion media de casos</div>
+      <div class="valor">${numero(promedioAprobacion, 1)}%</div>
+      <div class="nota">Media de todas las corridas</div>
+    </div>
+    <div class="indicador">
+      <div class="etiqueta">Ultimo veredicto</div>
+      <div class="valor ${claseDeVeredicto(ultima.veredicto)}" style="font-size:18px">${escapar(ultima.veredicto)}</div>
+      <div class="nota">${fecha(ultima.fecha)}</div>
+    </div>
+    <div class="indicador">
+      <div class="etiqueta">Percentil 95 actual</div>
+      <div class="valor">${p95Ultimo !== null ? numero(p95Ultimo) + ' ms' : 'sin dato'}</div>
+      <div class="nota">${
+        variacion === null
+          ? 'Sin referencia previa'
+          : `${variacion >= 0 ? 'Por encima' : 'Por debajo'} de la referencia en ${numero(Math.abs(variacion), 1)}%`
+      }</div>
+    </div>
+    <div class="indicador">
+      <div class="etiqueta">Casos fallidos acumulados</div>
+      <div class="valor ${conFuncional.some((e) => e.funcional.fallidas > 0) ? 'alerta' : 'exito'}">${numero(
+        conFuncional.reduce((t, e) => t + (e.funcional.fallidas ?? 0), 0)
+      )}</div>
+      <div class="nota">Suma de todas las ejecuciones</div>
+    </div>`;
+
+  graficaDeResultados(document.getElementById('gr-resultados'), historico);
+  graficaDeDesempeno(document.getElementById('gr-desempeno'), historico);
+
+  const filas = [...historico]
+    .reverse()
+    .slice(0, 60)
+    .map((e) => {
+      const f = e.funcional;
+      const p95 = (e.desempeno ?? []).length ? Math.max(...e.desempeno.map((d) => d.p95 ?? 0)) : null;
+      const fallidos = f?.casosFallidos ?? [];
+
+      return `
+        <tr>
+          <td class="mono">${escapar(e.numero)}</td>
+          <td>${fecha(e.fecha)}</td>
+          <td>${escapar(e.disparador)}</td>
+          <td class="mono">${escapar(e.commit || 'local')}</td>
+          <td><span class="distintivo ${claseDeVeredicto(e.veredicto)}">${escapar(e.veredicto)}</span></td>
+          <td class="numero">${f ? `${numero(f.aprobadas)} / ${numero(f.total)}` : 'sin dato'}</td>
+          <td class="numero">${f ? numero(f.tasaAprobacion, 1) + '%' : 'sin dato'}</td>
+          <td class="numero">${p95 !== null ? numero(p95) + ' ms' : 'sin dato'}</td>
+          <td>${
+            fallidos.length
+              ? fallidos.map((c) => `<code>${escapar(c.id ?? 'sin id')}</code>`).join(' ')
+              : '<span class="tenue">ninguno</span>'
+          }</td>
+          <td>${e.url ? `<a href="${escapar(e.url)}">bitacora</a>` : '<span class="tenue">local</span>'}</td>
+        </tr>`;
+    })
+    .join('');
+
+  tabla.innerHTML = `
+    <div class="envoltura-tabla">
+      <table>
+        <thead>
+          <tr>
+            <th>Numero</th><th>Fecha</th><th>Disparador</th><th>Revision</th><th>Veredicto</th>
+            <th>Casos</th><th>Aprobacion</th><th>Percentil 95</th><th>Casos fallidos</th><th>Detalle</th>
+          </tr>
+        </thead>
+        <tbody>${filas}</tbody>
+      </table>
+    </div>
+    <p class="tenue">Se muestran las sesenta ejecuciones mas recientes. El registro conserva hasta ciento ochenta.</p>`;
+}
+</script>
+
+</body>
+</html>

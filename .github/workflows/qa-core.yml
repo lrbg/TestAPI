@@ -1,0 +1,380 @@
+name: Nucleo de aseguramiento de calidad
+
+# Flujo reutilizable invocado por los tres disparadores del proceso:
+# ejecucion manual, solicitud de incorporacion a la rama principal y
+# ejecucion programada. Concentrar aqui la logica evita que las tres vias
+# diverjan con el tiempo.
+
+on:
+  workflow_call:
+    inputs:
+      suite:
+        description: Conjunto de pruebas a ejecutar
+        type: string
+        default: completa
+      escenario_desempeno:
+        description: Escenario de k6 a ejecutar
+        type: string
+        default: humo
+      publicar_portal:
+        description: Publicar el portal en GitHub Pages
+        type: boolean
+        default: false
+      actualizar_historico:
+        description: Incorporar el resultado al registro historico
+        type: boolean
+        default: false
+      ejecutar_triaje:
+        description: Abrir y cerrar incidencias segun el resultado
+        type: boolean
+        default: false
+      comentar_solicitud:
+        description: Publicar el resumen como comentario en la solicitud de incorporacion
+        type: boolean
+        default: false
+    outputs:
+      veredicto:
+        description: Resultado global de la ejecucion
+        value: ${{ jobs.pruebas.outputs.veredicto }}
+
+env:
+  URL_BASE_API: https://api.thecatapi.com/v1
+
+jobs:
+  pruebas:
+    name: Ejecucion y consolidacion
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      pages: write
+      id-token: write
+    outputs:
+      veredicto: ${{ steps.consolidar.outputs.veredicto }}
+
+    steps:
+      - name: Obtener el codigo
+        uses: actions/checkout@v4
+
+      - name: Preparar el entorno de ejecucion
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      # ----------------------------------------------------------------
+      # Suite funcional
+      # ----------------------------------------------------------------
+
+      - name: Ejecutar la suite funcional
+        id: funcional
+        if: inputs.suite != 'desempeno'
+        continue-on-error: true
+        env:
+          CAT_API_KEY: ${{ secrets.CAT_API_KEY }}
+        run: |
+          case "${{ inputs.suite }}" in
+            humo)      npm run test:humo ;;
+            contrato)  npm run test:contrato ;;
+            seguridad) npm run test:seguridad ;;
+            *)         npm test ;;
+          esac
+
+      # ----------------------------------------------------------------
+      # Suite de desempeno
+      # ----------------------------------------------------------------
+
+      - name: Instalar k6
+        if: inputs.suite == 'completa' || inputs.suite == 'desempeno'
+        run: |
+          set -euo pipefail
+          VERSION=$(curl -sSL https://api.github.com/repos/grafana/k6/releases/latest \
+            | sed -n 's/.*"tag_name": *"\([^"]*\)".*/\1/p' | head -1)
+          echo "Instalando k6 ${VERSION}"
+          curl -fsSL "https://github.com/grafana/k6/releases/download/${VERSION}/k6-${VERSION}-linux-amd64.tar.gz" -o k6.tar.gz
+          tar xzf k6.tar.gz
+          sudo install "k6-${VERSION}-linux-amd64/k6" /usr/local/bin/k6
+          k6 version
+
+      - name: Ejecutar los escenarios de desempeno
+        id: desempeno
+        if: inputs.suite == 'completa' || inputs.suite == 'desempeno'
+        continue-on-error: true
+        env:
+          CAT_API_KEY: ${{ secrets.CAT_API_KEY }}
+        run: |
+          set -uo pipefail
+          mkdir -p resultados
+
+          # El escenario de humo actua como puerta de entrada: si el servicio
+          # no responde bajo carga minima, no tiene sentido seguir midiendo.
+          k6 run performance/humo.js || echo "El escenario de humo incumplio sus umbrales"
+
+          if [ "${{ inputs.escenario_desempeno }}" != "humo" ]; then
+            k6 run "performance/${{ inputs.escenario_desempeno }}.js" \
+              || echo "El escenario ${{ inputs.escenario_desempeno }} incumplio sus umbrales"
+          fi
+
+      # ----------------------------------------------------------------
+      # Consolidacion
+      # ----------------------------------------------------------------
+
+      - name: Consolidar los resultados
+        id: consolidar
+        run: |
+          set -euo pipefail
+          npm run consolidar
+          VEREDICTO=$(node -p "require('./resultados/resumen.json').veredicto")
+          echo "veredicto=${VEREDICTO}" >> "$GITHUB_OUTPUT"
+
+      - name: Escribir el resumen de la ejecucion
+        if: always()
+        run: |
+          node - <<'FIN' >> "$GITHUB_STEP_SUMMARY"
+          const fs = require('node:fs');
+          const ruta = 'resultados/resumen.json';
+          if (!fs.existsSync(ruta)) {
+            console.log('## Sin resumen de ejecucion disponible');
+            process.exit(0);
+          }
+          const r = JSON.parse(fs.readFileSync(ruta, 'utf8'));
+          const f = r.funcional ?? {};
+          const simbolo = { aprobado: 'Aprobado', 'con observaciones': 'Con observaciones', rechazado: 'Rechazado' };
+
+          console.log(`## Resultado: ${simbolo[r.veredicto] ?? r.veredicto}`);
+          console.log('');
+          console.log(`Ejecucion numero ${r.ejecucion.numero}, disparada de forma ${r.ejecucion.disparador.toLowerCase()}, sobre la revision \`${r.ejecucion.commit}\`.`);
+          console.log('');
+
+          if (f.disponible) {
+            console.log('### Suite funcional');
+            console.log('');
+            console.log('| Metrica | Valor |');
+            console.log('| --- | --- |');
+            console.log(`| Casos ejecutados | ${f.total} |`);
+            console.log(`| Aprobados | ${f.aprobadas} |`);
+            console.log(`| Fallidos | ${f.fallidas} |`);
+            console.log(`| Omitidos | ${f.omitidas} |`);
+            console.log(`| Inestables | ${f.inestables} |`);
+            console.log(`| Tasa de aprobacion | ${f.tasaAprobacion} por ciento |`);
+            console.log(`| Duracion | ${Math.round(f.duracionMs / 1000)} s |`);
+            console.log('');
+
+            const fallidos = (f.casos ?? []).filter((c) => c.estado === 'fallida');
+            if (fallidos.length) {
+              console.log('### Casos fallidos');
+              console.log('');
+              for (const c of fallidos) {
+                console.log(`- **${c.id ?? 'sin identificador'}**: ${c.titulo}`);
+              }
+              console.log('');
+            }
+
+            if ((f.desviaciones ?? []).length) {
+              console.log('### Desviaciones registradas');
+              console.log('');
+              console.log('Diferencias comprobadas entre lo que la especificacion declara y lo que el servicio hace.');
+              console.log('');
+              for (const d of f.desviaciones) {
+                console.log(`- **${d.caso}**: ${d.descripcion}`);
+              }
+              console.log('');
+            }
+          }
+
+          const desempeno = (r.desempeno ?? []).filter((d) => d.disponible);
+          if (desempeno.length) {
+            console.log('### Desempeno');
+            console.log('');
+            console.log('| Escenario | Peticiones | Mediana | Percentil 95 | Percentil 99 | Umbrales |');
+            console.log('| --- | --- | --- | --- | --- | --- |');
+            for (const d of desempeno) {
+              console.log(`| ${d.escenario} | ${d.peticiones} | ${d.duracion.mediana} ms | ${d.duracion.p95} ms | ${d.duracion.p99} ms | ${d.aprobado ? 'cumplidos' : 'incumplidos'} |`);
+            }
+            console.log('');
+          }
+          FIN
+
+      - name: Conservar los artefactos de la ejecucion
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: resultados-${{ github.run_number }}
+          path: resultados/
+          retention-days: 30
+
+      # ----------------------------------------------------------------
+      # Registro historico
+      # ----------------------------------------------------------------
+
+      - name: Incorporar el resultado al registro historico
+        if: inputs.actualizar_historico
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          ORIGEN="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          if git ls-remote --exit-code --heads "$ORIGEN" resultados >/dev/null 2>&1; then
+            git clone --depth 1 --branch resultados "$ORIGEN" historico
+          else
+            echo "La rama de resultados no existe todavia; se crea en esta ejecucion."
+            mkdir historico
+            cd historico
+            git init -q -b resultados
+            git remote add origin "$ORIGEN"
+            echo "[]" > historico.json
+            cd ..
+          fi
+
+          git -C historico config user.name "github-actions[bot]"
+          git -C historico config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          npm run historico -- historico/historico.json resultados/resumen.json
+
+          cd historico
+          git add historico.json
+          if git diff --cached --quiet; then
+            echo "El registro historico no cambio en esta ejecucion."
+          else
+            git commit -q -m "Registro de la ejecucion ${GITHUB_RUN_NUMBER}"
+            git push -q origin resultados
+            echo "Registro historico actualizado."
+          fi
+
+      # ----------------------------------------------------------------
+      # Agente de triaje
+      # ----------------------------------------------------------------
+
+      - name: Preparar las etiquetas del tablero de incidencias
+        if: inputs.ejecutar_triaje
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          crear() {
+            gh label create "$1" --color "$2" --description "$3" --force >/dev/null 2>&1 || true
+          }
+          crear "deteccion-automatica" "5319e7" "Incidencia abierta por el agente de triaje de la suite"
+          crear "severidad-alta"       "b60205" "Impide liberar: capacidad esencial, contrato o control de acceso"
+          crear "severidad-media"      "d93f0b" "Degrada la experiencia sin impedir el uso"
+          crear "severidad-baja"       "fbca04" "Desviacion menor o condicion de borde"
+          crear "area-funcional"       "0e8a16" "Comportamiento declarado del servicio"
+          crear "area-contrato"        "1d76db" "Forma de la respuesta y compatibilidad"
+          crear "area-seguridad"       "b60205" "Control de acceso y tratamiento de entradas"
+          crear "area-desempeno"       "0052cc" "Tiempo de respuesta y capacidad"
+          crear "area-borde"           "c2e0c6" "Valores frontera"
+
+      - name: Ejecutar el agente de triaje
+        if: inputs.ejecutar_triaje
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run triaje
+
+      # ----------------------------------------------------------------
+      # Comentario en la solicitud de incorporacion
+      # ----------------------------------------------------------------
+
+      - name: Comentar el resultado en la solicitud de incorporacion
+        if: inputs.comentar_solicitud && github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          node - > comentario.md <<'FIN'
+          const fs = require('node:fs');
+          const r = JSON.parse(fs.readFileSync('resultados/resumen.json', 'utf8'));
+          const f = r.funcional ?? {};
+          const lineas = [];
+
+          lineas.push(`## Verificacion de calidad: ${r.veredicto}`);
+          lineas.push('');
+
+          if (f.disponible) {
+            lineas.push(`Se ejecutaron ${f.total} casos: ${f.aprobadas} aprobados, ${f.fallidas} fallidos y ${f.omitidas} omitidos. Tasa de aprobacion del ${f.tasaAprobacion} por ciento.`);
+            lineas.push('');
+
+            const fallidos = (f.casos ?? []).filter((c) => c.estado === 'fallida');
+            if (fallidos.length) {
+              lineas.push('### Casos que requieren atencion');
+              lineas.push('');
+              for (const c of fallidos.slice(0, 15)) {
+                lineas.push(`- **${c.id ?? 'sin identificador'}** ${c.titulo}`);
+                const primera = (c.error ?? '').split('\n').find((l) => l.trim());
+                if (primera) lineas.push(`  ${primera.trim().slice(0, 180)}`);
+              }
+              if (fallidos.length > 15) lineas.push(`- y ${fallidos.length - 15} casos mas.`);
+              lineas.push('');
+            } else {
+              lineas.push('No hay casos fallidos en esta ejecucion.');
+              lineas.push('');
+            }
+          }
+
+          const desempeno = (r.desempeno ?? []).filter((d) => d.disponible);
+          if (desempeno.length) {
+            lineas.push('### Desempeno');
+            lineas.push('');
+            lineas.push('| Escenario | Mediana | Percentil 95 | Umbrales |');
+            lineas.push('| --- | --- | --- | --- |');
+            for (const d of desempeno) {
+              lineas.push(`| ${d.escenario} | ${d.duracion.mediana} ms | ${d.duracion.p95} ms | ${d.aprobado ? 'cumplidos' : 'incumplidos'} |`);
+            }
+            lineas.push('');
+          }
+
+          lineas.push(`Bitacora completa de la ejecucion: ${r.ejecucion.url ?? 'no disponible'}`);
+          console.log(lineas.join('\n'));
+          FIN
+
+          gh pr comment "${{ github.event.pull_request.number }}" --body-file comentario.md
+
+      # ----------------------------------------------------------------
+      # Portal
+      # ----------------------------------------------------------------
+
+      - name: Ensamblar el portal
+        if: inputs.publicar_portal
+        run: npm run sitio -- historico/historico.json
+
+      - name: Preparar la publicacion en GitHub Pages
+        if: inputs.publicar_portal
+        uses: actions/configure-pages@v5
+
+      - name: Cargar el portal como artefacto de publicacion
+        if: inputs.publicar_portal
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: sitio
+
+      # ----------------------------------------------------------------
+      # Veredicto
+      # ----------------------------------------------------------------
+
+      - name: Aplicar el veredicto de la ejecucion
+        run: |
+          VEREDICTO="${{ steps.consolidar.outputs.veredicto }}"
+          echo "Veredicto de la ejecucion: ${VEREDICTO}"
+          if [ "$VEREDICTO" = "rechazado" ]; then
+            echo "La ejecucion se marca como fallida: hay casos funcionales fallidos o umbrales de desempeno incumplidos."
+            exit 1
+          fi
+
+  publicar:
+    name: Publicacion del portal
+    if: ${{ always() && inputs.publicar_portal }}
+    needs: pruebas
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.despliegue.outputs.page_url }}
+    steps:
+      - name: Desplegar en GitHub Pages
+        id: despliegue
+        uses: actions/deploy-pages@v4

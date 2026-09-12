@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analisis del API | Portal de calidad</title>
+<meta name="description" content="Ambiguedades, riesgos funcionales y tecnicos, dependencias externas e informacion requerida antes de ejecutar pruebas.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231f5c8b'/%3E%3Cpath d='M9 16.4l4.7 4.7L23 11.8' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="activos/estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="cabecera-interior">
+    <a class="marca" href="index.html">Portal de calidad<span>Evaluacion tecnica de API</span></a>
+    <nav class="navegacion">
+      <a href="index.html">Inicio</a>
+      <a href="analisis.html">Analisis</a>
+      <a href="plan.html">Plan de pruebas</a>
+      <a href="casos.html">Casos</a>
+      <a href="evidencia.html">Evidencia</a>
+      <a href="historico.html">Historico</a>
+      <a href="reporte-funcional/index.html">Ultimo reporte</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <h1>Analisis del API</h1>
+  <p class="entradilla">
+    Contraste entre lo que la especificacion declara y lo que el servicio hace. La especificacion no
+    define contratos de respuesta, valores admitidos, codigos de error ni autenticacion. Todo eso se
+    reconstruyo ejecutando peticiones reales. Las diferencias encontradas son el cuerpo de este
+    analisis.
+  </p>
+
+  <h2>Metodo</h2>
+
+  <p>
+    Se ejecutaron de forma manual y controlada alrededor de setenta peticiones exploratorias contra
+    el servicio en produccion, combinando los dos modos de consumo posibles: anonimo y autenticado.
+    Para cada parametro se probaron un valor tipico, los valores frontera de su rango, un valor
+    fuera de rango, un valor de tipo incorrecto y la omision del parametro. Las respuestas se
+    registraron con su codigo de estado, sus encabezados, su cuerpo y su tiempo. Todas las
+    afirmaciones de este documento estan respaldadas por esa evidencia y son reproducibles con los
+    casos publicados en el catalogo.
+  </p>
+
+  <div class="aviso">
+    <p>
+      El volumen de la exploracion se mantuvo deliberadamente bajo. El sistema bajo prueba es un
+      servicio de terceros en produccion y no existe un entorno dedicado: toda peticion consume su
+      cuota real. Este es, por si mismo, el condicionante mas importante de la estrategia.
+    </p>
+  </div>
+
+  <h2>Dudas y ambiguedades detectadas</h2>
+
+  <p>
+    Son los puntos en los que la especificacion no permite decidir si un comportamiento es correcto.
+    Cada uno requiere una respuesta del equipo que define el servicio antes de poder considerar
+    cerrada la verificacion.
+  </p>
+
+  <div class="envoltura-tabla">
+    <table>
+      <thead>
+        <tr><th style="width:52px">Clave</th><th>Ambiguedad</th><th>Por que importa</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="mono">A-01</td>
+          <td>La autenticacion no se menciona en ningun punto de la especificacion.</td>
+          <td>Es la ambiguedad de mayor impacto. El recurso de razas responde 403 a todo consumidor sin credencial, de modo que el ejercicio 2 es inejecutable tal como esta redactado. Sin definir si las pruebas se ejecutan con credencial y de que plan, no se puede fijar ni el resultado esperado ni el limite de consumo.</td>
+        </tr>
+        <tr>
+          <td class="mono">A-02</td>
+          <td>No se declaran los valores admitidos por <code>size</code>, <code>mime_types</code> ni <code>format</code>.</td>
+          <td>Sin el conjunto valido no se puede distinguir una entrada invalida de una valida, que es la base de toda prueba negativa. En la practica el servicio los acepta todos, lo que impide siquiera inferir el conjunto por observacion.</td>
+        </tr>
+        <tr>
+          <td class="mono">A-03</td>
+          <td>No se declara el rango de <code>limit</code> ni el de <code>page</code>.</td>
+          <td>Los valores frontera son el objeto de las pruebas de borde. El rango real, obtenido de los mensajes de error del servicio, resulto ser de 1 a 100 para <code>limit</code> y mayor o igual a 0 para <code>page</code>.</td>
+        </tr>
+        <tr>
+          <td class="mono">A-04</td>
+          <td>La especificacion dice que los encabezados de paginacion "pueden" aparecer, sin precisar cuando.</td>
+          <td>Un condicional sin condicion no es verificable. Un cliente que los lea siempre obtendra valores nulos en la mayoria de las llamadas y no sabra si se trata de un fallo.</td>
+        </tr>
+        <tr>
+          <td class="mono">A-05</td>
+          <td>La especificacion dice que <code>attach_image = 1</code> "puede" devolver informacion de imagen.</td>
+          <td>Misma objecion. Ademas, el comportamiento observado contradice la lectura natural del enunciado, segun se detalla en el hallazgo H-01.</td>
+        </tr>
+        <tr>
+          <td class="mono">A-06</td>
+          <td>No se define el comportamiento esperado ante una busqueda sin coincidencias.</td>
+          <td>Devolver una coleccion vacia con codigo 200 y devolver 404 son dos disenos legitimos y opuestos. El consumidor necesita saber cual rige antes de escribir su manejo de errores.</td>
+        </tr>
+        <tr>
+          <td class="mono">A-07</td>
+          <td>No se define el formato del cuerpo de error ni el catalogo de codigos.</td>
+          <td>Sin contrato de error no hay forma de verificar que el servicio comunica los fallos de manera util y estable.</td>
+        </tr>
+        <tr>
+          <td class="mono">A-08</td>
+          <td>No se declara politica de limitacion de consumo ni de cuotas.</td>
+          <td>Determina el perfil maximo admisible de las pruebas de desempeno y explica por si sola buena parte de los fallos intermitentes que un equipo podria atribuir al servicio.</td>
+        </tr>
+        <tr>
+          <td class="mono">A-09</td>
+          <td>No se declara version del API ni politica de compatibilidad.</td>
+          <td>Sin ella no hay criterio para distinguir un cambio anunciado de una ruptura de contrato, que es justamente lo que las pruebas de contrato deben detectar.</td>
+        </tr>
+        <tr>
+          <td class="mono">A-10</td>
+          <td>No se define el acuerdo de nivel de servicio esperado.</td>
+          <td>Todo umbral de desempeno que se fije sera una suposicion del equipo de pruebas. Los umbrales de este trabajo se derivaron de una linea base medida y se declaran como tales.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Hallazgos</h2>
+
+  <p>
+    Diferencias comprobadas entre lo que la especificacion declara y lo que el servicio hace.
+    Cada hallazgo tiene un caso de prueba asociado que lo reproduce, y el agente de triaje abre
+    una incidencia cuando alguno cambia de estado.
+  </p>
+
+  <details open>
+    <summary>H-01 &nbsp; <span class="distintivo fallo">Severidad alta</span> &nbsp; El parametro <code>attach_image</code> no tiene ningun efecto</summary>
+    <p>
+      La especificacion establece que la informacion de imagen asociada se devuelve cuando
+      <code>attach_image</code> vale 1. Al comparar las respuestas de
+      <code>/breeds/search?q=siam&amp;attach_image=1</code> y
+      <code>/breeds/search?q=siam&amp;attach_image=0</code>, ambas resultaron identicas byte a byte,
+      y las dos incluyeron el objeto <code>image</code> completo. El parametro tampoco altera la
+      respuesta con valores fuera del par 0 y 1.
+    </p>
+    <p>
+      <strong>Consecuencia.</strong> Un cliente movil que use <code>attach_image=0</code> para
+      reducir el tamano de la carga util no obtendra ninguna reduccion y seguira transfiriendo la
+      informacion de imagen en cada consulta. El defecto es silencioso: no hay error, solo un coste
+      que nadie percibe.
+    </p>
+    <p><strong>Caso asociado:</strong> <code>BRD-N-06</code>.</p>
+  </details>
+
+  <details open>
+    <summary>H-02 &nbsp; <span class="distintivo fallo">Severidad alta</span> &nbsp; La coleccion se trunca en silencio para el consumidor sin credencial</summary>
+    <p>
+      Un consumidor anonimo que solicita <code>limit=50</code> recibe codigo 200 y exactamente diez
+      elementos. El mismo consumidor con <code>limit=101</code> recibe un error 400 cuyo mensaje
+      afirma que el maximo es 100. Es decir: el servicio valida el parametro contra un rango que
+      despues no respeta, y no emite ningun encabezado que informe el truncamiento. El mismo
+      <code>limit=50</code> con credencial devuelve los cincuenta elementos.
+    </p>
+    <p>
+      <strong>Consecuencia.</strong> El consumidor no puede distinguir entre "no hay mas datos" y
+      "tu plan no alcanza". Una paginacion construida sobre esa respuesta se detiene antes de tiempo
+      y pierde datos sin que nadie lo advierta. Es el hallazgo con mayor potencial de dano
+      silencioso de todo el analisis.
+    </p>
+    <p><strong>Caso asociado:</strong> <code>IMG-B-03</code>.</p>
+  </details>
+
+  <details open>
+    <summary>H-03 &nbsp; <span class="distintivo fallo">Severidad alta</span> &nbsp; El filtro <code>mime_types</code> no restringe los resultados</summary>
+    <p>
+      Con <code>mime_types=png</code> el servicio devuelve imagenes cuya direccion termina en
+      <code>.jpg</code>. Con <code>mime_types=gif</code> devuelve una mezcla de <code>.jpg</code> y
+      <code>.png</code>. Incluso un valor sin sentido para el recurso, como
+      <code>application/pdf</code>, devuelve imagenes con codigo 200.
+    </p>
+    <p>
+      <strong>Consecuencia.</strong> Un cliente que dependa del filtro para garantizar transparencia
+      o animacion recibira contenido que no puede procesar. El filtro se acepta, no se aplica y no
+      se avisa.
+    </p>
+    <p><strong>Casos asociados:</strong> <code>IMG-B-07</code> e <code>IMG-B-08</code>.</p>
+  </details>
+
+  <details open>
+    <summary>H-04 &nbsp; <span class="distintivo alerta">Severidad media</span> &nbsp; La validacion de parametros no es uniforme</summary>
+    <p>
+      Dentro del mismo recurso conviven dos criterios opuestos. <code>order</code>,
+      <code>limit</code> y <code>page</code> se validan de forma estricta y devuelven 400 con un
+      mensaje preciso que incluso enumera los valores admitidos. <code>size</code>,
+      <code>mime_types</code> y <code>format</code> aceptan cualquier cadena y la ignoran. Los
+      parametros no reconocidos tampoco se rechazan.
+    </p>
+    <p>
+      <strong>Consecuencia.</strong> Un error de escritura en <code>order</code> se detecta de
+      inmediato; el mismo error en <code>size</code> pasa inadvertido y produce resultados que el
+      consumidor creera filtrados. La inconsistencia es en si misma un defecto de diseno, porque
+      obliga a conocer caso por caso que parametro avisa y cual no.
+    </p>
+    <p><strong>Casos asociados:</strong> <code>IMG-B-06</code>, <code>IMG-B-09</code>, <code>IMG-N-06</code>.</p>
+  </details>
+
+  <details>
+    <summary>H-05 &nbsp; <span class="distintivo alerta">Severidad media</span> &nbsp; El parametro <code>format</code> no altera la representacion</summary>
+    <p>
+      Tanto <code>format=json</code> como <code>format=src</code> y un valor arbitrario como
+      <code>format=xml</code> devuelven la misma coleccion JSON, con el mismo tipo de contenido.
+      La documentacion publica del servicio describe <code>format=src</code> como el modo que
+      entrega la imagen directamente.
+    </p>
+    <p>
+      <strong>Consecuencia.</strong> Una interfaz que apunte una etiqueta de imagen al endpoint con
+      <code>format=src</code> mostrara texto JSON en lugar de una imagen.
+    </p>
+    <p><strong>Caso asociado:</strong> <code>IMG-B-10</code>.</p>
+  </details>
+
+  <details>
+    <summary>H-06 &nbsp; <span class="distintivo alerta">Severidad media</span> &nbsp; Los encabezados de paginacion aparecen bajo una condicion no documentada</summary>
+    <p>
+      Los tres encabezados solo acompanan a las peticiones que reunen dos condiciones a la vez:
+      credencial valida y orden determinista, es decir <code>order=ASC</code> o
+      <code>order=DESC</code>. Con <code>order=RANDOM</code>, con <code>has_breeds</code> o sin
+      credencial, no aparecen. Verificado: <code>order=ASC&amp;page=2&amp;limit=5</code> devolvio
+      <code>Pagination-Count: 13492</code>, <code>Pagination-Page: 2</code> y
+      <code>Pagination-Limit: 5</code>.
+    </p>
+    <p>
+      <strong>Consecuencia.</strong> Un cliente que construya su paginador leyendo los encabezados
+      sin verificar su presencia obtendra valores nulos y calculara mal el total de paginas.
+      La condicion es razonable pero debe documentarse.
+    </p>
+    <p><strong>Casos asociados:</strong> <code>IMG-F-10</code> e <code>IMG-B-11</code>.</p>
+  </details>
+
+  <details>
+    <summary>H-07 &nbsp; <span class="distintivo neutro">Severidad baja</span> &nbsp; Un verbo no soportado se responde con 404 en lugar de 405</summary>
+    <p>
+      Una peticion <code>POST /images/search</code> devuelve 404 con el mensaje
+      <code>Cannot POST /v1/images/search</code>. La respuesta correcta segun el estandar HTTP es
+      405 acompanada del encabezado <code>Allow</code> con los metodos admitidos.
+    </p>
+    <p>
+      <strong>Consecuencia.</strong> Un cliente no puede distinguir entre una ruta que no existe y
+      un metodo mal empleado sobre una ruta que si existe, lo que dificulta el diagnostico.
+    </p>
+    <p><strong>Casos asociados:</strong> <code>IMG-N-07</code> y <code>BRD-N-07</code>.</p>
+  </details>
+
+  <details>
+    <summary>H-08 &nbsp; <span class="distintivo alerta">Severidad media</span> &nbsp; Omitir el criterio de busqueda y enviarlo vacio producen respuestas opuestas</summary>
+    <p>
+      <code>/breeds/search</code> sin el parametro <code>q</code> devuelve 200 con un listado
+      general de razas. <code>/breeds/search?q=</code> devuelve 400 con el mensaje
+      <code>q must be longer than or equal to 1 characters</code>. Dos formas equivalentes de no
+      especificar un criterio producen resultados contrarios.
+    </p>
+    <p>
+      <strong>Consecuencia.</strong> Un formulario de busqueda que envie el campo vacio recibira un
+      error, mientras que el mismo formulario que omita el parametro recibira un listado. El
+      comportamiento depende de un detalle de implementacion del cliente.
+    </p>
+    <p><strong>Casos asociados:</strong> <code>BRD-F-10</code> y <code>BRD-N-01</code>.</p>
+  </details>
+
+  <details open>
+    <summary>H-09 &nbsp; <span class="distintivo fallo">Severidad alta</span> &nbsp; El contrato de respuesta cambia segun la credencial</summary>
+    <p>
+      El mismo recurso devuelve dos representaciones distintas. Sin credencial, cada imagen expone
+      cuatro campos: <code>id</code>, <code>url</code>, <code>width</code> y <code>height</code>.
+      Con credencial expone nueve: los cuatro anteriores mas <code>created_at</code>,
+      <code>breeds</code>, <code>categories</code>, <code>colours</code> y <code>tags</code>.
+    </p>
+    <p>
+      <strong>Consecuencia.</strong> Toda validacion de esquema debe fijar de antemano el modo de
+      autenticacion, o fallara de forma intermitente sin causa aparente. Mas grave aun: un cliente
+      desarrollado contra el modo autenticado y desplegado con una credencial caducada dejara de
+      encontrar campos que daba por garantizados, sin recibir ningun error.
+    </p>
+    <p><strong>Caso asociado:</strong> <code>CTR-03</code>.</p>
+  </details>
+
+  <details>
+    <summary>H-10 &nbsp; <span class="distintivo alerta">Severidad media</span> &nbsp; El campo <code>message</code> del error cambia de tipo segun el codigo</summary>
+    <p>
+      En los errores 400 el campo es un arreglo de cadenas, con un elemento por regla de validacion
+      incumplida. En los errores 403 y 404 es una unica cadena. La estructura restante del cuerpo de
+      error es consistente en los tres casos.
+    </p>
+    <p>
+      <strong>Consecuencia.</strong> Un cliente que muestre el mensaje al usuario final sin
+      normalizar el tipo mostrara el texto correcto en unos casos y una representacion interna del
+      arreglo en otros.
+    </p>
+    <p><strong>Caso asociado:</strong> <code>CTR-07</code>.</p>
+  </details>
+
+  <h2>Riesgos funcionales</h2>
+
+  <div class="envoltura-tabla">
+    <table>
+      <thead>
+        <tr><th style="width:52px">Clave</th><th>Riesgo</th><th style="width:80px">Probabilidad</th><th style="width:70px">Impacto</th><th>Mitigacion adoptada</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="mono">RF-01</td>
+          <td>Los filtros declarados no se aplican y el consumidor recibe datos que cree filtrados.</td>
+          <td>Alta</td>
+          <td>Alto</td>
+          <td>Casos que verifican el cumplimiento efectivo del filtro sobre el contenido devuelto, no solo el codigo de estado.</td>
+        </tr>
+        <tr>
+          <td class="mono">RF-02</td>
+          <td>La paginacion pierde o duplica elementos entre paginas consecutivas.</td>
+          <td>Media</td>
+          <td>Alto</td>
+          <td>Comparacion de identificadores entre paginas contiguas y verificacion de la ultima pagina util calculada desde el total informado.</td>
+        </tr>
+        <tr>
+          <td class="mono">RF-03</td>
+          <td>La aleatoriedad declarada no es tal y una cache intermedia devuelve siempre el mismo conjunto.</td>
+          <td>Media</td>
+          <td>Medio</td>
+          <td>Extracciones repetidas con verificacion de variabilidad entre ellas.</td>
+        </tr>
+        <tr>
+          <td class="mono">RF-04</td>
+          <td>La busqueda de razas omite coincidencias legitimas por sensibilidad a mayusculas, acentos o espacios.</td>
+          <td>Media</td>
+          <td>Medio</td>
+          <td>Casos con variantes de escritura, nombres compuestos y coincidencias parciales.</td>
+        </tr>
+        <tr>
+          <td class="mono">RF-05</td>
+          <td>La ausencia de coincidencias se comunica como error y no como resultado vacio.</td>
+          <td>Baja</td>
+          <td>Medio</td>
+          <td>Caso especifico sobre una consulta deliberadamente sin resultados.</td>
+        </tr>
+        <tr>
+          <td class="mono">RF-06</td>
+          <td>Un valor frontera aceptado por la validacion no es atendido por la logica.</td>
+          <td>Alta</td>
+          <td>Alto</td>
+          <td>Analisis de valores frontera en ambos extremos de cada rango, comparando lo solicitado con lo entregado.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Riesgos tecnicos</h2>
+
+  <div class="envoltura-tabla">
+    <table>
+      <thead>
+        <tr><th style="width:52px">Clave</th><th>Riesgo</th><th style="width:80px">Probabilidad</th><th style="width:70px">Impacto</th><th>Mitigacion adoptada</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="mono">RT-01</td>
+          <td>La aleatoriedad del recurso hace que cualquier asercion de igualdad sea inestable por diseno.</td>
+          <td>Alta</td>
+          <td>Alto</td>
+          <td>Ninguna asercion compara contra un identificador fijo. Se verifican invariantes de contrato y de comportamiento.</td>
+        </tr>
+        <tr>
+          <td class="mono">RT-02</td>
+          <td>La limitacion de consumo devuelve 429 o 403 y se interpreta como fallo del servicio.</td>
+          <td>Alta</td>
+          <td>Medio</td>
+          <td>Metrica propia que contabiliza las respuestas de limitacion por separado, y perfiles de carga moderados.</td>
+        </tr>
+        <tr>
+          <td class="mono">RT-03</td>
+          <td>La variabilidad de la red publica produce fallos que no corresponden a defectos.</td>
+          <td>Alta</td>
+          <td>Medio</td>
+          <td>Un reintento en integracion continua, umbrales con margen sobre la linea base y percentiles en lugar de maximos.</td>
+        </tr>
+        <tr>
+          <td class="mono">RT-04</td>
+          <td>El contrato de respuesta cambia sin aviso y rompe a los consumidores.</td>
+          <td>Media</td>
+          <td>Alto</td>
+          <td>Validacion por esquema en cada ejecucion programada, que detecta la ruptura antes que los consumidores.</td>
+        </tr>
+        <tr>
+          <td class="mono">RT-05</td>
+          <td>No existe entorno de pruebas: toda ejecucion impacta produccion y consume cuota real.</td>
+          <td>Alta</td>
+          <td>Alto</td>
+          <td>Volumen acotado, escenarios de carga elevada excluidos de la ejecucion programada y sujetos a autorizacion expresa.</td>
+        </tr>
+        <tr>
+          <td class="mono">RT-06</td>
+          <td>La credencial caduca o se revoca y la suite falla de forma masiva sin causa aparente.</td>
+          <td>Media</td>
+          <td>Alto</td>
+          <td>Casos de control de acceso que distinguen un 403 por credencial de un fallo funcional, y credencial gestionada como secreto del repositorio.</td>
+        </tr>
+        <tr>
+          <td class="mono">RT-07</td>
+          <td>Una cache intermedia devuelve respuestas antiguas y enmascara una regresion.</td>
+          <td>Media</td>
+          <td>Medio</td>
+          <td>Verificacion explicita de variabilidad en las respuestas aleatorias y registro del estado de cache en la evidencia.</td>
+        </tr>
+        <tr>
+          <td class="mono">RT-08</td>
+          <td>Las imagenes se sirven desde un dominio distinto al del API, con su propia disponibilidad.</td>
+          <td>Media</td>
+          <td>Bajo</td>
+          <td>Se verifica que la direccion sea valida y este cifrada; la descarga del recurso queda fuera de alcance por decision explicita.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Dependencias externas y restricciones</h2>
+
+  <ul>
+    <li>
+      <strong>Servicio de terceros en produccion.</strong> No hay entorno de pruebas, ni control
+      sobre los datos, ni posibilidad de sembrar un estado conocido. Toda prueba es de caja negra
+      sobre un sistema vivo.
+    </li>
+    <li>
+      <strong>Credencial obligatoria para el recurso de razas.</strong> Sin ella el ejercicio 2 es
+      inejecutable. La suite usa la credencial publica de demostracion por defecto para ser
+      ejecutable sin configuracion previa, y admite una credencial propia mediante el secreto
+      <code>CAT_API_KEY</code>. La credencial de demostracion comparte su cuota con todos sus
+      usuarios, de modo que sus limites son impredecibles.
+    </li>
+    <li>
+      <strong>Datos no controlados.</strong> El catalogo de imagenes cambia por aportaciones de
+      terceros. El catalogo de razas es estable y por eso se usa como fuente de los datos de prueba
+      deterministas.
+    </li>
+    <li>
+      <strong>Red publica.</strong> Los tiempos medidos incluyen la latencia entre el agente de
+      ejecucion y el servicio, que no es atribuible al sistema bajo prueba. Se mitiga con
+      percentiles y margen en los umbrales, no con promedios.
+    </li>
+    <li>
+      <strong>Distribucion de contenido intermedia.</strong> El servicio se sirve a traves de una
+      capa de cache y distribucion. Los tiempos observados dependen del estado de esa capa, y una
+      respuesta servida desde cache no mide el servicio de origen.
+    </li>
+    <li>
+      <strong>Restriccion etica y contractual.</strong> Las pruebas de carga elevada, de agotamiento
+      de recursos y de intrusion sobre un servicio ajeno requieren autorizacion escrita del
+      proveedor. En ausencia de ella quedan fuera de alcance, y asi se declara.
+    </li>
+  </ul>
+
+  <h2>Informacion requerida antes de ejecutar pruebas</h2>
+
+  <p>
+    Peticiones concretas al equipo responsable del servicio. Sin ellas la verificacion puede
+    ejecutarse, pero su resultado no puede considerarse concluyente.
+  </p>
+
+  <div class="envoltura-tabla">
+    <table>
+      <thead>
+        <tr><th style="width:52px">Clave</th><th>Solicitud</th><th>Bloquea</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="mono">I-01</td><td>Especificacion formal del contrato, preferentemente en OpenAPI, con esquemas de respuesta y catalogo de errores.</td><td>Pruebas de contrato concluyentes</td></tr>
+        <tr><td class="mono">I-02</td><td>Definicion del mecanismo de autenticacion, del plan aplicable y de una credencial dedicada al equipo de pruebas.</td><td>Ejercicio 2 completo</td></tr>
+        <tr><td class="mono">I-03</td><td>Conjunto de valores admitidos por <code>size</code>, <code>mime_types</code> y <code>format</code>, y comportamiento esperado ante un valor invalido.</td><td>Pruebas negativas de esos parametros</td></tr>
+        <tr><td class="mono">I-04</td><td>Condiciones exactas bajo las que se emiten los encabezados de paginacion.</td><td>Verificacion de paginacion</td></tr>
+        <tr><td class="mono">I-05</td><td>Efecto esperado de <code>attach_image</code> sobre la respuesta.</td><td>Cierre del hallazgo H-01</td></tr>
+        <tr><td class="mono">I-06</td><td>Politica de limitacion de consumo: cuota, ventana y codigo devuelto al superarla.</td><td>Diseno del perfil de carga</td></tr>
+        <tr><td class="mono">I-07</td><td>Acuerdo de nivel de servicio comprometido: disponibilidad y tiempo de respuesta objetivo por percentil.</td><td>Criterios de aceptacion de desempeno</td></tr>
+        <tr><td class="mono">I-08</td><td>Politica de versionado y de notificacion de cambios incompatibles.</td><td>Estrategia de regresion</td></tr>
+        <tr><td class="mono">I-09</td><td>Disponibilidad de un entorno de pruebas o de una ventana autorizada para ejecutar escenarios de carga elevada.</td><td>Escenarios de estres, pico y resistencia</td></tr>
+        <tr><td class="mono">I-10</td><td>Confirmacion de si el truncamiento descrito en H-02 es una decision de producto o un defecto.</td><td>Clasificacion de H-02</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Observacion sobre el material de la evaluacion</h2>
+
+  <div class="aviso alerta">
+    <p>
+      El enunciado incluye un enlace a la vista de cuenta del servicio que contiene un identificador
+      de acceso incrustado en la direccion. Un identificador de ese tipo circulando en un documento
+      distribuido es una exposicion de credenciales, con independencia de su alcance. Se recomienda
+      sustituir el enlace por una referencia a la documentacion publica y entregar cualquier
+      credencial por un canal separado. Se senala en el mismo espiritu con que se reportaria en un
+      proyecto real: el material de trabajo tambien forma parte de la superficie de riesgo.
+    </p>
+  </div>
+
+</main>
+
+<footer class="pie">
+  <p>Portal publicado automaticamente desde el repositorio en cada ejecucion de la suite.</p>
+</footer>
+
+<script type="module">
+import './activos/portal.js';
+</script>
+
+</body>
+</html>

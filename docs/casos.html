@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Casos de prueba | Portal de calidad</title>
+<meta name="description" content="Catalogo de casos con su respuesta esperada, priorizacion bajo restriccion de tiempo y propuesta de automatizacion.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231f5c8b'/%3E%3Cpath d='M9 16.4l4.7 4.7L23 11.8' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="activos/estilos.css">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="cabecera-interior">
+    <a class="marca" href="index.html">Portal de calidad<span>Evaluacion tecnica de API</span></a>
+    <nav class="navegacion">
+      <a href="index.html">Inicio</a>
+      <a href="analisis.html">Analisis</a>
+      <a href="plan.html">Plan de pruebas</a>
+      <a href="casos.html">Casos</a>
+      <a href="evidencia.html">Evidencia</a>
+      <a href="historico.html">Historico</a>
+      <a href="reporte-funcional/index.html">Ultimo reporte</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <h1>Casos de prueba</h1>
+  <p class="entradilla">
+    Cada caso declara su objetivo, la entrada, la respuesta esperada, las validaciones, su prioridad,
+    su tipo y el riesgo que mitiga. La respuesta esperada esta tomada del comportamiento real
+    observado, por eso incluye codigos, mensajes y valores concretos. La peticion y la respuesta
+    completas de cada caso estan en la <a href="evidencia.html">seccion de evidencia</a>.
+  </p>
+
+  <div class="rejilla" id="resumen-catalogo"></div>
+
+  <div class="filtros" id="filtros">
+    <button data-filtro="todos" aria-pressed="true">Todos</button>
+    <button data-filtro="Funcional" aria-pressed="false">Funcional</button>
+    <button data-filtro="Negativo" aria-pressed="false">Negativo</button>
+    <button data-filtro="Borde" aria-pressed="false">Borde</button>
+    <button data-filtro="Contrato" aria-pressed="false">Contrato</button>
+    <button data-filtro="Seguridad" aria-pressed="false">Seguridad</button>
+    <button data-filtro="No funcional" aria-pressed="false">No funcional</button>
+    <input type="search" id="busqueda" placeholder="Buscar por identificador, objetivo o parametro" aria-label="Buscar en el catalogo">
+  </div>
+
+  <div id="catalogo"></div>
+
+  <h2>Priorizacion bajo restriccion de tiempo</h2>
+
+  <p>
+    Con dos horas disponibles, el criterio es ejecutar primero aquello cuyo fallo impide liberar. La
+    primera fase cubre lo que ningun cliente puede tolerar roto. La segunda, lo que degrada la
+    experiencia sin impedir el uso.
+  </p>
+
+  <h3>Primera fase: primeros cuarenta minutos</h3>
+
+  <p>
+    Los casos marcados como criticos, ejecutables con <code>npm run test:humo</code>. Responden a
+    cuatro preguntas: el servicio devuelve datos, los devuelve con la forma acordada, rechaza lo
+    invalido y no deja pasar a quien no tiene credencial.
+  </p>
+
+  <ul>
+    <li><strong>Camino principal de ambos recursos.</strong> <code>IMG-F-01</code>, <code>IMG-F-02</code>, <code>IMG-F-03</code>, <code>BRD-F-01</code>, <code>BRD-F-02</code>, <code>BRD-F-06</code>.</li>
+    <li><strong>Contrato de respuesta.</strong> <code>CTR-01</code>, <code>CTR-02</code>, <code>CTR-03</code>, <code>CTR-04</code>, <code>CTR-05</code>. Una ruptura aqui afecta a todos los consumidores a la vez.</li>
+    <li><strong>Control de acceso.</strong> <code>SEG-01</code> a <code>SEG-04</code>, <code>SEG-08</code>, <code>SEG-09</code>. Un fallo aqui no se negocia.</li>
+    <li><strong>Validacion de entradas invalidas.</strong> <code>IMG-N-01</code>, <code>IMG-N-04</code>, <code>IMG-N-06</code>, <code>BRD-N-01</code>, <code>BRD-N-02</code>.</li>
+    <li><strong>Fronteras de mayor riesgo.</strong> <code>IMG-B-01</code>, <code>IMG-B-02</code>, <code>IMG-B-03</code>, <code>BRD-N-04</code>.</li>
+    <li><strong>Paginacion.</strong> <code>IMG-F-08</code>, <code>IMG-F-10</code>.</li>
+    <li><strong>Tiempo de respuesta y disponibilidad.</strong> <code>NFN-01</code>, <code>NFN-02</code>, <code>NFN-07</code>, mas el escenario de humo de k6.</li>
+  </ul>
+
+  <h3>Segunda fase: cuarenta minutos restantes y siguiente ciclo</h3>
+
+  <ul>
+    <li>Resto de escenarios de borde y de parametros sin dominio declarado: <code>IMG-B-04</code> a <code>IMG-B-11</code>.</li>
+    <li>Variantes de escritura y coincidencias parciales en la busqueda de razas: <code>BRD-F-03</code> a <code>BRD-F-05</code>, <code>BRD-F-09</code>, <code>BRD-F-10</code>.</li>
+    <li>Casos de seguridad de superficie de menor severidad: <code>SEG-05</code> a <code>SEG-07</code>, <code>SEG-10</code>.</li>
+    <li>Verificaciones no funcionales complementarias: <code>NFN-03</code> a <code>NFN-06</code>, <code>NFN-08</code>.</li>
+    <li>Escenario de carga nominal de k6, que requiere cinco minutos de ejecucion continua.</li>
+    <li>Escenarios de estres, pico y resistencia, sujetos a autorizacion del proveedor.</li>
+  </ul>
+
+  <h3>Escenarios criticos para una liberacion</h3>
+
+  <p>Un fallo en cualquiera de estos cinco puntos detiene la liberacion sin discusion.</p>
+
+  <ol class="pasos">
+    <li><strong>El control de acceso cede.</strong> Si el recurso protegido responde sin credencial valida, o si la credencial se acepta por un canal que la expone, el problema deja de ser de calidad y pasa a ser de seguridad.</li>
+    <li><strong>El contrato de respuesta cambia sin aviso.</strong> Desaparece un campo, cambia un tipo o se altera la forma del error. Rompe a todos los consumidores simultaneamente y sin sintoma previo.</li>
+    <li><strong>La paginacion pierde o duplica elementos.</strong> Produce perdida silenciosa de datos en el consumidor, que es el peor modo de fallo posible: nadie lo nota hasta que el dato hace falta.</li>
+    <li><strong>La validacion de entradas se relaja.</strong> Si lo invalido empieza a aceptarse, el servicio devuelve resultados que el consumidor creera filtrados.</li>
+    <li><strong>El tiempo de respuesta se degrada por encima del acuerdo.</strong> Un percentil 95 por encima del umbral en carga nominal anticipa una caida en produccion.</li>
+  </ol>
+
+  <h3>Riesgos que se comunicarian al equipo</h3>
+
+  <div class="envoltura-tabla">
+    <table>
+      <thead>
+        <tr><th>Riesgo</th><th>Destinatario</th><th>Mensaje</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>El truncamiento silencioso de la coleccion</td>
+          <td>Producto y arquitectura</td>
+          <td>Es el hallazgo con mayor potencial de dano. Un consumidor sin credencial pierde datos sin recibir ninguna senal. Requiere decision de producto: corregir el limite, o comunicarlo con un encabezado.</td>
+        </tr>
+        <tr>
+          <td>Los filtros que no filtran</td>
+          <td>Desarrollo</td>
+          <td><code>mime_types</code> y <code>attach_image</code> se aceptan y se ignoran. Cualquier funcionalidad construida sobre ellos esta apoyada en un supuesto falso.</td>
+        </tr>
+        <tr>
+          <td>El contrato dual segun credencial</td>
+          <td>Arquitectura y documentacion</td>
+          <td>Obliga a todo consumidor a conocer su propio modo de autenticacion para saber que campos esperar. Debe documentarse o unificarse.</td>
+        </tr>
+        <tr>
+          <td>La ausencia de entorno de pruebas</td>
+          <td>Gestion</td>
+          <td>Toda verificacion consume cuota de produccion. Limita el volumen, la frecuencia y el tipo de prueba posible, y condiciona el valor de las conclusiones.</td>
+        </tr>
+        <tr>
+          <td>La especificacion incompleta</td>
+          <td>Producto</td>
+          <td>Diez ambiguedades abiertas impiden afirmar que el servicio es correcto. Se puede afirmar que se comporta de forma consistente, que no es lo mismo.</td>
+        </tr>
+        <tr>
+          <td>La dependencia de un proveedor externo</td>
+          <td>Gestion y operacion</td>
+          <td>No hay control sobre disponibilidad, cambios ni cuotas. Conviene definir el comportamiento del producto ante una indisponibilidad del proveedor.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Propuesta de automatizacion</h2>
+
+  <h3>Que se automatiza</h3>
+
+  <div class="envoltura-tabla">
+    <table>
+      <thead>
+        <tr><th>Conjunto</th><th>Motivo</th><th>Frecuencia</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Casos funcionales del camino principal</td><td>Se repiten en cada ciclo y su resultado es objetivo y comparable</td><td>Cada solicitud de incorporacion y a diario</td></tr>
+        <tr><td>Casos negativos y de borde</td><td>Son numerosos, mecanicos y propensos al descuido en una ejecucion manual</td><td>Cada solicitud de incorporacion y a diario</td></tr>
+        <tr><td>Validacion de contrato por esquema</td><td>Es la barrera que detecta una ruptura de compatibilidad antes que los consumidores</td><td>Cada solicitud de incorporacion y a diario</td></tr>
+        <tr><td>Control de acceso y entradas hostiles</td><td>Toda regresion en este terreno es inaceptable y debe detectarse de inmediato</td><td>Cada solicitud de incorporacion y a diario</td></tr>
+        <tr><td>Escenario de humo de desempeno</td><td>Detecta una degradacion grave en un minuto de ejecucion</td><td>A diario</td></tr>
+        <tr><td>Escenario de carga nominal</td><td>Verifica el acuerdo de nivel de servicio en condiciones representativas</td><td>A diario y antes de cada liberacion</td></tr>
+        <tr><td>Escenarios de estres, pico y resistencia</td><td>Su duracion y su impacto sobre un servicio de terceros exigen intencion explicita</td><td>Bajo demanda y con autorizacion</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Que permanece manual</h3>
+
+  <ul>
+    <li><strong>Exploracion de un endpoint nuevo o modificado.</strong> Automatizar antes de entender produce casos que verifican una suposicion equivocada.</li>
+    <li><strong>Valoracion de la utilidad de los mensajes de error.</strong> Se puede verificar que el mensaje existe; que sea comprensible para quien lo lee requiere juicio.</li>
+    <li><strong>Analisis de la documentacion frente al comportamiento.</strong> Detectar una ambiguedad es una tarea de lectura critica, no de ejecucion.</li>
+    <li><strong>Pruebas de intrusion.</strong> Requieren autorizacion, herramientas especializadas y criterio humano.</li>
+    <li><strong>Verificacion de un defecto corregido.</strong> La primera comprobacion tras una correccion conviene hacerla a mano; despues se incorpora como caso de regresion.</li>
+  </ul>
+
+  <h3>Herramientas y motivo de la eleccion</h3>
+
+  <div class="envoltura-tabla">
+    <table>
+      <thead>
+        <tr><th>Herramienta</th><th>Funcion</th><th>Por que esta</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Playwright</td>
+          <td>Suite funcional, negativa, de borde, de contrato y de seguridad de superficie</td>
+          <td>Su contexto de peticiones permite pruebas de API sin navegador, con reporte navegable, adjuntos de evidencia, reintentos y trazas. Evita mantener dos herramientas cuando mas adelante haga falta cubrir una interfaz.</td>
+        </tr>
+        <tr>
+          <td>Ajv con esquemas JSON</td>
+          <td>Validacion de contrato</td>
+          <td>Expresa el contrato como dato y no como codigo, de modo que la ruptura se detecta de forma declarativa y el esquema sirve tambien como documentacion.</td>
+        </tr>
+        <tr>
+          <td>k6</td>
+          <td>Escenarios de desempeno</td>
+          <td>Los escenarios se escriben en JavaScript, los umbrales son parte del script y el resultado es un dato estructurado que se integra con el resto del flujo sin conversion manual.</td>
+        </tr>
+        <tr>
+          <td>GitHub Actions</td>
+          <td>Orquestacion de las tres formas de ejecucion</td>
+          <td>Vive junto al codigo, no anade infraestructura y cubre las tres necesidades: manual, por solicitud de incorporacion y programada.</td>
+        </tr>
+        <tr>
+          <td>GitHub Pages</td>
+          <td>Publicacion del portal y del reporte historico</td>
+          <td>El resultado deja de estar dentro de una bitacora de ejecucion y pasa a ser consultable por cualquier interesado sin permisos especiales.</td>
+        </tr>
+        <tr>
+          <td>Postman y Newman</td>
+          <td>No adoptados</td>
+          <td>Se descartaron de forma deliberada. La coleccion en formato JSON es dificil de revisar en un cambio y la logica de las aserciones queda dispersa en fragmentos. Para una exploracion manual siguen siendo comodos; para una suite versionada, no.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Enfoque de automatizacion</h3>
+
+  <div class="envoltura-tabla">
+    <table>
+      <thead>
+        <tr><th>Nivel</th><th>Contenido</th><th>Duracion</th><th>Cuando corre</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Humo</td><td>Casos criticos de ambos recursos</td><td>Menos de dos minutos</td><td>Al inicio de toda ejecucion, como puerta de entrada</td></tr>
+        <tr><td>Regresion funcional</td><td>Suite completa: funcional, negativa, borde, contrato y seguridad</td><td>De cuatro a seis minutos</td><td>Cada solicitud de incorporacion y cada ejecucion programada</td></tr>
+        <tr><td>Contrato</td><td>Validacion por esquema de ambas representaciones y del cuerpo de error</td><td>Menos de un minuto</td><td>Integrada en la regresion y ejecutable por separado</td></tr>
+        <tr><td>Desempeno continuo</td><td>Escenarios de humo y carga nominal</td><td>De seis a siete minutos</td><td>Cada ejecucion programada</td></tr>
+        <tr><td>Desempeno bajo demanda</td><td>Escenarios de estres, pico y resistencia</td><td>De nueve a treinta minutos</td><td>Ejecucion manual con autorizacion</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    El enfoque sigue la forma de una piramide invertida deliberada para una suite de API: la base la
+    ocupan las verificaciones de contrato, rapidas y capaces de detectar la clase de fallo mas
+    costosa; sobre ella se apoyan los casos funcionales y de borde; y la cuspide, la mas cara de
+    ejecutar, la ocupan los escenarios de desempeno prolongados, reservados a la intencion explicita.
+  </p>
+
+</main>
+
+<footer class="pie">
+  <p>Portal publicado automaticamente desde el repositorio en cada ejecucion de la suite.</p>
+</footer>
+
+<script type="module">
+import { cargarDatos, escapar } from './activos/portal.js';
+
+const datos = await cargarDatos('catalogo.json');
+const contenedor = document.getElementById('catalogo');
+const casos = datos?.casos ?? [];
+
+if (casos.length === 0) {
+  contenedor.innerHTML = '<p class="tenue">El catalogo de casos no esta disponible.</p>';
+} else {
+  const porTipo = {};
+  const porPrioridad = {};
+  for (const caso of casos) {
+    porTipo[caso.tipo] = (porTipo[caso.tipo] ?? 0) + 1;
+    porPrioridad[caso.prioridad] = (porPrioridad[caso.prioridad] ?? 0) + 1;
+  }
+
+  document.getElementById('resumen-catalogo').innerHTML = `
+    <div class="indicador"><div class="etiqueta">Casos disenados</div><div class="valor">${casos.length}</div><div class="nota">Sobre dos endpoints</div></div>
+    <div class="indicador"><div class="etiqueta">Prioridad alta</div><div class="valor">${porPrioridad.Alta ?? 0}</div><div class="nota">Ejecutables en la primera fase</div></div>
+    <div class="indicador"><div class="etiqueta">Negativos y de borde</div><div class="valor">${(porTipo.Negativo ?? 0) + (porTipo.Borde ?? 0)}</div><div class="nota">Cobertura de lo invalido y las fronteras</div></div>
+    <div class="indicador"><div class="etiqueta">Contrato y seguridad</div><div class="valor">${(porTipo.Contrato ?? 0) + (porTipo.Seguridad ?? 0)}</div><div class="nota">Barreras de compatibilidad y acceso</div></div>`;
+
+  const claseDePrioridad = (p) => (p === 'Alta' ? 'fallo' : p === 'Media' ? 'alerta' : 'neutro');
+
+  function pintar(filtroTipo, termino) {
+    const visibles = casos.filter((caso) => {
+      const coincideTipo = filtroTipo === 'todos' || caso.tipo === filtroTipo;
+      const texto = `${caso.id} ${caso.endpoint} ${caso.objetivo} ${caso.entrada} ${caso.esperado}`.toLowerCase();
+      const coincideTermino = !termino || texto.includes(termino.toLowerCase());
+      return coincideTipo && coincideTermino;
+    });
+
+    if (visibles.length === 0) {
+      contenedor.innerHTML = '<p class="tenue">Ningun caso coincide con el filtro aplicado.</p>';
+      return;
+    }
+
+    contenedor.innerHTML = visibles
+      .map(
+        (caso) => `
+        <details>
+          <summary>
+            <code>${escapar(caso.id)}</code>
+            <span class="distintivo ${claseDePrioridad(caso.prioridad)}">${escapar(caso.prioridad)}</span>
+            <span class="distintivo neutro">${escapar(caso.tipo)}</span>
+            &nbsp;${escapar(caso.objetivo)}
+          </summary>
+          <div class="envoltura-tabla">
+            <table>
+              <tbody>
+                <tr><th style="width:150px">Endpoint</th><td class="mono">${escapar(caso.endpoint)}</td></tr>
+                <tr><th>Parametros de entrada</th><td>${escapar(caso.entrada)}</td></tr>
+                <tr><th>Respuesta esperada</th><td>${escapar(caso.esperado)}</td></tr>
+                <tr><th>Validaciones</th><td>${caso.validaciones.map((v) => escapar(v)).join('<br>')}</td></tr>
+                <tr><th>Riesgo que mitiga</th><td class="mono">${escapar(caso.riesgo)}</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </details>`
+      )
+      .join('');
+  }
+
+  let filtroActivo = 'todos';
+  let terminoActivo = '';
+
+  for (const boton of document.querySelectorAll('#filtros button')) {
+    boton.addEventListener('click', () => {
+      for (const otro of document.querySelectorAll('#filtros button')) {
+        otro.setAttribute('aria-pressed', String(otro === boton));
+      }
+      filtroActivo = boton.dataset.filtro;
+      pintar(filtroActivo, terminoActivo);
+    });
+  }
+
+  document.getElementById('busqueda').addEventListener('input', (evento) => {
+    terminoActivo = evento.target.value;
+    pintar(filtroActivo, terminoActivo);
+  });
+
+  pintar('todos', '');
+}
+</script>
+
+</body>
+</html>

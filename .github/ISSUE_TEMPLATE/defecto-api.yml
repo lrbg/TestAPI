@@ -1,0 +1,98 @@
+name: Defecto del API
+description: Reportar una desviacion entre el comportamiento esperado del servicio y el observado
+title: '[DEFECTO] '
+labels: ['area-funcional']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Estructura basada en el elemento Test Incident Report de la norma ISO/IEC/IEEE 29119-3.
+        Un reporte completo ahorra una ronda entera de preguntas: describa que esperaba, que
+        ocurrio y como reproducirlo.
+
+  - type: input
+    id: caso
+    attributes:
+      label: Caso de prueba relacionado
+      description: Identificador del catalogo, si existe. Por ejemplo IMG-B-03.
+      placeholder: IMG-B-03
+    validations:
+      required: false
+
+  - type: dropdown
+    id: endpoint
+    attributes:
+      label: Endpoint afectado
+      options:
+        - GET /images/search
+        - GET /breeds/search
+        - Ambos
+        - Otro
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severidad
+    attributes:
+      label: Severidad propuesta
+      description: >
+        Alta cuando compromete una capacidad esencial, el contrato de respuesta o el control de
+        acceso. Media cuando degrada la experiencia sin impedir el uso. Baja para desviaciones
+        menores o condiciones de borde.
+      options:
+        - Alta
+        - Media
+        - Baja
+    validations:
+      required: true
+
+  - type: textarea
+    id: peticion
+    attributes:
+      label: Peticion realizada
+      description: Direccion completa y encabezados relevantes. No incluya credenciales.
+      render: text
+      placeholder: GET https://api.thecatapi.com/v1/images/search?limit=50
+    validations:
+      required: true
+
+  - type: textarea
+    id: esperado
+    attributes:
+      label: Resultado esperado
+      description: Que deberia devolver el servicio y con que fundamento.
+    validations:
+      required: true
+
+  - type: textarea
+    id: obtenido
+    attributes:
+      label: Resultado obtenido
+      description: Codigo de estado, encabezados relevantes y cuerpo de la respuesta.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: impacto
+    attributes:
+      label: Impacto sobre el consumidor
+      description: Que deja de funcionar o que decision incorrecta toma un cliente por esta causa.
+    validations:
+      required: true
+
+  - type: input
+    id: frecuencia
+    attributes:
+      label: Frecuencia de reproduccion
+      placeholder: Siempre, o tres de cada diez intentos
+    validations:
+      required: false
+
+  - type: textarea
+    id: notas
+    attributes:
+      label: Observaciones adicionales
+      description: Hipotesis sobre la causa, relacion con otros hallazgos o referencias.
+    validations:
+      required: false

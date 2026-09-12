@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Evidencia por caso | Portal de calidad</title>
+<meta name="description" content="Peticion, respuesta y resultado real de cada caso de prueba.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231f5c8b'/%3E%3Cpath d='M9 16.4l4.7 4.7L23 11.8' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="activos/estilos.css">
+<style>
+  .caso { border: 1px solid var(--borde); border-radius: var(--radio); background: var(--superficie); margin-bottom: 14px; overflow: hidden; }
+  .caso > header { padding: 11px 16px; background: var(--superficie-2); border-bottom: 1px solid var(--borde); display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .caso > header .id { font-family: var(--mono); font-weight: 650; color: var(--acento); font-size: 13.5px; }
+  .caso > header .obj { font-size: 14px; font-weight: 550; flex: 1; min-width: 220px; }
+  .peticion { padding: 14px 16px; border-top: 1px solid var(--borde); }
+  .peticion:first-of-type { border-top: none; }
+  .peticion .orden { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--texto-3); font-weight: 600; margin-bottom: 8px; }
+  .campos { display: grid; grid-template-columns: 118px 1fr; gap: 6px 14px; font-size: 13px; align-items: start; }
+  .campos dt { color: var(--texto-2); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em; padding-top: 2px; }
+  .campos dd { margin: 0; min-width: 0; }
+  .campos dd pre { margin: 0; font-size: 12px; padding: 8px 11px; }
+  .estado { font-family: var(--mono); font-weight: 650; font-size: 14px; }
+  .estado.ok { color: var(--exito); } .estado.cliente { color: var(--alerta); } .estado.servidor { color: var(--fallo); }
+  .meta { color: var(--texto-3); font-size: 12.5px; font-family: var(--mono); }
+  @media (max-width: 620px) { .campos { grid-template-columns: 1fr; gap: 3px; } .campos dt { padding-top: 8px; } }
+</style>
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="cabecera-interior">
+    <a class="marca" href="index.html">Portal de calidad<span>Evaluacion tecnica de API</span></a>
+    <nav class="navegacion">
+      <a href="index.html">Inicio</a>
+      <a href="analisis.html">Analisis</a>
+      <a href="plan.html">Plan de pruebas</a>
+      <a href="casos.html">Casos</a>
+      <a href="evidencia.html">Evidencia</a>
+      <a href="historico.html">Historico</a>
+      <a href="reporte-funcional/index.html">Ultimo reporte</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <h1>Evidencia por caso</h1>
+  <p class="entradilla">
+    Peticion, respuesta y resultado real de cada caso, capturados contra el servicio en produccion.
+  </p>
+
+  <div class="rejilla" id="resumen"></div>
+
+  <div class="aviso">
+    <p>
+      <strong>Como leer cada ficha.</strong> Peticion es la URL exacta enviada. Autenticacion indica
+      si se envio la llave y por que canal. Respuesta trae el codigo de estado, el tiempo y el
+      numero de elementos. Encabezados recoge solo los relevantes para el caso. Cuerpo es la
+      respuesta, recortada cuando es extensa. Resultado dice si el comportamiento fue correcto o
+      que desviacion se detecto.
+    </p>
+  </div>
+
+  <div class="filtros" id="filtros">
+    <button data-grupo="todos" aria-pressed="true">Todos</button>
+    <button data-grupo="IMG-F" aria-pressed="false">Imagenes funcional</button>
+    <button data-grupo="IMG-N" aria-pressed="false">Imagenes negativo</button>
+    <button data-grupo="IMG-B" aria-pressed="false">Imagenes borde</button>
+    <button data-grupo="BRD" aria-pressed="false">Razas</button>
+    <button data-grupo="CTR" aria-pressed="false">Contrato</button>
+    <button data-grupo="SEG" aria-pressed="false">Seguridad</button>
+    <button data-grupo="NFN" aria-pressed="false">No funcional</button>
+    <input type="search" id="busqueda" placeholder="Buscar por identificador, URL o respuesta" aria-label="Buscar en la evidencia">
+  </div>
+
+  <div id="lista"></div>
+
+</main>
+
+<footer class="pie">
+  <p>Portal publicado automaticamente desde el repositorio en cada ejecucion de la suite.</p>
+</footer>
+
+<script type="module">
+import { cargarDatos, escapar, numero } from './activos/portal.js';
+
+const [catalogo, evidencias] = await Promise.all([
+  cargarDatos('catalogo.json'),
+  cargarDatos('evidencias.json'),
+]);
+
+const lista = document.getElementById('lista');
+const casos = catalogo?.casos ?? [];
+const registros = evidencias?.casos ?? {};
+
+if (casos.length === 0 || Object.keys(registros).length === 0) {
+  lista.innerHTML = '<p class="tenue">La evidencia no esta disponible.</p>';
+} else {
+  const total = Object.values(registros).reduce((t, r) => t + r.length, 0);
+  const conDesviacion = Object.values(registros).filter((r) =>
+    r.some((x) => /hallazgo H-\d+/i.test(x.veredicto ?? ''))
+  ).length;
+  const tiempos = Object.values(registros).flatMap((r) => r.map((x) => x.ms)).filter((x) => typeof x === 'number');
+  tiempos.sort((a, b) => a - b);
+
+  document.getElementById('resumen').innerHTML = `
+    <div class="indicador"><div class="etiqueta">Casos con evidencia</div><div class="valor">${casos.length}</div><div class="nota">Sobre dos endpoints</div></div>
+    <div class="indicador"><div class="etiqueta">Peticiones registradas</div><div class="valor">${total}</div><div class="nota">Capturadas en produccion</div></div>
+    <div class="indicador"><div class="etiqueta">Casos con desviacion</div><div class="valor alerta">${conDesviacion}</div><div class="nota">Enlazados a un hallazgo</div></div>
+    <div class="indicador"><div class="etiqueta">Mediana de respuesta</div><div class="valor">${numero(tiempos[Math.floor(tiempos.length / 2)])} ms</div><div class="nota">Sobre ${tiempos.length} mediciones</div></div>`;
+
+  const claseEstado = (st) => (st >= 500 ? 'servidor' : st >= 400 ? 'cliente' : 'ok');
+
+  const ficha = (r, i, n) => {
+    const enc = r.hdr
+      ? Object.entries(r.hdr).map(([k, v]) => `${escapar(k)}: ${escapar(v)}`).join('\n')
+      : '(sin encabezados destacables)';
+
+    const campos = [
+      ['Peticion', `<pre><code>${escapar(r.req)}</code></pre>`],
+      ['Autenticacion', escapar(r.auth)],
+      ['Respuesta', `<span class="estado ${claseEstado(r.st)}">${r.st}</span> <span class="meta">${
+        r.ms !== undefined ? r.ms + ' ms' : ''
+      }${r.n !== undefined && r.n !== null ? '  ·  ' + r.n + ' elemento' + (r.n === 1 ? '' : 's') : ''}</span>`],
+      ['Encabezados', `<pre><code>${enc}</code></pre>`],
+    ];
+    if (r.campos) campos.push(['Campos', `<pre><code>${escapar(r.campos)}</code></pre>`]);
+    if (r.body) campos.push(['Cuerpo', `<pre><code>${escapar(r.body)}</code></pre>`]);
+    if (r.medicion) campos.push(['Medicion', escapar(r.medicion)]);
+    campos.push(['Resultado', escapar(r.veredicto)]);
+
+    return `
+      <div class="peticion">
+        ${n > 1 ? `<div class="orden">Peticion ${i + 1} de ${n}</div>` : ''}
+        <dl class="campos">${campos.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>
+      </div>`;
+  };
+
+  function pintar(grupo, termino) {
+    const visibles = casos.filter((c) => {
+      const enGrupo = grupo === 'todos' || c.id.startsWith(grupo);
+      const regs = registros[c.id] ?? [];
+      const texto = `${c.id} ${c.objetivo} ${regs.map((r) => `${r.req} ${r.body ?? ''} ${r.veredicto ?? ''}`).join(' ')}`.toLowerCase();
+      return enGrupo && (!termino || texto.includes(termino.toLowerCase()));
+    });
+
+    if (visibles.length === 0) {
+      lista.innerHTML = '<p class="tenue">Ningun caso coincide con el filtro aplicado.</p>';
+      return;
+    }
+
+    lista.innerHTML = visibles
+      .map((c) => {
+        const regs = registros[c.id] ?? [];
+        return `
+          <article class="caso">
+            <header>
+              <span class="id">${escapar(c.id)}</span>
+              <span class="obj">${escapar(c.objetivo)}</span>
+              <span class="distintivo neutro">${escapar(c.tipo)}</span>
+              <span class="distintivo ${c.prioridad === 'Alta' ? 'fallo' : c.prioridad === 'Media' ? 'alerta' : 'neutro'}">${escapar(c.prioridad)}</span>
+            </header>
+            ${regs.map((r, i) => ficha(r, i, regs.length)).join('')}
+          </article>`;
+      })
+      .join('');
+  }
+
+  let grupo = 'todos';
+  let termino = '';
+
+  for (const boton of document.querySelectorAll('#filtros button')) {
+    boton.addEventListener('click', () => {
+      for (const otro of document.querySelectorAll('#filtros button')) {
+        otro.setAttribute('aria-pressed', String(otro === boton));
+      }
+      grupo = boton.dataset.grupo;
+      pintar(grupo, termino);
+    });
+  }
+
+  document.getElementById('busqueda').addEventListener('input', (e) => {
+    termino = e.target.value;
+    pintar(grupo, termino);
+  });
+
+  pintar('todos', '');
+}
+</script>
+
+</body>
+</html>

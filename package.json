@@ -1,0 +1,33 @@
+{
+  "name": "testapi-qa",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Marco de aseguramiento de calidad para los endpoints de busqueda de imagenes y razas de TheCatAPI",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "playwright test",
+    "test:funcional": "playwright test --grep @funcional",
+    "test:negativo": "playwright test --grep @negativo",
+    "test:borde": "playwright test --grep @borde",
+    "test:contrato": "playwright test --grep @contrato",
+    "test:seguridad": "playwright test --grep @seguridad",
+    "test:nofuncional": "playwright test --grep @no-funcional",
+    "test:humo": "playwright test --grep @critico",
+    "reporte": "playwright show-report resultados/playwright-html",
+    "consolidar": "node scripts/consolidar-resultados.mjs",
+    "historico": "node scripts/actualizar-historico.mjs",
+    "sitio": "node scripts/generar-sitio.mjs",
+    "triaje": "node scripts/triaje-issues.mjs",
+    "catalogo": "node scripts/generar-catalogo.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.49.1",
+    "@types/node": "22.10.2",
+    "ajv": "8.17.1",
+    "ajv-formats": "3.0.1",
+    "typescript": "5.7.2"
+  }
+}

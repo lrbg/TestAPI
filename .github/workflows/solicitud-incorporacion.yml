@@ -1,0 +1,40 @@
+name: Verificacion de solicitud de incorporacion
+
+# Actua como puerta de calidad de la rama principal. Toda solicitud de
+# incorporacion ejecuta la suite funcional completa y el escenario de humo de
+# desempeno, y recibe el resultado como comentario en la propia solicitud.
+#
+# No publica el portal ni abre incidencias: un fallo introducido en una rama en
+# revision no debe contaminar el registro historico ni el tablero de
+# incidencias del producto. La informacion se entrega donde se toma la
+# decision, que es la solicitud misma.
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+
+# Una revision nueva sobre la misma solicitud cancela la verificacion anterior:
+# solo interesa el resultado del ultimo estado propuesto.
+concurrency:
+  group: verificacion-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+jobs:
+  verificacion:
+    name: Puerta de calidad
+    if: github.event.pull_request.draft == false
+    uses: ./.github/workflows/qa-core.yml
+    secrets: inherit
+    with:
+      suite: completa
+      escenario_desempeno: humo
+      publicar_portal: false
+      actualizar_historico: false
+      ejecutar_triaje: false
+      comentar_solicitud: true
