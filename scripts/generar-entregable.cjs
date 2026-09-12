@@ -200,6 +200,12 @@ const catalogo = JSON.parse(fs.readFileSync(path.join(raiz, 'docs/datos/catalogo
 const evidencias = JSON.parse(fs.readFileSync(path.join(raiz, 'docs/datos/evidencias.json'), 'utf8'));
 
 const CASOS = catalogo.casos;
+const BASE_API = 'https://api.thecatapi.com/v1';
+
+/** Devuelve la peticion con su URL absoluta, para que el endpoint quede explicito. */
+const urlCompleta = (req) =>
+  String(req).replace(/^(GET|POST|PUT|DELETE|PATCH|HEAD) \//, `$1 ${BASE_API}/`);
+
 const porTipo = (t) => CASOS.filter((c) => c.tipo === t).length;
 
 /* ------------------------------------------------------------------ */
@@ -252,8 +258,8 @@ const resumen = [
   tabla(
     ['Endpoint', 'Para que sirve', 'Parametros'],
     [
-      ['GET /images/search', 'Buscar o devolver imagenes aleatorias', 'size, mime_types, format, has_breeds, order, page, limit'],
-      ['GET /breeds/search', 'Buscar razas por nombre', 'q, attach_image'],
+      ['GET https://api.thecatapi.com/v1/images/search', 'Buscar o devolver imagenes aleatorias', 'size, mime_types, format, has_breeds, order, page, limit'],
+      ['GET https://api.thecatapi.com/v1/breeds/search', 'Buscar razas por nombre', 'q, attach_image'],
     ],
     [2500, 3000, ANCHO_V - 5500]
   ),
@@ -840,7 +846,7 @@ const pasosDe = (caso) => {
   if (peticiones.length === 0) {
     lineas.push(`${n++}. Preparar la peticion descrita en la columna de entrada.`);
   } else {
-    for (const req of peticiones) lineas.push(`${n++}. Enviar ${req}`);
+    for (const req of peticiones) lineas.push(`${n++}. Enviar ${urlCompleta(req)}`);
   }
 
   lineas.push(`${n++}. Leer el codigo de estado, los encabezados y el cuerpo de la respuesta.`);
@@ -875,7 +881,7 @@ const filaDiseno = (c) => [
   c.id,
   [c.tipo, `Prioridad ${c.prioridad.toLowerCase()}`, `Riesgo ${c.riesgo}`],
   c.objetivo,
-  [codigo(c.endpoint), ...encabezadosDe(c).map((l) => codigo(l))],
+  [codigo(urlCompleta(c.endpoint.replace(/^(GET|POST) /, '$1 '))), ...encabezadosDe(c).map((l) => codigo(l))],
   pasosDe(c).map((l) => codigo(l)),
   c.statusEsperado,
   c.statusReal,
@@ -956,7 +962,7 @@ const bloqueEvidencia = (caso) => {
       : 'sin encabezados destacables';
 
     const filas = [
-      ['Peticion', [codigo(r.req)]],
+      ['Peticion', [codigo(urlCompleta(r.req))]],
       ['Autenticacion', r.auth],
       ['Respuesta', `${r.st}   ${r.ms !== undefined ? r.ms + ' ms' : ''}${r.n !== undefined && r.n !== null ? `   ${r.n} elemento${r.n === 1 ? '' : 's'}` : ''}`, { color: colorEstado(r.st) }],
       ['Encabezados', encabezados.split('\n').map((l) => codigo(l))],

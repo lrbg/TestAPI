@@ -49,6 +49,13 @@
     Peticion, respuesta y resultado real de cada caso, capturados contra el servicio en produccion.
   </p>
 
+  <div class="aviso">
+    <p style="margin-bottom:0"><strong>Endpoints bajo prueba.</strong>
+    <code>GET https://api.thecatapi.com/v1/images/search</code> y
+    <code>GET https://api.thecatapi.com/v1/breeds/search</code>.
+    Autenticacion por encabezado <code>x-api-key</code>.</p>
+  </div>
+
   <div class="rejilla" id="resumen"></div>
 
   <div class="aviso">
@@ -117,7 +124,7 @@ if (casos.length === 0 || Object.keys(registros).length === 0) {
       : '(sin encabezados destacables)';
 
     const campos = [
-      ['Peticion', `<pre><code>${escapar(r.req)}</code></pre>`],
+      ['Peticion', `<pre><code>${escapar(r.req.replace(/^(GET|POST|PUT|DELETE|PATCH|HEAD) \//, '$1 https://api.thecatapi.com/v1/'))}</code></pre>`],
       ['Autenticacion', escapar(r.auth)],
       ['Respuesta', `<span class="estado ${claseEstado(r.st)}">${r.st}</span> <span class="meta">${
         r.ms !== undefined ? r.ms + ' ms' : ''

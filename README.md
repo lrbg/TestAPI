@@ -1,9 +1,35 @@
 # Aseguramiento de calidad de los endpoints de busqueda
 
-Marco de verificacion para los endpoints `GET /images/search` y `GET /breeds/search` de TheCatAPI.
-Cubre el analisis del servicio, el plan de pruebas, el catalogo de casos con su respuesta esperada,
-la suite funcional automatizada, los escenarios de desempeño, el flujo de integracion continua y la
-publicacion del reporte historico.
+## Endpoints bajo prueba
+
+Todas las pruebas de este repositorio se ejecutan contra **TheCatAPI, version 1**, en su entorno de
+produccion. Estas son las dos direcciones exactas que se prueban:
+
+```
+https://api.thecatapi.com/v1/images/search
+https://api.thecatapi.com/v1/breeds/search
+```
+
+| Endpoint | URL completa | Autenticacion | Parametros |
+| --- | --- | --- | --- |
+| Busqueda de imagenes | `GET https://api.thecatapi.com/v1/images/search` | Opcional. Cambia la respuesta | `size`, `mime_types`, `format`, `has_breeds`, `order`, `page`, `limit` |
+| Busqueda de razas | `GET https://api.thecatapi.com/v1/breeds/search` | **Obligatoria.** Sin llave responde 403 | `q`, `attach_image` |
+
+**URL base:** `https://api.thecatapi.com/v1`
+**Autenticacion:** encabezado `x-api-key`. Configurable con la variable `URL_BASE_API` y el secreto `CAT_API_KEY`.
+
+Comprobacion rapida desde tu terminal:
+
+```bash
+curl -i "https://api.thecatapi.com/v1/images/search?limit=1"
+curl -i -H "x-api-key: DEMO-API-KEY" "https://api.thecatapi.com/v1/breeds/search?q=beng"
+```
+
+---
+
+Este repositorio cubre el analisis del servicio, el plan de pruebas, el catalogo de casos con su
+respuesta esperada, la evidencia real de cada caso, la suite funcional automatizada, los escenarios
+de desempeno, el flujo de integracion continua y la publicacion del reporte historico.
 
 **Portal publicado:** https://lrbg.github.io/TESTAPI/
 
@@ -35,8 +61,8 @@ funcional y tecnico.
 
 | Recurso | Proposito declarado | Parametros contemplados |
 | --- | --- | --- |
-| `GET /images/search` | Buscar o devolver imagenes aleatorias | `size`, `mime_types`, `format`, `has_breeds`, `order`, `page`, `limit` |
-| `GET /breeds/search` | Buscar razas por nombre | `q`, `attach_image` |
+| `GET https://api.thecatapi.com/v1/images/search` | Buscar o devolver imagenes aleatorias | `size`, `mime_types`, `format`, `has_breeds`, `order`, `page`, `limit` |
+| `GET https://api.thecatapi.com/v1/breeds/search` | Buscar razas por nombre | `q`, `attach_image` |
 
 La especificacion anade que la busqueda de imagenes puede devolver los encabezados
 `Pagination-Count`, `Pagination-Page` y `Pagination-Limit`, y que la busqueda de razas puede

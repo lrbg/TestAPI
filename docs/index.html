@@ -34,6 +34,15 @@
     Se publica de forma automatica en cada corrida de la suite.
   </p>
 
+  <div class="aviso">
+    <p><strong>Sistema bajo prueba.</strong> Todas las pruebas se ejecutan contra TheCatAPI version 1,
+    en su entorno de produccion. URL base: <code>https://api.thecatapi.com/v1</code></p>
+    <p style="margin-bottom:0">
+      <code>GET https://api.thecatapi.com/v1/images/search</code><br>
+      <code>GET https://api.thecatapi.com/v1/breeds/search</code>
+    </p>
+  </div>
+
   <div id="estado-actual"></div>
 
   <h2>El requerimiento</h2>
@@ -51,12 +60,12 @@
       </thead>
       <tbody>
         <tr>
-          <td class="mono">GET /images/search</td>
+          <td class="mono">GET https://api.thecatapi.com/v1/images/search</td>
           <td>Buscar o devolver imagenes aleatorias</td>
           <td><code>size</code>, <code>mime_types</code>, <code>format</code>, <code>has_breeds</code>, <code>order</code>, <code>page</code>, <code>limit</code></td>
         </tr>
         <tr>
-          <td class="mono">GET /breeds/search</td>
+          <td class="mono">GET https://api.thecatapi.com/v1/breeds/search</td>
           <td>Buscar razas por nombre</td>
           <td><code>q</code>, <code>attach_image</code></td>
         </tr>
