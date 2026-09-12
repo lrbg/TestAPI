@@ -2,7 +2,7 @@
 
 Marco de verificacion para los endpoints `GET /images/search` y `GET /breeds/search` de TheCatAPI.
 Cubre el analisis del servicio, el plan de pruebas, el catalogo de casos con su respuesta esperada,
-la suite funcional automatizada, los escenarios de desempeno, el flujo de integracion continua y la
+la suite funcional automatizada, los escenarios de desempeño, el flujo de integracion continua y la
 publicacion del reporte historico.
 
 **Portal publicado:** https://lrbg.github.io/TESTAPI/
