@@ -12,6 +12,7 @@ import { sleep } from 'k6';
 import { buscarImagenes, buscarRazas, resumenEstandar, terminoParaIteracion } from './lib/comun.js';
 
 export const options = {
+  summaryTrendStats: ['avg', 'min', 'med', 'p(95)', 'p(99)', 'max'],
   scenarios: {
     humo: {
       executor: 'constant-vus',

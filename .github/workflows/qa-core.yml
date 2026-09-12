@@ -71,6 +71,32 @@ jobs:
       # Suite funcional
       # ----------------------------------------------------------------
 
+      # Una llave invalida hace fallar en bloque todos los casos autenticados
+      # sin una causa evidente. Comprobarla antes convierte treinta fallos
+      # confusos en un solo mensaje claro.
+      - name: Comprobar la credencial del servicio
+        env:
+          CAT_API_KEY: ${{ secrets.CAT_API_KEY }}
+        run: |
+          set -uo pipefail
+          LLAVE="$(printf '%s' "${CAT_API_KEY:-}" | tr -d '[:space:]')"
+          if [ -z "$LLAVE" ]; then
+            LLAVE="DEMO-API-KEY"
+            echo "El secreto CAT_API_KEY no esta definido. Se usa la llave publica de demostracion."
+          else
+            echo "Se usa la llave configurada en el secreto CAT_API_KEY."
+          fi
+
+          ESTADO=$(curl -s -o /dev/null -w '%{http_code}' \
+            -H "x-api-key: ${LLAVE}" \
+            "${URL_BASE_API}/breeds/search?q=beng")
+
+          echo "El recurso protegido respondio ${ESTADO}."
+          if [ "$ESTADO" != "200" ]; then
+            echo "::error::La credencial no es valida: /breeds/search respondio ${ESTADO} en lugar de 200. Los casos autenticados fallarian en bloque. Revise el secreto CAT_API_KEY."
+            exit 1
+          fi
+
       - name: Ejecutar la suite funcional
         id: funcional
         if: inputs.suite != 'desempeno'
@@ -191,10 +217,11 @@ jobs:
           if (desempeno.length) {
             console.log('### Desempeno');
             console.log('');
+            const ms = (v) => (typeof v === 'number' ? `${Math.round(v)} ms` : 'sin dato');
             console.log('| Escenario | Peticiones | Mediana | Percentil 95 | Percentil 99 | Umbrales |');
             console.log('| --- | --- | --- | --- | --- | --- |');
             for (const d of desempeno) {
-              console.log(`| ${d.escenario} | ${d.peticiones} | ${d.duracion.mediana} ms | ${d.duracion.p95} ms | ${d.duracion.p99} ms | ${d.aprobado ? 'cumplidos' : 'incumplidos'} |`);
+              console.log(`| ${d.escenario} | ${d.peticiones} | ${ms(d.duracion.mediana)} | ${ms(d.duracion.p95)} | ${ms(d.duracion.p99)} | ${d.aprobado ? 'cumplidos' : 'incumplidos'} |`);
             }
             console.log('');
           }

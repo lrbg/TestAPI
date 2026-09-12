@@ -18,6 +18,7 @@ import { buscarImagenes, resumenEstandar } from './lib/comun.js';
 const USUARIOS_PICO = Number(__ENV.USUARIOS_VIRTUALES || 40);
 
 export const options = {
+  summaryTrendStats: ['avg', 'min', 'med', 'p(95)', 'p(99)', 'max'],
   scenarios: {
     pico: {
       executor: 'ramping-vus',

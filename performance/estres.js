@@ -20,6 +20,7 @@ import { buscarImagenes, buscarRazas, resumenEstandar, terminoParaIteracion } fr
 const USUARIOS_MAXIMOS = Number(__ENV.USUARIOS_VIRTUALES || 40);
 
 export const options = {
+  summaryTrendStats: ['avg', 'min', 'med', 'p(95)', 'p(99)', 'max'],
   scenarios: {
     estres: {
       executor: 'ramping-vus',

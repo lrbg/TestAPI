@@ -18,6 +18,7 @@ const DURACION = __ENV.DURACION || '30m';
 const USUARIOS = Number(__ENV.USUARIOS_VIRTUALES || 5);
 
 export const options = {
+  summaryTrendStats: ['avg', 'min', 'med', 'p(95)', 'p(99)', 'max'],
   scenarios: {
     resistencia: {
       executor: 'constant-vus',

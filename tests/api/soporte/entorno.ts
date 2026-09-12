@@ -14,11 +14,19 @@ export const URL_BASE = process.env.URL_BASE_API ?? 'https://api.thecatapi.com/v
  * configuracion previa; en un entorno formal debe sustituirse por una llave
  * propia mediante el secreto CAT_API_KEY, porque los limites de consumo de la
  * credencial de demostracion son compartidos por todos sus usuarios.
+ *
+ * Importante: cuando un flujo de integracion continua referencia un secreto que
+ * no existe, la variable llega definida y vacia, no ausente. Por eso se
+ * descarta tambien la cadena vacia y los espacios en blanco; usar el operador
+ * de fusion de nulos dejaria pasar una llave vacia y todas las peticiones
+ * autenticadas responderian 403.
  */
-export const LLAVE_API = process.env.CAT_API_KEY ?? 'DEMO-API-KEY';
+const LLAVE_CONFIGURADA = (process.env.CAT_API_KEY ?? '').trim();
+
+export const LLAVE_API = LLAVE_CONFIGURADA || 'DEMO-API-KEY';
 
 /** Indica si la llave en uso es la de demostracion publica. */
-export const USA_LLAVE_DEMO = !process.env.CAT_API_KEY;
+export const USA_LLAVE_DEMO = LLAVE_CONFIGURADA.length === 0;
 
 /** Encabezados para las peticiones autenticadas. */
 export const ENCABEZADOS_AUTENTICADOS = {

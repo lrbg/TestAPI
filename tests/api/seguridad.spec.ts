@@ -201,9 +201,13 @@ test.describe('Seguridad de superficie', () => {
 
     esperarColeccionValida(r);
 
-    expect(r.texto, 'La credencial no debe aparecer en el cuerpo de la respuesta').not.toContain(
-      LLAVE_API
-    );
+    /* Una llave demasiado corta produciria una comparacion sin sentido: buscar
+       una cadena de pocos caracteres dentro de la respuesta acierta por azar. */
+    if (LLAVE_API.length >= 8) {
+      expect(r.texto, 'La credencial no debe aparecer en el cuerpo de la respuesta').not.toContain(
+        LLAVE_API
+      );
+    }
 
     const encabezados = JSON.stringify(r.encabezados).toLowerCase();
     for (const campo of ['x-api-key', 'authorization']) {

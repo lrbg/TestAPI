@@ -25,6 +25,7 @@ import {
 const USUARIOS = Number(__ENV.USUARIOS_VIRTUALES || 10);
 
 export const options = {
+  summaryTrendStats: ['avg', 'min', 'med', 'p(95)', 'p(99)', 'max'],
   scenarios: {
     carga_nominal: {
       executor: 'ramping-vus',
