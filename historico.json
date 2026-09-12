@@ -1,0 +1,155 @@
+[
+  {
+    "id": "34723520726",
+    "numero": 1,
+    "fecha": "2026-09-12T22:45:30.829Z",
+    "disparador": "Manual",
+    "rama": "main",
+    "commit": "e984a55",
+    "url": "https://github.com/lrbg/TESTAPI/actions/runs/34723520726",
+    "veredicto": "rechazado",
+    "funcional": {
+      "total": 77,
+      "aprobadas": 46,
+      "fallidas": 30,
+      "omitidas": 1,
+      "inestables": 0,
+      "tasaAprobacion": 59.7,
+      "duracionMs": 28869,
+      "desviaciones": 5,
+      "casosFallidos": [
+        {
+          "id": "CTR-04",
+          "titulo": "CTR-04 La coleccion de razas cumple su contrato"
+        },
+        {
+          "id": "CTR-05",
+          "titulo": "CTR-05 Todo error responde con la misma estructura"
+        },
+        {
+          "id": "IMG-B-02",
+          "titulo": "IMG-B-02 Las fronteras superiores de limit se comportan de forma coherente"
+        },
+        {
+          "id": "IMG-B-03",
+          "titulo": "IMG-B-03 El consumidor anonimo recibe una coleccion truncada sin aviso"
+        },
+        {
+          "id": "IMG-B-04",
+          "titulo": "IMG-B-04 Una pagina mas alla del ultimo resultado devuelve una coleccion vacia"
+        },
+        {
+          "id": "IMG-B-11",
+          "titulo": "IMG-B-11 Los encabezados de paginacion solo acompanan al orden determinista"
+        },
+        {
+          "id": "IMG-F-09",
+          "titulo": "IMG-F-09 La paginacion ordenada es estable entre peticiones equivalentes"
+        },
+        {
+          "id": "IMG-F-10",
+          "titulo": "IMG-F-10 Los encabezados de paginacion acompanan al orden determinista"
+        },
+        {
+          "id": "IMG-F-11",
+          "titulo": "IMG-F-11 El limite superior declarado de limit es atendido para un consumidor autenticado"
+        },
+        {
+          "id": "NFN-02",
+          "titulo": "NFN-02 La busqueda de razas responde dentro del tiempo objetivo"
+        },
+        {
+          "id": "NFN-08",
+          "titulo": "NFN-08 El servicio acompana sus respuestas de un validador de cache"
+        },
+        {
+          "id": "BRD-F-01",
+          "titulo": "BRD-F-01 Una consulta conocida devuelve la raza correspondiente"
+        },
+        {
+          "id": "BRD-F-02",
+          "titulo": "BRD-F-02 Las razas de referencia se recuperan de forma consistente"
+        },
+        {
+          "id": "BRD-F-03",
+          "titulo": "BRD-F-03 La busqueda es insensible a mayusculas y minusculas"
+        },
+        {
+          "id": "BRD-F-04",
+          "titulo": "BRD-F-04 Una consulta con espacio encuentra razas de nombre compuesto"
+        },
+        {
+          "id": "BRD-F-05",
+          "titulo": "BRD-F-05 Una coincidencia parcial devuelve todas las razas que la contienen"
+        },
+        {
+          "id": "BRD-F-06",
+          "titulo": "BRD-F-06 Una raza expone la informacion descriptiva que la hace util"
+        },
+        {
+          "id": "BRD-F-07",
+          "titulo": "BRD-F-07 La coleccion de razas cumple su contrato"
+        },
+        {
+          "id": "BRD-F-08",
+          "titulo": "BRD-F-08 La informacion de imagen asociada es utilizable cuando esta presente"
+        },
+        {
+          "id": "BRD-F-09",
+          "titulo": "BRD-F-09 La busqueda es estable ante peticiones repetidas"
+        },
+        {
+          "id": "BRD-F-10",
+          "titulo": "BRD-F-10 La omision del parametro de busqueda devuelve un listado general"
+        },
+        {
+          "id": "BRD-N-01",
+          "titulo": "BRD-N-01 Un parametro de busqueda vacio es rechazado"
+        },
+        {
+          "id": "BRD-N-02",
+          "titulo": "BRD-N-02 Una consulta sin coincidencias devuelve una coleccion vacia, no un error"
+        },
+        {
+          "id": "BRD-N-03",
+          "titulo": "BRD-N-03 Un parametro de busqueda excesivamente largo es rechazado"
+        },
+        {
+          "id": "BRD-N-04",
+          "titulo": "BRD-N-04 Las fronteras de longitud del parametro de busqueda son coherentes"
+        },
+        {
+          "id": "BRD-N-06",
+          "titulo": "BRD-N-06 attach_image no modifica la respuesta en ninguno de sus dos valores"
+        },
+        {
+          "id": "BRD-N-08",
+          "titulo": "BRD-N-08 El error de validacion conserva la forma comun del servicio"
+        },
+        {
+          "id": "SEG-04",
+          "titulo": "SEG-04 La credencial es aceptada por la cadena de consulta"
+        },
+        {
+          "id": "SEG-05",
+          "titulo": "SEG-05b El comodin de coincidencia no concede mas datos que una consulta normal"
+        },
+        {
+          "id": "SEG-09",
+          "titulo": "SEG-09 La respuesta no devuelve la credencial ni datos de la cuenta"
+        }
+      ]
+    },
+    "desempeno": [
+      {
+        "escenario": "humo",
+        "peticiones": 54,
+        "tasaFallo": 0,
+        "mediana": 150.44,
+        "p95": 235.33,
+        "p99": null,
+        "aprobado": true
+      }
+    ]
+  }
+]
