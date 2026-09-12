@@ -30,7 +30,7 @@ const MARCA_FIN = '-->';
 
 if (!SIMULACION && (!TOKEN || !REPOSITORIO)) {
   console.error(
-    'Faltan GITHUB_TOKEN o GITHUB_REPOSITORY. Use --simulacion para una ejecucion en seco.'
+    'Faltan GITHUB_TOKEN o GITHUB_REPOSITORY. Use --simulacion para una ejecución en seco.'
   );
   process.exit(1);
 }
@@ -104,15 +104,15 @@ function clasificar(caso) {
     return { severidad: 'alta', area: 'funcional', razon: 'Compromete una capacidad esencial del servicio' };
   }
   if (etiquetas.includes('contrato')) {
-    return { severidad: 'media', area: 'contrato', razon: 'Desviacion de contrato en un escenario no critico' };
+    return { severidad: 'media', area: 'contrato', razon: 'Desviación de contrato en un escenario no crítico' };
   }
   if (etiquetas.includes('no-funcional')) {
     return { severidad: 'media', area: 'desempeno', razon: 'Degradacion de un atributo no funcional' };
   }
   if (etiquetas.includes('borde')) {
-    return { severidad: 'baja', area: 'borde', razon: 'Comportamiento en una condicion frontera' };
+    return { severidad: 'baja', area: 'borde', razon: 'Comportamiento en una condición frontera' };
   }
-  return { severidad: 'media', area: 'funcional', razon: 'Desviacion del comportamiento esperado' };
+  return { severidad: 'media', area: 'funcional', razon: 'Desviación del comportamiento esperado' };
 }
 
 const huellaDeCaso = (caso) => `caso:${caso.id ?? caso.titulo.slice(0, 60)}`;

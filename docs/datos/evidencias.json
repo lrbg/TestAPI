@@ -28,7 +28,7 @@
         "ms": 342,
         "n": 1,
         "body": "[{\"id\":\"DxlC8ufjq\",\"url\":\"https://cdn2.thecatapi.com/images/DxlC8ufjq.false\",\"width\":1000,\"height\":667,\"created_at\":\"2021-02-05T00:29:30.000Z\",\"breeds\":[],\"categories\":[],\"colours\":[],\"tags\":[]}]",
-        "veredicto": "Devuelve 1 elemento. Se observa una direccion terminada en .false, registrada como hallazgo H-12."
+        "veredicto": "Devuelve 1 elemento. Se observa una dirección terminada en .false, registrada como hallazgo H-12."
       },
       {
         "req": "GET /images/search?limit=10",
@@ -74,7 +74,7 @@
         "ms": 266,
         "n": 10,
         "body": "ids: 9ke, ccj, OxELt0CLQ, 4c9, MTg2MzU2Nw, tgsnV-FVm, Z-LsoXqai, Vl3OcCD5b, JRQS5FZFk, 2k4",
-        "veredicto": "Primera extraccion."
+        "veredicto": "Primera extracción."
       },
       {
         "req": "GET /images/search?limit=10&order=RANDOM (llamada 2)",
@@ -83,7 +83,7 @@
         "ms": 202,
         "n": 10,
         "body": "ids: ara, 12l, j9jnwmu-T, 1do, dj6, ee0, TYQKhQ3mn, 8Z1KeS8Gn, oP-VabK_H, a9j",
-        "veredicto": "Correcto. Ningun identificador se repite: el orden aleatorio funciona."
+        "veredicto": "Correcto. Ningún identificador se repite: el orden aleatorio funciona."
       }
     ],
     "IMG-F-06": [
@@ -109,7 +109,7 @@
           "pagination-limit": "3"
         },
         "n": 3,
-        "veredicto": "Aceptado. 3 elementos y encabezados de paginacion presentes."
+        "veredicto": "Aceptado. 3 elementos y encabezados de paginación presentes."
       },
       {
         "req": "GET /images/search?limit=3&order=DESC",
@@ -133,7 +133,7 @@
           "content-type": "application/json; charset=utf-8"
         },
         "n": 3,
-        "veredicto": "Aceptado. 3 elementos, sin encabezados de paginacion."
+        "veredicto": "Aceptado. 3 elementos, sin encabezados de paginación."
       }
     ],
     "IMG-F-08": [
@@ -149,7 +149,7 @@
         },
         "n": 5,
         "body": "ids: MTQ5MzcyNA, MTQ5Mzk0NQ, MTQ5NDM4NQ, MTQ5NDY5Mw, MTQ5NTAyMA",
-        "veredicto": "Pagina 0."
+        "veredicto": "Página 0."
       },
       {
         "req": "GET /images/search?limit=5&order=ASC&page=1",
@@ -163,7 +163,7 @@
         },
         "n": 5,
         "body": "ids: MTQ5NTY2OQ, MTQ5NTkxOA, MTQ5NjUwNQ, MTQ5Njk3Nw, MTQ5NzIzMw",
-        "veredicto": "Correcto. Ninguna imagen se repite entre las dos paginas."
+        "veredicto": "Correcto. Ninguna imagen se repite entre las dos páginas."
       }
     ],
     "IMG-F-09": [
@@ -271,7 +271,7 @@
         "st": 400,
         "ms": 126,
         "body": "{\"statusCode\":400,\"path\":\"/v1/images/search?limit=101\",\"message\":[\"limit must not be greater than 100\"],\"error\":\"Bad Request\"}",
-        "veredicto": "Correcto. El mensaje dice cual es el maximo."
+        "veredicto": "Correcto. El mensaje dice cual es el máximo."
       }
     ],
     "IMG-N-05": [
@@ -291,7 +291,7 @@
         "st": 400,
         "ms": 118,
         "body": "{\"statusCode\":400,\"path\":\"/v1/images/search?limit=2&order=SIDEWAYS\",\"message\":[\"order must be one of the following values: ASC, DESC, RANDOM\"],\"error\":\"Bad Request\"}",
-        "veredicto": "Correcto. El mensaje lista los valores validos."
+        "veredicto": "Correcto. El mensaje lista los valores válidos."
       }
     ],
     "IMG-N-07": [
@@ -349,7 +349,7 @@
         "st": 400,
         "ms": 125,
         "body": "{\"statusCode\":400,\"timestamp\":\"2026-09-12T21:55:42.023Z\",\"path\":\"/v1/images/search?limit=abc\",\"message\":[...],\"error\":\"Bad Request\"}",
-        "veredicto": "Correcto. Sin trazas, rutas del sistema ni nombres de librerias."
+        "veredicto": "Correcto. Sin trazas, rutas del sistema ni nombres de librerías."
       }
     ],
     "IMG-B-01": [
@@ -368,7 +368,7 @@
         "ms": 307,
         "n": 1,
         "body": "[{\"id\":\"27i\",\"url\":\"https://cdn2.thecatapi.com/images/27i.jpg\",\"width\":1024,\"height\":679, ...}]",
-        "veredicto": "En el limite: aceptado, llega 1."
+        "veredicto": "En el límite: aceptado, llega 1."
       }
     ],
     "IMG-B-02": [
@@ -378,7 +378,7 @@
         "st": 200,
         "ms": 200,
         "n": 100,
-        "veredicto": "En el limite: llegan las 100."
+        "veredicto": "En el límite: llegan las 100."
       },
       {
         "req": "GET /images/search?limit=101",
@@ -401,7 +401,7 @@
         "n": 10,
         "campos": "id, url, width, height",
         "body": "[{\"id\":\"dgs\",\"url\":\"https://s3.us-west-2.amazonaws.com/cdn2.thecatapi.com/images/dgs.jpg\",\"width\":960,\"height\":720}, ... 9 mas]",
-        "veredicto": "Se pidieron 50 y llegaron 10. Ningun encabezado informa el recorte. Hallazgo H-02."
+        "veredicto": "Se pidieron 50 y llegaron 10. Ningún encabezado informa el recorte. Hallazgo H-02."
       },
       {
         "req": "GET /images/search?limit=50",
@@ -427,7 +427,7 @@
         },
         "n": 0,
         "body": "[]",
-        "veredicto": "Correcto. Lista vacia y el total real en el encabezado."
+        "veredicto": "Correcto. Lista vacía y el total real en el encabezado."
       }
     ],
     "IMG-B-05": [
@@ -442,7 +442,7 @@
           "pagination-limit": "10"
         },
         "n": 10,
-        "veredicto": "Correcto. La ultima pagina calculada con el total trae resultados."
+        "veredicto": "Correcto. La última página calculada con el total trae resultados."
       }
     ],
     "IMG-B-06": [
@@ -453,7 +453,7 @@
         "ms": 299,
         "n": 1,
         "body": "[{\"id\":\"a9m\",\"url\":\"https://cdn2.thecatapi.com/images/a9m.jpg\",\"width\":500,\"height\":720, ...}]",
-        "veredicto": "El valor invalido se acepta y se ignora. order si rechaza. Hallazgo H-04."
+        "veredicto": "El valor inválido se acepta y se ignora. order si rechaza. Hallazgo H-04."
       }
     ],
     "IMG-B-07": [
@@ -464,7 +464,7 @@
         "ms": 302,
         "n": 10,
         "body": "Direcciones devueltas: 21o.gif, 4K82ZeIgat.jpg, 91a.jpg, 94n.jpg, epRmAeMHB.jpg, ...",
-        "veredicto": "Se pidio png y llegaron gif y jpg. El filtro no se aplica. Hallazgo H-03."
+        "veredicto": "Se pidió png y llegaron gif y jpg. El filtro no se aplica. Hallazgo H-03."
       }
     ],
     "IMG-B-08": [
@@ -485,7 +485,7 @@
         "st": 200,
         "ms": 203,
         "n": 3,
-        "veredicto": "El parametro inventado se ignora y limit sigue funcionando."
+        "veredicto": "El parámetro inventado se ignora y limit sigue funcionando."
       }
     ],
     "IMG-B-10": [
@@ -524,7 +524,7 @@
           "content-type": "application/json; charset=utf-8"
         },
         "n": 5,
-        "veredicto": "Sin encabezados de paginacion."
+        "veredicto": "Sin encabezados de paginación."
       },
       {
         "req": "GET /images/search?limit=5&order=ASC&page=0",
@@ -537,7 +537,7 @@
           "pagination-limit": "5"
         },
         "n": 5,
-        "veredicto": "Con encabezados. La condicion es el orden fijo. Hallazgo H-06."
+        "veredicto": "Con encabezados. La condición es el orden fijo. Hallazgo H-06."
       }
     ],
     "BRD-F-01": [
@@ -605,7 +605,7 @@
         },
         "n": 1,
         "body": "id: beng, name: Bengal",
-        "veredicto": "Correcto. Mismo ETag que en minusculas: la respuesta es identica."
+        "veredicto": "Correcto. Mismo ETag que en minúsculas: la respuesta es idéntica."
       }
     ],
     "BRD-F-04": [
@@ -627,7 +627,7 @@
         "ms": 251,
         "n": 5,
         "body": "American Bobtail, American Curl, American Ringtail, American Shorthair, American Wirehair",
-        "veredicto": "Correcto. Las 5 razas contienen el termino buscado."
+        "veredicto": "Correcto. Las 5 razas contienen el término buscado."
       }
     ],
     "BRD-F-06": [
@@ -685,7 +685,7 @@
           "etag": "W/\"392-2xZt6wEh7HBhOOzA6H77dB2cLZ4\""
         },
         "n": 1,
-        "veredicto": "Correcto. Mismo ETag en 6 lecturas: el catalogo es estable."
+        "veredicto": "Correcto. Mismo ETag en 6 lecturas: el catálogo es estable."
       }
     ],
     "BRD-F-10": [
@@ -696,7 +696,7 @@
         "ms": 191,
         "n": 10,
         "body": "Abyssinian, Aegean, American Bobtail, American Curl, American Ringtail, ... 10 en total",
-        "veredicto": "Sin el parametro llega un listado. Con el parametro vacio, 400. Hallazgo H-08."
+        "veredicto": "Sin el parámetro llega un listado. Con el parámetro vacío, 400. Hallazgo H-08."
       }
     ],
     "BRD-N-01": [
@@ -717,7 +717,7 @@
         "ms": 150,
         "n": 0,
         "body": "[]",
-        "veredicto": "Correcto. Sin coincidencias llega lista vacia, no un error."
+        "veredicto": "Correcto. Sin coincidencias llega lista vacía, no un error."
       }
     ],
     "BRD-N-03": [
@@ -727,7 +727,7 @@
         "st": 400,
         "ms": 128,
         "body": "{\"statusCode\":400,\"message\":[\"q must be shorter than or equal to 30 characters\"],\"error\":\"Bad Request\"}",
-        "veredicto": "Correcto. El mensaje dice la longitud maxima."
+        "veredicto": "Correcto. El mensaje dice la longitud máxima."
       }
     ],
     "BRD-N-04": [
@@ -737,7 +737,7 @@
         "st": 200,
         "ms": 151,
         "n": 10,
-        "veredicto": "En el limite inferior: aceptado."
+        "veredicto": "En el límite inferior: aceptado."
       },
       {
         "req": "GET /breeds/search?q=aaaa... (30 caracteres)",
@@ -746,7 +746,7 @@
         "ms": 148,
         "n": 0,
         "body": "[]",
-        "veredicto": "En el limite superior: aceptado, sin coincidencias."
+        "veredicto": "En el límite superior: aceptado, sin coincidencias."
       },
       {
         "req": "GET /breeds/search?q=aaaa... (31 caracteres)",
@@ -778,7 +778,7 @@
         },
         "n": 1,
         "body": "Incluye image: {\"id\":\"Xwp-MBOtI\",\"url\":\"https://cdn2.thecatapi.com/images/Xwp-MBOtI.jpg\",\"width\":3225,\"height\":2419}",
-        "veredicto": "Con el parametro activado."
+        "veredicto": "Con el parámetro activado."
       },
       {
         "req": "GET /breeds/search?q=siam&attach_image=0",
@@ -790,7 +790,7 @@
         },
         "n": 1,
         "body": "Incluye image: {\"id\":\"Xwp-MBOtI\",\"url\":\"https://cdn2.thecatapi.com/images/Xwp-MBOtI.jpg\",\"width\":3225,\"height\":2419}",
-        "veredicto": "Mismo ETag y mismo cuerpo que con el valor 1. El parametro no hace nada. Hallazgo H-01."
+        "veredicto": "Mismo ETag y mismo cuerpo que con el valor 1. El parámetro no hace nada. Hallazgo H-01."
       }
     ],
     "BRD-N-07": [
@@ -921,7 +921,7 @@
         "hdr": {
           "content-type": "application/json; charset=utf-8"
         },
-        "veredicto": "Correcto. Los errores tambien declaran JSON."
+        "veredicto": "Correcto. Los errores también declaran JSON."
       }
     ],
     "CTR-07": [
@@ -939,7 +939,7 @@
         "st": 404,
         "ms": 121,
         "body": "\"message\":\"Cannot GET /v1/recurso/inexistente\"",
-        "veredicto": "El campo message es texto. Cambia de tipo segun el codigo. Hallazgo H-10."
+        "veredicto": "El campo message es texto. Cambia de tipo según el código. Hallazgo H-10."
       }
     ],
     "SEG-01": [
@@ -957,18 +957,18 @@
     ],
     "SEG-02": [
       {
-        "req": "GET /breeds/search?q=beng con x-api-key invalida",
-        "auth": "llave invalida",
+        "req": "GET /breeds/search?q=beng con x-api-key inválida",
+        "auth": "llave inválida",
         "st": 403,
         "ms": 199,
         "body": "{\"statusCode\":403,\"message\":\"Authentication required. Please provide a valid API key.\",\"error\":\"Forbidden\"}",
-        "veredicto": "Correcto. La llave se valida de verdad, no solo se comprueba que exista."
+        "veredicto": "Correcto. La llave se válida de verdad, no solo se comprueba que exista."
       }
     ],
     "SEG-03": [
       {
-        "req": "GET /breeds/search?q=beng con x-api-key vacia",
-        "auth": "llave vacia",
+        "req": "GET /breeds/search?q=beng con x-api-key vacía",
+        "auth": "llave vacía",
         "st": 403,
         "ms": 86,
         "body": "{\"statusCode\":403,\"message\":\"Authentication required. Please provide a valid API key.\",\"error\":\"Forbidden\"}",
@@ -1002,7 +1002,7 @@
         "ms": 149,
         "n": 0,
         "body": "[]",
-        "veredicto": "Lista vacia. No devuelve el catalogo ni filtra errores de base de datos."
+        "veredicto": "Lista vacía. No devuelve el catálogo ni filtra errores de base de datos."
       },
       {
         "req": "GET /breeds/search?q='; SELECT 1--",
@@ -1011,7 +1011,7 @@
         "ms": 147,
         "n": 0,
         "body": "[]",
-        "veredicto": "Lista vacia. Sin rastros de base de datos."
+        "veredicto": "Lista vacía. Sin rastros de base de datos."
       },
       {
         "req": "GET /breeds/search?q=%",
@@ -1020,7 +1020,7 @@
         "ms": 160,
         "n": 10,
         "body": "Abyssinian, Aegean, American Bobtail, American Curl, American Ringtail, ... 10 en total",
-        "veredicto": "Devuelve el mismo listado que una consulta sin termino. No da acceso extra."
+        "veredicto": "Devuelve el mismo listado que una consulta sin término. No da acceso extra."
       }
     ],
     "SEG-06": [
@@ -1034,7 +1034,7 @@
           "content-type": "application/json; charset=utf-8"
         },
         "body": "[]",
-        "veredicto": "Correcto. Lista vacia y tipo JSON, que impide que se interprete como pagina."
+        "veredicto": "Correcto. Lista vacía y tipo JSON, que impide que se interprete como página."
       }
     ],
     "SEG-07": [
@@ -1056,7 +1056,7 @@
         "ms": 262,
         "n": 5,
         "body": "Direcciones: https://cdn2.thecatapi.com/images/dmc.jpg, https://cdn2.thecatapi.com/images/2dd.jpg, ...",
-        "veredicto": "Correcto. La peticion y las 5 urls van por https."
+        "veredicto": "Correcto. La petición y las 5 urls van por https."
       }
     ],
     "SEG-09": [
@@ -1122,7 +1122,7 @@
         "st": 200,
         "ms": 303,
         "medicion": "mediana 303 ms",
-        "veredicto": "Correcto. Pedir 100 veces mas sube el tiempo un 1 por ciento."
+        "veredicto": "Correcto. Pedir 100 veces más sube el tiempo un 1 por ciento."
       }
     ],
     "NFN-04": [
@@ -1158,7 +1158,7 @@
         "ms": 326,
         "medicion": "minimo 197 ms, mediana 326 ms, maximo 510 ms",
         "body": "5 identificadores distintos en 5 lecturas",
-        "veredicto": "Correcto. No hay cache devolviendo siempre lo mismo."
+        "veredicto": "Correcto. No hay caché devolviendo siempre lo mismo."
       }
     ],
     "NFN-07": [
@@ -1200,7 +1200,7 @@
         "ms": 191,
         "n": 10,
         "body": "Abyssinian, Aegean, American Bobtail, American Curl, American Ringtail, ... 10 en total",
-        "veredicto": "Mismo resultado. El comodin no concede acceso adicional."
+        "veredicto": "Mismo resultado. El comodín no concede acceso adicional."
       }
     ],
     "ESP-01": [
@@ -1212,7 +1212,7 @@
         "n": 10,
         "campos": "id, url, width, height, created_at, breeds, categories, colours, tags",
         "body": "Razas devueltas en los 10 elementos: beng, beng, beng, beng, beng, beng, beng, beng, beng, beng",
-        "veredicto": "Correcto. El filtro se cumple en los 10 resultados. Es el unico filtro del endpoint que funciona."
+        "veredicto": "Correcto. El filtro se cumple en los 10 resultados. Es el único filtro del endpoint que funciona."
       }
     ],
     "ESP-02": [
@@ -1234,7 +1234,7 @@
         "ms": 176,
         "n": 0,
         "body": "[]",
-        "veredicto": "Correcto. Sin coincidencias devuelve coleccion vacia, no error."
+        "veredicto": "Correcto. Sin coincidencias devuelve colección vacía, no error."
       }
     ],
     "ESP-04": [
@@ -1245,7 +1245,7 @@
         "ms": 205,
         "n": 10,
         "body": "Valores de sub_id devueltos: 123, (ausente), (ausente), (ausente), (ausente), (ausente), (ausente), (ausente), (ausente), demo-c45459",
-        "veredicto": "Se pidio sub_id=demo-9252f4 y ningun elemento lo trae. El filtro se acepta y no se aplica. Hallazgo H-13."
+        "veredicto": "Se pidió sub_id=demo-9252f4 y ningún elemento lo trae. El filtro se acepta y no se aplica. Hallazgo H-13."
       }
     ],
     "ESP-05": [
@@ -1255,8 +1255,8 @@
         "st": 200,
         "ms": 221,
         "n": 10,
-        "body": "categories de los 10 elementos: vacio en todos",
-        "veredicto": "Ningun resultado trae categorias. Hallazgo H-14. Conviene confirmar si la credencial de demostracion tiene acceso a las categorias antes de clasificarlo como defecto."
+        "body": "categories de los 10 elementos: vacío en todos",
+        "veredicto": "Ningún resultado trae categorías. Hallazgo H-14. Conviene confirmar si la credencial de demostración tiene acceso a las categorías antes de clasificarlo como defecto."
       }
     ],
     "ESP-06": [
@@ -1284,7 +1284,7 @@
         "st": 200,
         "ms": 188,
         "n": 3,
-        "veredicto": "Correcto. El parametro no distingue mayusculas de minusculas."
+        "veredicto": "Correcto. El parámetro no distingue mayúsculas de minúsculas."
       }
     ],
     "ESP-08": [
@@ -1296,7 +1296,7 @@
         "n": null,
         "campos": "id, url, width, height, sub_id, created_at, breeds, categories, colours, tags",
         "body": "{\"id\":\"0XYvRd7oD\",\"url\":\"https://cdn2.thecatapi.com/images/0XYvRd7oD.jpg\",\"width\":1204,\"height\":1445,\"sub_id\":\"abyssinian-cat-names-1.jpg\",\"breeds\":[{\"id\":\"abys\",\"name\":\"Abyssinian\", ...}]}",
-        "veredicto": "Correcto. Coincide con el ejemplo de la especificacion."
+        "veredicto": "Correcto. Coincide con el ejemplo de la especificación."
       }
     ],
     "ESP-09": [
@@ -1325,7 +1325,7 @@
         "st": 200,
         "ms": 215,
         "n": 2,
-        "body": "Primer elemento: bku.jpg de 4592x3056, que no es una imagen pequena",
+        "body": "Primer elemento: bku.jpg de 4592x3056, que no es una imagen pequeña",
         "veredicto": "Aceptado y no aplicado."
       },
       {
@@ -1335,7 +1335,7 @@
         "ms": 196,
         "n": 2,
         "body": "Direcciones devueltas: 46k.jpg y cnv.jpg",
-        "veredicto": "Se pidio gif y llegaron jpg."
+        "veredicto": "Se pidió gif y llegaron jpg."
       },
       {
         "req": "GET /images/search?limit=2&format=src",
@@ -1344,7 +1344,7 @@
         "ms": 188,
         "n": 2,
         "body": "Content-Type: application/json. Direcciones: 3ls.jpg y MTc5MTMxNw.jpg",
-        "veredicto": "Devuelve JSON. Los tres parametros que el enunciado lista y la especificacion no declara son inertes. Hallazgo H-17."
+        "veredicto": "Devuelve JSON. Los tres parámetros que el enunciado lista y la especificación no declara son inertes. Hallazgo H-17."
       }
     ]
   },

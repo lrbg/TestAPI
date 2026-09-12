@@ -22,7 +22,7 @@ const rutaHistorico = process.argv[2] ?? 'historico/historico.json';
 const rutaResumen = process.argv[3] ?? 'resultados/resumen.json';
 
 if (!existsSync(rutaResumen)) {
-  console.error(`No se encontro el resumen de ejecucion en ${rutaResumen}`);
+  console.error(`No se encontró el resumen de ejecución en ${rutaResumen}`);
   process.exit(1);
 }
 
@@ -77,7 +77,7 @@ if (existsSync(rutaHistorico)) {
     const contenido = JSON.parse(readFileSync(rutaHistorico, 'utf8'));
     if (Array.isArray(contenido)) historico = contenido;
   } catch {
-    console.warn('El historico existente no pudo interpretarse y se reconstruye desde cero.');
+    console.warn('El histórico existente no pudo interpretarse y se reconstruye desde cero.');
   }
 }
 
@@ -95,6 +95,6 @@ mkdirSync(dirname(rutaHistorico), { recursive: true });
 writeFileSync(rutaHistorico, JSON.stringify(historico, null, 2));
 
 console.log(
-  `Historico actualizado en ${rutaHistorico}: ${historico.length} ejecuciones registradas.`
+  `Histórico actualizado en ${rutaHistorico}: ${historico.length} ejecuciones registradas.`
 );
-console.log(`Ejecucion incorporada: numero ${entrada.numero}, veredicto "${entrada.veredicto}".`);
+console.log(`Ejecución incorporada: número ${entrada.numero}, veredicto "${entrada.veredicto}".`);

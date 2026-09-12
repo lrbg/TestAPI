@@ -2,7 +2,7 @@
 
 87 pruebas automatizadas con evidencia real, escenarios de carga y un flujo que corre solo.
 
-**Portal:** https://lrbg.github.io/TESTAPI/ · **Resumen en PDF:** [`entregables/Resumen-QA-API.pdf`](entregables/Resumen-QA-API.pdf)
+**Portal:** https://lrbg.github.io/TESTAPI/ · **Documento de entrega:** [`entregables/Evaluacion-QA-API.pdf`](entregables/Evaluacion-QA-API.pdf)
 
 ---
 
@@ -188,7 +188,7 @@ performance/          5 escenarios de k6
 scripts/              consolidacion, historico, portal, triaje y documentos
 docs/                 portal publicado
   datos/              catalogo, evidencias y hallazgos: fuente unica
-entregables/          resumen y documento completo, en Word y PDF
+entregables/          documento de entrega, en Word y PDF
 ```
 
 Las pruebas, el portal y los documentos leen los mismos archivos de `docs/datos/`, así que no pueden contradecirse.
@@ -197,10 +197,17 @@ Las pruebas, el portal y los documentos leen los mismos archivos de `docs/datos/
 
 ## Documentos
 
-| Archivo | Qué es |
+Un solo documento, [`entregables/Evaluacion-QA-API.pdf`](entregables/Evaluacion-QA-API.pdf) (43 páginas), con los cinco entregables pedidos:
+
+| Capítulo | Qué contiene |
 | --- | --- |
-| [`Resumen-QA-API.pdf`](entregables/Resumen-QA-API.pdf) | **27 páginas.** Endpoint, listado de pruebas, petición, respuesta y evidencia |
-| [`Evaluacion-tecnica-QA-API.pdf`](entregables/Evaluacion-tecnica-QA-API.pdf) | 97 páginas. Análisis completo, plan de pruebas, priorización y automatización |
+| 1. Análisis del API | Ambigüedades, riesgos funcionales y técnicos, dependencias externas e información requerida |
+| 2. Plan de pruebas | Objetivo, alcance, fuera de alcance, supuestos, datos, estrategia, escenarios y criterios |
+| 3. Casos de prueba | Los 87 casos con sus ocho campos, en hoja horizontal, con el status real y la respuesta obtenida |
+| 4. Priorización | Qué ejecutar en dos horas, qué dejar para después y qué riesgos comunicar |
+| 5. Automatización | Qué automatizar, qué dejar manual, con qué herramientas y con qué enfoque |
+
+Se regenera con `npm run documento`. Lee los mismos archivos de `docs/datos/` que el portal.
 
 ---
 

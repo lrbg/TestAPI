@@ -1,15 +1,15 @@
 {
   "version": 1,
-  "descripcion": "Casos de prueba con su resultado esperado y el resultado real de la ejecucion contra el servicio.",
+  "descripcion": "Casos de prueba con su resultado esperado y el resultado real de la ejecución contra el servicio.",
   "casos": [
     {
       "id": "IMG-F-01",
       "endpoint": "GET /images/search",
-      "objetivo": "Sin parametros debe llegar 1 imagen.",
-      "entrada": "Sin parametros. Sin credencial.",
+      "objetivo": "Sin parámetros debe llegar 1 imagen.",
+      "entrada": "Sin parámetros. Sin credencial.",
       "esperado": "200. Llega 1 imagen con id, url, ancho y alto.",
       "validaciones": [
-        "Codigo 200",
+        "Código 200",
         "Llega 1 imagen",
         "Responde en menos de 3 segundos"
       ],
@@ -30,11 +30,11 @@
     {
       "id": "IMG-F-02",
       "endpoint": "GET /images/search",
-      "objetivo": "El parametro limit decide cuantas imagenes llegan.",
+      "objetivo": "El parámetro limit decide cuántas imágenes llegan.",
       "entrada": "limit con los valores 1, 3, 5 y 10. Con credencial.",
       "esperado": "200. Llegan tantas como se piden: 1, 3, 5 y 10.",
       "validaciones": [
-        "Codigo 200",
+        "Código 200",
         "La cantidad coincide con lo pedido"
       ],
       "prioridad": "Alta",
@@ -42,7 +42,7 @@
       "riesgo": "RF-06",
       "statusEsperado": "200",
       "statusReal": "200, 200",
-      "resultadoReal": "Devuelve 1 elemento. Se observa una direccion terminada en .false, registrada como hallazgo H-12. Correcto. Devuelve exactamente los 10 solicitados.",
+      "resultadoReal": "Devuelve 1 elemento. Se observa una dirección terminada en .false, registrada como hallazgo H-12. Correcto. Devuelve exactamente los 10 solicitados.",
       "peticiones": [
         "GET /images/search?limit=1",
         "GET /images/search?limit=10"
@@ -60,7 +60,7 @@
       "entrada": "limit igual a 10. Sin credencial.",
       "esperado": "200. Las 10 traen id, url con https y medidas mayores que cero.",
       "validaciones": [
-        "Codigo 200",
+        "Código 200",
         "id con contenido",
         "url con https",
         "Ancho y alto mayores que cero"
@@ -86,7 +86,7 @@
       "entrada": "limit igual a 10. Con credencial.",
       "esperado": "200. Los 10 identificadores son distintos.",
       "validaciones": [
-        "Codigo 200",
+        "Código 200",
         "Sin identificadores repetidos"
       ],
       "prioridad": "Media",
@@ -110,7 +110,7 @@
       "entrada": "Tres llamadas consecutivas con limit igual a 10 y order igual a RANDOM.",
       "esperado": "200. Tres llamadas seguidas devuelven conjuntos distintos.",
       "validaciones": [
-        "Codigo 200",
+        "Código 200",
         "Los conjuntos no se repiten"
       ],
       "prioridad": "Media",
@@ -118,7 +118,7 @@
       "riesgo": "RF-03",
       "statusEsperado": "200",
       "statusReal": "200, 200",
-      "resultadoReal": "Primera extraccion. Correcto. Ningun identificador coincide con la llamada anterior: la aleatoriedad opera.",
+      "resultadoReal": "Primera extracción. Correcto. Ningún identificador coincide con la llamada anterior: la aleatoriedad opera.",
       "peticiones": [
         "GET /images/search?limit=10&order=RANDOM (llamada 1)",
         "GET /images/search?limit=10&order=RANDOM (llamada 2)"
@@ -132,12 +132,12 @@
     {
       "id": "IMG-F-06",
       "endpoint": "GET /images/search",
-      "objetivo": "El filtro has_breeds debe devolver solo imagenes con raza.",
+      "objetivo": "El filtro has_breeds debe devolver solo imágenes con raza.",
       "entrada": "limit igual a 5 y has_breeds igual a 1. Con credencial.",
-      "esperado": "200. Las 5 imagenes traen al menos una raza.",
+      "esperado": "200. Las 5 imágenes traen al menos una raza.",
       "validaciones": [
-        "Codigo 200",
-        "Llegan 5 imagenes",
+        "Código 200",
+        "Llegan 5 imágenes",
         "Cada una trae raza"
       ],
       "prioridad": "Media",
@@ -159,17 +159,17 @@
       "endpoint": "GET /images/search",
       "objetivo": "Los tres valores de order deben aceptarse.",
       "entrada": "order igual a ASC, DESC y RANDOM, con limit igual a 3 en los tres casos.",
-      "esperado": "200 con ASC, DESC y RANDOM. Llegan 3 imagenes en cada caso.",
+      "esperado": "200 con ASC, DESC y RANDOM. Llegan 3 imágenes en cada caso.",
       "validaciones": [
-        "Codigo 200 en los tres",
-        "Llegan 3 imagenes"
+        "Código 200 en los tres",
+        "Llegan 3 imágenes"
       ],
       "prioridad": "Media",
       "tipo": "Funcional",
       "riesgo": "RF-02",
       "statusEsperado": "200",
       "statusReal": "200, 200, 200",
-      "resultadoReal": "Aceptado. 3 elementos y encabezados de paginacion presentes. Aceptado. 3 elementos y encabezados presentes. Aceptado. 3 elementos, sin encabezados de paginacion.",
+      "resultadoReal": "Aceptado. 3 elementos y encabezados de paginación presentes. Aceptado. 3 elementos y encabezados presentes. Aceptado. 3 elementos, sin encabezados de paginación.",
       "peticiones": [
         "GET /images/search?limit=3&order=ASC",
         "GET /images/search?limit=3&order=DESC",
@@ -184,20 +184,20 @@
     {
       "id": "IMG-F-08",
       "endpoint": "GET /images/search",
-      "objetivo": "Dos paginas seguidas no deben repetir imagenes.",
+      "objetivo": "Dos páginas seguidas no deben repetir imágenes.",
       "entrada": "order igual a ASC, limit igual a 5, con page igual a 0 y a 1.",
-      "esperado": "200. Pagina 0 y pagina 1 traen 5 cada una, sin ninguna en comun.",
+      "esperado": "200. Página 0 y página 1 traen 5 cada una, sin ninguna en común.",
       "validaciones": [
-        "Codigo 200",
-        "5 por pagina",
-        "Ninguna imagen repetida entre paginas"
+        "Código 200",
+        "5 por página",
+        "Ninguna imagen repetida entre páginas"
       ],
       "prioridad": "Alta",
       "tipo": "Funcional",
       "riesgo": "RF-02",
       "statusEsperado": "200",
       "statusReal": "200, 200",
-      "resultadoReal": "Pagina 0. Correcto. Interseccion vacia con la pagina 0: la paginacion no duplica elementos.",
+      "resultadoReal": "Página 0. Correcto. Intersección vacía con la página 0: la paginación no duplica elementos.",
       "peticiones": [
         "GET /images/search?limit=5&order=ASC&page=0",
         "GET /images/search?limit=5&order=ASC&page=1"
@@ -212,10 +212,10 @@
       "id": "IMG-F-09",
       "endpoint": "GET /images/search",
       "objetivo": "La misma consulta ordenada debe dar el mismo resultado.",
-      "entrada": "Dos llamadas identicas con order igual a ASC, limit igual a 5 y page igual a 0.",
+      "entrada": "Dos llamadas idénticas con order igual a ASC, limit igual a 5 y page igual a 0.",
       "esperado": "200. Dos lecturas iguales devuelven los mismos 5 identificadores.",
       "validaciones": [
-        "Codigo 200",
+        "Código 200",
         "Mismos identificadores en ambas lecturas"
       ],
       "prioridad": "Media",
@@ -237,13 +237,13 @@
     {
       "id": "IMG-F-10",
       "endpoint": "GET /images/search",
-      "objetivo": "Una consulta ordenada debe traer los datos de paginacion.",
+      "objetivo": "Una consulta ordenada debe traer los datos de paginación.",
       "entrada": "order igual a DESC, limit igual a 5, page igual a 0. Con credencial.",
       "esperado": "200 con Pagination-Count 13492, Page 0 y Limit 5.",
       "validaciones": [
         "Los tres encabezados presentes",
         "Total mayor que cero",
-        "Pagina y tamano coinciden con lo pedido"
+        "Página y tamaño coinciden con lo pedido"
       ],
       "prioridad": "Alta",
       "tipo": "Funcional",
@@ -262,19 +262,19 @@
     {
       "id": "IMG-F-11",
       "endpoint": "GET /images/search",
-      "objetivo": "Con llave, pedir 100 imagenes debe entregar 100.",
+      "objetivo": "Con llave, pedir 100 imágenes debe entregar 100.",
       "entrada": "limit igual a 100. Con credencial.",
-      "esperado": "200. Llegan 100 imagenes.",
+      "esperado": "200. Llegan 100 imágenes.",
       "validaciones": [
-        "Codigo 200",
-        "Llegan 100 imagenes"
+        "Código 200",
+        "Llegan 100 imágenes"
       ],
       "prioridad": "Media",
       "tipo": "Funcional",
       "riesgo": "RF-06",
       "statusEsperado": "200",
       "statusReal": "200",
-      "resultadoReal": "Correcto. El maximo declarado se entrega completo cuando hay credencial.",
+      "resultadoReal": "Correcto. El máximo declarado se entrega completo cuando hay credencial.",
       "peticiones": [
         "GET /images/search?limit=100"
       ],
@@ -288,9 +288,9 @@
       "endpoint": "GET /images/search",
       "objetivo": "Sin llave, la imagen debe traer solo 4 campos.",
       "entrada": "limit igual a 5. Sin credencial.",
-      "esperado": "200. Cada imagen trae id, url, ancho y alto, y nada mas.",
+      "esperado": "200. Cada imagen trae id, url, ancho y alto, y nada más.",
       "validaciones": [
-        "Codigo 200",
+        "Código 200",
         "Solo los 4 campos",
         "Sin campos extra"
       ],
@@ -311,11 +311,11 @@
     {
       "id": "IMG-N-01",
       "endpoint": "GET /images/search",
-      "objetivo": "Pedir 0 imagenes debe rechazarse con un mensaje claro.",
+      "objetivo": "Pedir 0 imágenes debe rechazarse con un mensaje claro.",
       "entrada": "limit igual a 0.",
       "esperado": "400. Mensaje: limit must not be less than 1.",
       "validaciones": [
-        "Codigo 400",
+        "Código 400",
         "error igual a Bad Request",
         "El mensaje dice la regla"
       ],
@@ -340,7 +340,7 @@
       "entrada": "limit igual a -5.",
       "esperado": "400. El mismo mensaje que con limit igual a 0.",
       "validaciones": [
-        "Codigo 400",
+        "Código 400",
         "Mensaje coherente"
       ],
       "prioridad": "Media",
@@ -362,10 +362,10 @@
       "endpoint": "GET /images/search",
       "objetivo": "Un limit con letras debe rechazarse.",
       "entrada": "limit igual a abc.",
-      "esperado": "400. Tres mensajes, uno dice que debe ser un numero entero.",
+      "esperado": "400. Tres mensajes, uno dice que debe ser un número entero.",
       "validaciones": [
-        "Codigo 400",
-        "El mensaje senala el tipo"
+        "Código 400",
+        "El mensaje señala el tipo"
       ],
       "prioridad": "Media",
       "tipo": "Negativo",
@@ -384,19 +384,19 @@
     {
       "id": "IMG-N-04",
       "endpoint": "GET /images/search",
-      "objetivo": "Pedir mas de 100 imagenes debe rechazarse.",
+      "objetivo": "Pedir más de 100 imágenes debe rechazarse.",
       "entrada": "limit igual a 101.",
       "esperado": "400. Mensaje: limit must not be greater than 100.",
       "validaciones": [
-        "Codigo 400",
-        "El mensaje dice el maximo"
+        "Código 400",
+        "El mensaje dice el máximo"
       ],
       "prioridad": "Alta",
       "tipo": "Negativo",
       "riesgo": "RF-06",
       "statusEsperado": "400",
       "statusReal": "400",
-      "resultadoReal": "Correcto. El mensaje declara el maximo admitido.",
+      "resultadoReal": "Correcto. El mensaje declara el máximo admitido.",
       "peticiones": [
         "GET /images/search?limit=101"
       ],
@@ -408,11 +408,11 @@
     {
       "id": "IMG-N-05",
       "endpoint": "GET /images/search",
-      "objetivo": "Una pagina negativa debe rechazarse.",
+      "objetivo": "Una página negativa debe rechazarse.",
       "entrada": "order igual a ASC, limit igual a 5, page igual a -1.",
       "esperado": "400. Mensaje: page must not be less than 0.",
       "validaciones": [
-        "Codigo 400",
+        "Código 400",
         "Mensaje coherente"
       ],
       "prioridad": "Media",
@@ -432,19 +432,19 @@
     {
       "id": "IMG-N-06",
       "endpoint": "GET /images/search",
-      "objetivo": "Un order invalido debe decir cuales son los validos.",
+      "objetivo": "Un order inválido debe decir cuales son los válidos.",
       "entrada": "order igual a SIDEWAYS, limit igual a 2.",
       "esperado": "400. Mensaje: order must be one of ASC, DESC, RANDOM.",
       "validaciones": [
-        "Codigo 400",
-        "El mensaje lista los valores validos"
+        "Código 400",
+        "El mensaje lista los valores válidos"
       ],
       "prioridad": "Alta",
       "tipo": "Negativo",
       "riesgo": "RF-01",
       "statusEsperado": "400",
       "statusReal": "400",
-      "resultadoReal": "Correcto. El mensaje enumera los valores validos.",
+      "resultadoReal": "Correcto. El mensaje enumera los valores válidos.",
       "peticiones": [
         "GET /images/search?limit=2&order=SIDEWAYS"
       ],
@@ -457,11 +457,11 @@
       "id": "IMG-N-07",
       "endpoint": "POST /images/search",
       "objetivo": "Un POST sobre un recurso de solo lectura debe rechazarse.",
-      "entrada": "Peticion POST sin cuerpo.",
-      "esperado": "Error. Llega 404 con Cannot POST. Lo correcto seria 405. Hallazgo H-07.",
+      "entrada": "Petición POST sin cuerpo.",
+      "esperado": "Error. Llega 404 con Cannot POST. Lo correcto sería 405. Hallazgo H-07.",
       "validaciones": [
-        "Codigo 400 o mayor",
-        "Registro de la desviacion"
+        "Código 400 o mayor",
+        "Registro de la desviación"
       ],
       "prioridad": "Baja",
       "tipo": "Negativo",
@@ -484,7 +484,7 @@
       "entrada": "Ruta no definida en el servicio.",
       "esperado": "404 con cuerpo JSON y error igual a Not Found.",
       "validaciones": [
-        "Codigo 404",
+        "Código 404",
         "El cuerpo cumple la forma de error"
       ],
       "prioridad": "Media",
@@ -505,12 +505,12 @@
       "id": "IMG-N-09",
       "endpoint": "GET /images/search y rutas de error",
       "objetivo": "Todos los errores deben tener la misma forma.",
-      "entrada": "Tres causas distintas: limit invalido, order invalido y ruta inexistente.",
+      "entrada": "Tres causas distintas: limit inválido, order inválido y ruta inexistente.",
       "esperado": "Los tres traen statusCode, timestamp, path, message y error.",
       "validaciones": [
         "Misma forma en los tres",
         "Ruta presente",
-        "Fecha valida"
+        "Fecha válida"
       ],
       "prioridad": "Alta",
       "tipo": "Contrato",
@@ -534,7 +534,7 @@
       "endpoint": "GET /images/search",
       "objetivo": "El error no debe filtrar detalles internos.",
       "entrada": "limit igual a abc.",
-      "esperado": "400 sin rutas del sistema, trazas ni nombres de librerias.",
+      "esperado": "400 sin rutas del sistema, trazas ni nombres de librerías.",
       "validaciones": [
         "Sin indicios internos en el cuerpo"
       ],
@@ -555,19 +555,19 @@
     {
       "id": "IMG-B-01",
       "endpoint": "GET /images/search",
-      "objetivo": "Probar el limite inferior de limit: 0 y 1.",
+      "objetivo": "Probar el límite inferior de limit: 0 y 1.",
       "entrada": "limit igual a 0 y limit igual a 1.",
       "esperado": "400 con 0. 200 con 1 imagen.",
       "validaciones": [
         "Rechazo en 0",
-        "Aceptacion en 1"
+        "Aceptación en 1"
       ],
       "prioridad": "Alta",
       "tipo": "Borde",
       "riesgo": "RF-06",
       "statusEsperado": "400 y 200",
       "statusReal": "400, 200",
-      "resultadoReal": "Un paso fuera del rango: rechazado. Frontera valida: aceptado con 1 elemento.",
+      "resultadoReal": "Un paso fuera del rango: rechazado. Frontera válida: aceptado con 1 elemento.",
       "peticiones": [
         "GET /images/search?limit=0",
         "GET /images/search?limit=1"
@@ -581,11 +581,11 @@
     {
       "id": "IMG-B-02",
       "endpoint": "GET /images/search",
-      "objetivo": "Probar el limite superior de limit: 100 y 101.",
+      "objetivo": "Probar el límite superior de limit: 100 y 101.",
       "entrada": "limit igual a 100 y limit igual a 101.",
-      "esperado": "200 con 100 imagenes. 400 con 101.",
+      "esperado": "200 con 100 imágenes. 400 con 101.",
       "validaciones": [
-        "Aceptacion en 100",
+        "Aceptación en 100",
         "Rechazo en 101"
       ],
       "prioridad": "Alta",
@@ -593,7 +593,7 @@
       "riesgo": "RF-06",
       "statusEsperado": "200 y 400",
       "statusReal": "200, 400",
-      "resultadoReal": "Frontera valida: 100 elementos entregados. Un paso fuera: rechazado.",
+      "resultadoReal": "Frontera válida: 100 elementos entregados. Un paso fuera: rechazado.",
       "peticiones": [
         "GET /images/search?limit=100",
         "GET /images/search?limit=101"
@@ -607,7 +607,7 @@
     {
       "id": "IMG-B-03",
       "endpoint": "GET /images/search",
-      "objetivo": "Ver si sin llave llegan las 50 imagenes pedidas.",
+      "objetivo": "Ver si sin llave llegan las 50 imágenes pedidas.",
       "entrada": "limit igual a 50, ejecutado dos veces: sin credencial y con credencial.",
       "esperado": "Sin llave 200 con 10. Con llave 200 con 50. Nadie avisa del recorte. Hallazgo H-02.",
       "validaciones": [
@@ -620,7 +620,7 @@
       "riesgo": "RF-06",
       "statusEsperado": "200 y 200",
       "statusReal": "200, 200",
-      "resultadoReal": "Se pidieron 50 y llegaron 10. Ningun encabezado informa el recorte. Hallazgo H-02. La misma peticion con credencial entrega los 50. Confirma que el recorte depende del plan, no del dato.",
+      "resultadoReal": "Se pidieron 50 y llegaron 10. Ningún encabezado informa el recorte. Hallazgo H-02. La misma petición con credencial entrega los 50. Confirma que el recorte depende del plan, no del dato.",
       "peticiones": [
         "GET /images/search?limit=50",
         "GET /images/search?limit=50"
@@ -634,12 +634,12 @@
     {
       "id": "IMG-B-04",
       "endpoint": "GET /images/search",
-      "objetivo": "Pedir una pagina mas alla del final.",
+      "objetivo": "Pedir una página más alla del final.",
       "entrada": "order igual a ASC, limit igual a 10, page igual a 500000.",
-      "esperado": "200 con lista vacia y Pagination-Count 13492.",
+      "esperado": "200 con lista vacía y Pagination-Count 13492.",
       "validaciones": [
-        "Codigo 200",
-        "Lista vacia",
+        "Código 200",
+        "Lista vacía",
         "Total informado"
       ],
       "prioridad": "Media",
@@ -647,7 +647,7 @@
       "riesgo": "RF-02",
       "statusEsperado": "200",
       "statusReal": "200",
-      "resultadoReal": "Correcto. Coleccion vacia y el total real informado en el encabezado.",
+      "resultadoReal": "Correcto. Colección vacía y el total real informado en el encabezado.",
       "peticiones": [
         "GET /images/search?limit=10&order=ASC&page=500000"
       ],
@@ -659,11 +659,11 @@
     {
       "id": "IMG-B-05",
       "endpoint": "GET /images/search",
-      "objetivo": "Pedir la ultima pagina calculada con el total.",
-      "entrada": "Lectura del total desde los encabezados y peticion de la ultima pagina util con limit igual a 10.",
-      "esperado": "200 con entre 1 y 10 imagenes.",
+      "objetivo": "Pedir la última página calculada con el total.",
+      "entrada": "Lectura del total desde los encabezados y petición de la última página útil con limit igual a 10.",
+      "esperado": "200 con entre 1 y 10 imágenes.",
       "validaciones": [
-        "Codigo 200",
+        "Código 200",
         "Llegan resultados"
       ],
       "prioridad": "Media",
@@ -671,7 +671,7 @@
       "riesgo": "RF-02",
       "statusEsperado": "200",
       "statusReal": "200",
-      "resultadoReal": "Correcto. La ultima pagina util calculada desde el total (13492 / 10) trae resultados.",
+      "resultadoReal": "Correcto. La última página útil calculada desde el total (13492 / 10) trae resultados.",
       "peticiones": [
         "GET /images/search?limit=10&order=ASC&page=1348"
       ],
@@ -688,14 +688,14 @@
       "esperado": "200 con resultados. El valor se acepta y se ignora. Hallazgo H-04.",
       "validaciones": [
         "Sin error de servidor",
-        "Registro de la desviacion"
+        "Registro de la desviación"
       ],
       "prioridad": "Media",
       "tipo": "Borde",
       "riesgo": "RF-01",
       "statusEsperado": "200",
       "statusReal": "200",
-      "resultadoReal": "El valor invalido se acepta y se ignora. order rechaza lo desconocido, size no. Hallazgo H-04.",
+      "resultadoReal": "El valor inválido se acepta y se ignora. order rechaza lo desconocido, size no. Hallazgo H-04.",
       "peticiones": [
         "GET /images/search?size=gigantesco"
       ],
@@ -709,17 +709,17 @@
       "endpoint": "GET /images/search",
       "objetivo": "Ver si mime_types filtra de verdad.",
       "entrada": "limit igual a 10 y mime_types igual a png.",
-      "esperado": "200. Se pidio png y llegaron gif y jpg. Hallazgo H-03.",
+      "esperado": "200. Se pidió png y llegaron gif y jpg. Hallazgo H-03.",
       "validaciones": [
-        "Codigo 200",
-        "Revision de la extension de cada url"
+        "Código 200",
+        "Revisión de la extensión de cada url"
       ],
       "prioridad": "Alta",
       "tipo": "Borde",
       "riesgo": "RF-01",
       "statusEsperado": "200",
       "statusReal": "200",
-      "resultadoReal": "Se pidio png y llegaron gif y jpg. El filtro no se aplica. Hallazgo H-03.",
+      "resultadoReal": "Se pidió png y llegaron gif y jpg. El filtro no se aplica. Hallazgo H-03.",
       "peticiones": [
         "GET /images/search?limit=10&mime_types=png"
       ],
@@ -742,7 +742,7 @@
       "riesgo": "RF-01",
       "statusEsperado": "200",
       "statusReal": "200",
-      "resultadoReal": "Un tipo no aplicable a imagenes devuelve una imagen jpg. Confirma H-03.",
+      "resultadoReal": "Un tipo no aplicable a imágenes devuelve una imagen jpg. Confirma H-03.",
       "peticiones": [
         "GET /images/search?mime_types=application/pdf"
       ],
@@ -754,19 +754,19 @@
     {
       "id": "IMG-B-09",
       "endpoint": "GET /images/search",
-      "objetivo": "Un parametro inventado no debe romper la consulta.",
-      "entrada": "limit igual a 3 junto con un parametro inexistente.",
-      "esperado": "200 con las 3 imagenes pedidas.",
+      "objetivo": "Un parámetro inventado no debe romper la consulta.",
+      "entrada": "limit igual a 3 junto con un parámetro inexistente.",
+      "esperado": "200 con las 3 imágenes pedidas.",
       "validaciones": [
-        "Codigo 200",
-        "Llegan 3 imagenes"
+        "Código 200",
+        "Llegan 3 imágenes"
       ],
       "prioridad": "Baja",
       "tipo": "Borde",
       "riesgo": "RF-01",
       "statusEsperado": "200",
       "statusReal": "200",
-      "resultadoReal": "El parametro desconocido se ignora y limit sigue operando. Politica permisiva.",
+      "resultadoReal": "El parámetro desconocido se ignora y limit sigue operando. Política permisiva.",
       "peticiones": [
         "GET /images/search?limit=3&parametro_inexistente=valor"
       ],
@@ -783,7 +783,7 @@
       "esperado": "200 en ambos con el mismo JSON. format igual a src no entrega la imagen. Hallazgo H-05.",
       "validaciones": [
         "Mismo tipo de contenido",
-        "Registro de la desviacion"
+        "Registro de la desviación"
       ],
       "prioridad": "Media",
       "tipo": "Borde",
@@ -804,7 +804,7 @@
     {
       "id": "IMG-B-11",
       "endpoint": "GET /images/search",
-      "objetivo": "Ver cuando llegan los datos de paginacion.",
+      "objetivo": "Ver cuando llegan los datos de paginación.",
       "entrada": "Dos consultas con credencial: una con order igual a RANDOM y otra con order igual a ASC y page igual a 0.",
       "esperado": "Con RANDOM no llegan. Con ASC si. Hallazgo H-06.",
       "validaciones": [
@@ -816,7 +816,7 @@
       "riesgo": "RF-02",
       "statusEsperado": "200 y 200",
       "statusReal": "200, 200",
-      "resultadoReal": "Sin encabezados de paginacion. Con encabezados. La condicion es el orden determinista. Hallazgo H-06.",
+      "resultadoReal": "Sin encabezados de paginación. Con encabezados. La condición es el orden determinista. Hallazgo H-06.",
       "peticiones": [
         "GET /images/search?limit=5&order=RANDOM",
         "GET /images/search?limit=5&order=ASC&page=0"
@@ -834,7 +834,7 @@
       "entrada": "q igual a beng. Con credencial.",
       "esperado": "200 con 1 raza: id beng, nombre Bengal.",
       "validaciones": [
-        "Codigo 200",
+        "Código 200",
         "Llega 1 raza",
         "id y nombre correctos"
       ],
@@ -859,7 +859,7 @@
       "entrada": "q igual a beng, siam, maine coon y abys.",
       "esperado": "200 en las cuatro: Bengal, Siamese, Maine Coon y Abyssinian.",
       "validaciones": [
-        "Cada busqueda trae su raza"
+        "Cada búsqueda trae su raza"
       ],
       "prioridad": "Alta",
       "tipo": "Funcional",
@@ -882,7 +882,7 @@
     {
       "id": "BRD-F-03",
       "endpoint": "GET /breeds/search",
-      "objetivo": "Buscar en mayusculas o minusculas debe dar lo mismo.",
+      "objetivo": "Buscar en mayúsculas o minúsculas debe dar lo mismo.",
       "entrada": "q igual a bengal, BENGAL y BeNgAl.",
       "esperado": "200 en las tres variantes, con el mismo resultado.",
       "validaciones": [
@@ -893,7 +893,7 @@
       "riesgo": "RF-04",
       "statusEsperado": "200",
       "statusReal": "200",
-      "resultadoReal": "Correcto. Mismo ETag que la consulta en minusculas: la respuesta es identica.",
+      "resultadoReal": "Correcto. Mismo ETag que la consulta en minúsculas: la respuesta es idéntica.",
       "peticiones": [
         "GET /breeds/search?q=BENGAL"
       ],
@@ -909,7 +909,7 @@
       "entrada": "q igual a maine coon, codificado en la cadena de consulta.",
       "esperado": "200 con Maine Coon, id mcoo.",
       "validaciones": [
-        "Codigo 200",
+        "Código 200",
         "id y nombre correctos"
       ],
       "prioridad": "Media",
@@ -933,15 +933,15 @@
       "entrada": "q igual a american.",
       "esperado": "200 con 5 razas, todas con american en el nombre.",
       "validaciones": [
-        "Mas de una raza",
-        "El nombre contiene el termino"
+        "Más de una raza",
+        "El nombre contiene el término"
       ],
       "prioridad": "Media",
       "tipo": "Funcional",
       "riesgo": "RF-04",
       "statusEsperado": "200",
       "statusReal": "200",
-      "resultadoReal": "Correcto. Las 5 razas devueltas contienen el termino buscado.",
+      "resultadoReal": "Correcto. Las 5 razas devueltas contienen el término buscado.",
       "peticiones": [
         "GET /breeds/search?q=american"
       ],
@@ -953,9 +953,9 @@
     {
       "id": "BRD-F-06",
       "endpoint": "GET /breeds/search",
-      "objetivo": "Una raza debe traer su descripcion completa.",
+      "objetivo": "Una raza debe traer su descripción completa.",
       "entrada": "q igual a siam.",
-      "esperado": "200 con nombre, descripcion, temperamento, origen y esperanza de vida.",
+      "esperado": "200 con nombre, descripción, temperamento, origen y esperanza de vida.",
       "validaciones": [
         "Todos los campos con contenido",
         "Esperanza de vida con formato 12-20"
@@ -978,10 +978,10 @@
       "id": "BRD-F-07",
       "endpoint": "GET /breeds/search",
       "objetivo": "La lista de razas debe cumplir su forma.",
-      "entrada": "q igual a a, que produce una coleccion amplia.",
+      "entrada": "q igual a a, que produce una colección amplia.",
       "esperado": "200. Las 10 razas traen los campos obligatorios con el tipo correcto.",
       "validaciones": [
-        "Validacion contra el esquema"
+        "Validación contra el esquema"
       ],
       "prioridad": "Alta",
       "tipo": "Contrato",
@@ -1024,18 +1024,18 @@
     {
       "id": "BRD-F-09",
       "endpoint": "GET /breeds/search",
-      "objetivo": "El catalogo de razas no debe cambiar entre lecturas.",
-      "entrada": "Dos llamadas identicas con q igual a beng.",
+      "objetivo": "El catálogo de razas no debe cambiar entre lecturas.",
+      "entrada": "Dos llamadas idénticas con q igual a beng.",
       "esperado": "200 en ambas, con el mismo cuerpo y el mismo ETag.",
       "validaciones": [
-        "Respuestas identicas"
+        "Respuestas idénticas"
       ],
       "prioridad": "Media",
       "tipo": "Funcional",
       "riesgo": "RT-07",
       "statusEsperado": "200",
       "statusReal": "200, 200",
-      "resultadoReal": "Primera lectura. Correcto. Mismo ETag en 6 lecturas separadas: el catalogo de razas es estable.",
+      "resultadoReal": "Primera lectura. Correcto. Mismo ETag en 6 lecturas separadas: el catálogo de razas es estable.",
       "peticiones": [
         "GET /breeds/search?q=beng (lectura 1)",
         "GET /breeds/search?q=beng (lectura 2)"
@@ -1049,11 +1049,11 @@
     {
       "id": "BRD-F-10",
       "endpoint": "GET /breeds/search",
-      "objetivo": "Ver que pasa si no se manda el termino de busqueda.",
-      "entrada": "Sin el parametro q. Con credencial.",
-      "esperado": "200 con 10 razas. Con el termino vacio da 400. Hallazgo H-08.",
+      "objetivo": "Ver que pasa si no se manda el término de búsqueda.",
+      "entrada": "Sin el parámetro q. Con credencial.",
+      "esperado": "200 con 10 razas. Con el término vacío da 400. Hallazgo H-08.",
       "validaciones": [
-        "Codigo 200",
+        "Código 200",
         "Llegan razas"
       ],
       "prioridad": "Media",
@@ -1061,7 +1061,7 @@
       "riesgo": "RF-05",
       "statusEsperado": "200",
       "statusReal": "200",
-      "resultadoReal": "Sin el parametro q devuelve un listado general. Con q vacio devuelve 400. Hallazgo H-08.",
+      "resultadoReal": "Sin el parámetro q devuelve un listado general. Con q vacío devuelve 400. Hallazgo H-08.",
       "peticiones": [
         "GET /breeds/search"
       ],
@@ -1073,11 +1073,11 @@
     {
       "id": "BRD-N-01",
       "endpoint": "GET /breeds/search",
-      "objetivo": "Un termino vacio debe rechazarse.",
-      "entrada": "q igual a cadena vacia.",
+      "objetivo": "Un término vacío debe rechazarse.",
+      "entrada": "q igual a cadena vacía.",
       "esperado": "400. Mensaje: q must be longer than or equal to 1 characters.",
       "validaciones": [
-        "Codigo 400",
+        "Código 400",
         "Mensaje coherente"
       ],
       "prioridad": "Alta",
@@ -1097,19 +1097,19 @@
     {
       "id": "BRD-N-02",
       "endpoint": "GET /breeds/search",
-      "objetivo": "Buscar algo que no existe debe dar lista vacia, no error.",
+      "objetivo": "Buscar algo que no existe debe dar lista vacía, no error.",
       "entrada": "q igual a razainexistente.",
-      "esperado": "200 con lista vacia.",
+      "esperado": "200 con lista vacía.",
       "validaciones": [
-        "Codigo 200",
-        "Lista vacia"
+        "Código 200",
+        "Lista vacía"
       ],
       "prioridad": "Alta",
       "tipo": "Negativo",
       "riesgo": "RF-05",
       "statusEsperado": "200",
       "statusReal": "200",
-      "resultadoReal": "Correcto. La ausencia de coincidencias se comunica como coleccion vacia, no como error.",
+      "resultadoReal": "Correcto. La ausencia de coincidencias se comunica como colección vacía, no como error.",
       "peticiones": [
         "GET /breeds/search?q=razainexistente"
       ],
@@ -1121,19 +1121,19 @@
     {
       "id": "BRD-N-03",
       "endpoint": "GET /breeds/search",
-      "objetivo": "Un termino demasiado largo debe rechazarse.",
+      "objetivo": "Un término demasiado largo debe rechazarse.",
       "entrada": "q con 32 caracteres.",
       "esperado": "400. Mensaje: q must be shorter than or equal to 30 characters.",
       "validaciones": [
-        "Codigo 400",
-        "El mensaje dice el maximo"
+        "Código 400",
+        "El mensaje dice el máximo"
       ],
       "prioridad": "Media",
       "tipo": "Negativo",
       "riesgo": "RF-06",
       "statusEsperado": "400",
       "statusReal": "400",
-      "resultadoReal": "Correcto. El mensaje declara la longitud maxima.",
+      "resultadoReal": "Correcto. El mensaje declara la longitud máxima.",
       "peticiones": [
         "GET /breeds/search?q=aaaa... (32 caracteres)"
       ],
@@ -1145,11 +1145,11 @@
     {
       "id": "BRD-N-04",
       "endpoint": "GET /breeds/search",
-      "objetivo": "Probar los limites de longitud del termino: 1, 30 y 31.",
+      "objetivo": "Probar los límites de longitud del término: 1, 30 y 31.",
       "entrada": "q con 1, 30 y 31 caracteres.",
       "esperado": "200 con 1 y con 30. 400 con 31.",
       "validaciones": [
-        "Aceptacion en 1 y en 30",
+        "Aceptación en 1 y en 30",
         "Rechazo en 31"
       ],
       "prioridad": "Alta",
@@ -1157,7 +1157,7 @@
       "riesgo": "RF-06",
       "statusEsperado": "200, 200 y 400",
       "statusReal": "200, 200, 400",
-      "resultadoReal": "Frontera inferior valida: aceptado. Frontera superior valida: aceptado, sin coincidencias. Un paso fuera: rechazado. El rango real es 1 a 30 caracteres.",
+      "resultadoReal": "Frontera inferior válida: aceptado. Frontera superior válida: aceptado, sin coincidencias. Un paso fuera: rechazado. El rango real es 1 a 30 caracteres.",
       "peticiones": [
         "GET /breeds/search?q=a (1 caracter)",
         "GET /breeds/search?q=aaaa... (30 caracteres)",
@@ -1197,7 +1197,7 @@
       "endpoint": "GET /breeds/search",
       "objetivo": "Ver si attach_image cambia algo.",
       "entrada": "q igual a siam con attach_image igual a 1 y a 0.",
-      "esperado": "200 en ambos. Las respuestas son identicas, con el mismo ETag. Hallazgo H-01.",
+      "esperado": "200 en ambos. Las respuestas son idénticas, con el mismo ETag. Hallazgo H-01.",
       "validaciones": [
         "Respuestas iguales",
         "La imagen llega en los dos casos"
@@ -1207,7 +1207,7 @@
       "riesgo": "RF-01",
       "statusEsperado": "200",
       "statusReal": "200, 200",
-      "resultadoReal": "Con el parametro activado. Mismo ETag y mismo cuerpo que con el parametro activado. El parametro no tiene efecto. Hallazgo H-01.",
+      "resultadoReal": "Con el parámetro activado. Mismo ETag y mismo cuerpo que con el parámetro activado. El parámetro no tiene efecto. Hallazgo H-01.",
       "peticiones": [
         "GET /breeds/search?q=siam&attach_image=1",
         "GET /breeds/search?q=siam&attach_image=0"
@@ -1222,10 +1222,10 @@
       "id": "BRD-N-07",
       "endpoint": "POST /breeds/search",
       "objetivo": "Un POST sobre razas debe rechazarse.",
-      "entrada": "Peticion POST con q igual a beng.",
+      "entrada": "Petición POST con q igual a beng.",
       "esperado": "404 en lugar de 405. Hallazgo H-07.",
       "validaciones": [
-        "Codigo 400 o mayor"
+        "Código 400 o mayor"
       ],
       "prioridad": "Baja",
       "tipo": "Negativo",
@@ -1244,11 +1244,11 @@
     {
       "id": "BRD-N-08",
       "endpoint": "GET /breeds/search",
-      "objetivo": "El error de validacion debe tener la forma de siempre.",
-      "entrada": "q igual a cadena vacia.",
+      "objetivo": "El error de validación debe tener la forma de siempre.",
+      "entrada": "q igual a cadena vacía.",
       "esperado": "400 con la forma completa y la ruta correcta.",
       "validaciones": [
-        "Validacion contra el esquema",
+        "Validación contra el esquema",
         "Ruta presente"
       ],
       "prioridad": "Media",
@@ -1272,7 +1272,7 @@
       "entrada": "limit igual a 10. Sin credencial.",
       "esperado": "200. Solo id, url, ancho y alto.",
       "validaciones": [
-        "Validacion contra el esquema",
+        "Validación contra el esquema",
         "Sin campos extra"
       ],
       "prioridad": "Alta",
@@ -1294,9 +1294,9 @@
       "endpoint": "GET /images/search",
       "objetivo": "Con llave, la imagen debe traer los campos extra.",
       "entrada": "limit igual a 10. Con credencial.",
-      "esperado": "200. Anade created_at, breeds, categories, colours y tags.",
+      "esperado": "200. Añade created_at, breeds, categories, colours y tags.",
       "validaciones": [
-        "Validacion contra el esquema"
+        "Validación contra el esquema"
       ],
       "prioridad": "Alta",
       "tipo": "Contrato",
@@ -1317,17 +1317,17 @@
       "endpoint": "GET /images/search",
       "objetivo": "Comparar la respuesta con llave y sin llave.",
       "entrada": "limit igual a 1, ejecutado sin credencial y con credencial.",
-      "esperado": "4 campos sin llave, hasta 10 con llave. Tambien cambia el dominio. Hallazgo H-09.",
+      "esperado": "4 campos sin llave, hasta 10 con llave. También cambia el dominio. Hallazgo H-09.",
       "validaciones": [
-        "Comparacion de campos",
-        "Los 4 campos comunes estan en ambas"
+        "Comparación de campos",
+        "Los 4 campos comunes están en ambas"
       ],
       "prioridad": "Alta",
       "tipo": "Contrato",
       "riesgo": "RT-04",
       "statusEsperado": "200 y 200",
       "statusReal": "200, 200",
-      "resultadoReal": "4 campos. Direccion servida desde s3.us-west-2.amazonaws.com. Hasta 10 campos y direccion servida desde cdn2.thecatapi.com. Cambian los campos y el dominio. Hallazgo H-09.",
+      "resultadoReal": "4 campos. Dirección servida desde s3.us-west-2.amazonaws.com. Hasta 10 campos y dirección servida desde cdn2.thecatapi.com. Cambian los campos y el dominio. Hallazgo H-09.",
       "peticiones": [
         "GET /images/search?limit=1",
         "GET /images/search?limit=1"
@@ -1345,7 +1345,7 @@
       "entrada": "q igual a a.",
       "esperado": "200. Las 10 razas validan contra el esquema.",
       "validaciones": [
-        "Validacion contra el esquema"
+        "Validación contra el esquema"
       ],
       "prioridad": "Alta",
       "tipo": "Contrato",
@@ -1365,10 +1365,10 @@
       "id": "CTR-05",
       "endpoint": "Rutas de error del servicio",
       "objetivo": "Todos los errores deben tener la misma forma.",
-      "entrada": "Tres causas: validacion de limit, validacion de q y ruta inexistente.",
+      "entrada": "Tres causas: validación de limit, validación de q y ruta inexistente.",
       "esperado": "Los tres, dos de 400 y uno de 404, validan contra el mismo esquema.",
       "validaciones": [
-        "Validacion contra el esquema en los tres"
+        "Validación contra el esquema en los tres"
       ],
       "prioridad": "Alta",
       "tipo": "Contrato",
@@ -1402,7 +1402,7 @@
       "riesgo": "RT-04",
       "statusEsperado": "200, 200 y 400",
       "statusReal": "200, 200, 400",
-      "resultadoReal": "Declara JSON y el cuerpo lo es. Declara JSON y el cuerpo lo es. Correcto. Tambien los errores declaran JSON.",
+      "resultadoReal": "Declara JSON y el cuerpo lo es. Declara JSON y el cuerpo lo es. Correcto. También los errores declaran JSON.",
       "peticiones": [
         "GET /images/search?limit=1",
         "GET /breeds/search?q=beng",
@@ -1418,17 +1418,17 @@
       "id": "CTR-07",
       "endpoint": "Rutas de error del servicio",
       "objetivo": "Ver de que tipo es el campo message.",
-      "entrada": "Un error 400 de validacion y un error 404 de ruta.",
+      "entrada": "Un error 400 de validación y un error 404 de ruta.",
       "esperado": "Lista en el error 400, texto en el 404. Hallazgo H-10.",
       "validaciones": [
-        "Comprobacion del tipo en cada caso"
+        "Comprobación del tipo en cada caso"
       ],
       "prioridad": "Media",
       "tipo": "Contrato",
       "riesgo": "RT-04",
       "statusEsperado": "400 y 404",
       "statusReal": "400, 404",
-      "resultadoReal": "El campo message es un arreglo. El campo message es una cadena. Cambia de tipo segun el codigo. Hallazgo H-10.",
+      "resultadoReal": "El campo message es un arreglo. El campo message es una cadena. Cambia de tipo según el código. Hallazgo H-10.",
       "peticiones": [
         "GET /images/search?limit=0",
         "GET /recurso/inexistente"
@@ -1446,7 +1446,7 @@
       "entrada": "q igual a beng. Sin credencial.",
       "esperado": "403. Mensaje: Authentication required.",
       "validaciones": [
-        "Codigo 403",
+        "Código 403",
         "error igual a Forbidden"
       ],
       "prioridad": "Alta",
@@ -1470,7 +1470,7 @@
       "entrada": "Encabezado x-api-key con un valor inexistente.",
       "esperado": "403, igual que sin llave.",
       "validaciones": [
-        "Codigo 403",
+        "Código 403",
         "Sin acceso a los datos"
       ],
       "prioridad": "Alta",
@@ -1478,23 +1478,23 @@
       "riesgo": "RT-06",
       "statusEsperado": "403",
       "statusReal": "403",
-      "resultadoReal": "Correcto. La llave se valida, no solo se comprueba su presencia.",
+      "resultadoReal": "Correcto. La llave se válida, no solo se comprueba su presencia.",
       "peticiones": [
-        "GET /breeds/search?q=beng con x-api-key invalida"
+        "GET /breeds/search?q=beng con x-api-key inválida"
       ],
       "encabezados": [
         "Accept: application/json"
       ],
-      "auth": "llave invalida"
+      "auth": "llave inválida"
     },
     {
       "id": "SEG-03",
       "endpoint": "GET /breeds/search",
-      "objetivo": "Una llave vacia o con un espacio no debe servir.",
-      "entrada": "Encabezado x-api-key con cadena vacia y con un espacio.",
+      "objetivo": "Una llave vacía o con un espacio no debe servir.",
+      "entrada": "Encabezado x-api-key con cadena vacía y con un espacio.",
       "esperado": "403 en los dos casos.",
       "validaciones": [
-        "Codigo 403 en ambos"
+        "Código 403 en ambos"
       ],
       "prioridad": "Alta",
       "tipo": "Seguridad",
@@ -1503,24 +1503,24 @@
       "statusReal": "403, 403",
       "resultadoReal": "Rechazado. Rechazado. Correcto en ambos casos.",
       "peticiones": [
-        "GET /breeds/search?q=beng con x-api-key vacia",
+        "GET /breeds/search?q=beng con x-api-key vacía",
         "GET /breeds/search?q=beng con x-api-key igual a un espacio"
       ],
       "encabezados": [
         "Accept: application/json",
         ""
       ],
-      "auth": "llave vacia, llave en blanco"
+      "auth": "llave vacía, llave en blanco"
     },
     {
       "id": "SEG-04",
       "endpoint": "GET /breeds/search",
       "objetivo": "Ver si la llave funciona puesta en la URL.",
-      "entrada": "Parametro api_key con una credencial valida, sin el encabezado correspondiente.",
-      "esperado": "200 con los datos. La especificacion lo admite. Hallazgo H-11.",
+      "entrada": "Parámetro api_key con una credencial válida, sin el encabezado correspondiente.",
+      "esperado": "200 con los datos. La especificación lo admite. Hallazgo H-11.",
       "validaciones": [
-        "Codigo 200",
-        "Registro de la implicacion de seguridad"
+        "Código 200",
+        "Registro de la implicación de seguridad"
       ],
       "prioridad": "Alta",
       "tipo": "Seguridad",
@@ -1539,12 +1539,12 @@
     {
       "id": "SEG-05",
       "endpoint": "GET /breeds/search",
-      "objetivo": "Probar inyeccion en el termino de busqueda.",
-      "entrada": "Tres cargas: condicion siempre verdadera, terminador de sentencia y operador de negacion.",
-      "esperado": "200 con lista vacia en las tres. Sin rastros de base de datos.",
+      "objetivo": "Probar inyección en el término de búsqueda.",
+      "entrada": "Tres cargas: condición siempre verdadera, terminador de sentencia y operador de negación.",
+      "esperado": "200 con lista vacía en las tres. Sin rastros de base de datos.",
       "validaciones": [
         "Sin error de servidor",
-        "Lista vacia",
+        "Lista vacía",
         "Sin indicios de base de datos"
       ],
       "prioridad": "Alta",
@@ -1552,7 +1552,7 @@
       "riesgo": "RT-04",
       "statusEsperado": "200",
       "statusReal": "200, 200, 200",
-      "resultadoReal": "Coleccion vacia. No devuelve el catalogo completo ni filtra errores de base de datos. Coleccion vacia. Sin indicios de motor de base de datos en la respuesta. El comodin devuelve el listado general, el mismo que una consulta sin criterio. No hay escalada de acceso, pero conviene documentar el comportamiento.",
+      "resultadoReal": "Colección vacía. No devuelve el catálogo completo ni filtra errores de base de datos. Colección vacía. Sin indicios de motor de base de datos en la respuesta. El comodín devuelve el listado general, el mismo que una consulta sin criterio. No hay escalada de acceso, pero conviene documentar el comportamiento.",
       "peticiones": [
         "GET /breeds/search?q=' OR 1=1--",
         "GET /breeds/search?q='; SELECT 1--",
@@ -1567,18 +1567,18 @@
     {
       "id": "SEG-05b",
       "endpoint": "GET /breeds/search",
-      "objetivo": "Ver si el comodin da acceso a mas datos.",
-      "entrada": "q igual al caracter comodin, comparado con una consulta sin criterio.",
-      "esperado": "200 con 10 razas, las mismas que una consulta sin termino.",
+      "objetivo": "Ver si el comodín da acceso a más datos.",
+      "entrada": "q igual al carácter comodín, comparado con una consulta sin criterio.",
+      "esperado": "200 con 10 razas, las mismas que una consulta sin término.",
       "validaciones": [
-        "No devuelve mas que la consulta normal"
+        "No devuelve más que la consulta normal"
       ],
       "prioridad": "Media",
       "tipo": "Seguridad",
       "riesgo": "RT-04",
       "statusEsperado": "200",
       "statusReal": "200, 200",
-      "resultadoReal": "Devuelve el listado general. Mismo resultado. El comodin no concede acceso adicional.",
+      "resultadoReal": "Devuelve el listado general. Mismo resultado. El comodín no concede acceso adicional.",
       "peticiones": [
         "GET /breeds/search?q=%",
         "GET /breeds/search (referencia sin criterio)"
@@ -1592,19 +1592,19 @@
     {
       "id": "SEG-06",
       "endpoint": "GET /breeds/search",
-      "objetivo": "Probar una etiqueta de script en la busqueda.",
+      "objetivo": "Probar una etiqueta de script en la búsqueda.",
       "entrada": "q con una etiqueta de secuencia de comandos codificada.",
-      "esperado": "200 con lista vacia y tipo JSON.",
+      "esperado": "200 con lista vacía y tipo JSON.",
       "validaciones": [
         "Tipo JSON",
-        "Lista vacia"
+        "Lista vacía"
       ],
       "prioridad": "Media",
       "tipo": "Seguridad",
       "riesgo": "RT-04",
       "statusEsperado": "200",
       "statusReal": "200",
-      "resultadoReal": "Correcto. Coleccion vacia y tipo JSON, que impide la interpretacion como documento.",
+      "resultadoReal": "Correcto. Colección vacía y tipo JSON, que impide la interpretación como documento.",
       "peticiones": [
         "GET /breeds/search?q=<script>alert(1)</script>"
       ],
@@ -1618,7 +1618,7 @@
       "endpoint": "Ambos recursos",
       "objetivo": "Probar rutas de escape hacia el sistema.",
       "entrada": "Dos rutas con secuencias de ascenso de directorio.",
-      "esperado": "200 con lista vacia. Sin contenido del sistema.",
+      "esperado": "200 con lista vacía. Sin contenido del sistema.",
       "validaciones": [
         "Sin error de servidor",
         "Sin contenido del sistema"
@@ -1642,9 +1642,9 @@
       "endpoint": "GET /images/search",
       "objetivo": "Todo debe viajar cifrado.",
       "entrada": "limit igual a 5.",
-      "esperado": "200. La peticion y las 5 urls usan https.",
+      "esperado": "200. La petición y las 5 urls usan https.",
       "validaciones": [
-        "Peticion con https",
+        "Petición con https",
         "Cada url con https"
       ],
       "prioridad": "Alta",
@@ -1652,7 +1652,7 @@
       "riesgo": "RT-08",
       "statusEsperado": "200",
       "statusReal": "200",
-      "resultadoReal": "Correcto. Peticion y las 5 direcciones devueltas sobre https.",
+      "resultadoReal": "Correcto. Petición y las 5 direcciones devueltas sobre https.",
       "peticiones": [
         "GET /images/search?limit=5"
       ],
@@ -1665,7 +1665,7 @@
       "id": "SEG-09",
       "endpoint": "GET /breeds/search",
       "objetivo": "La respuesta no debe devolver la llave.",
-      "entrada": "q igual a beng con credencial valida.",
+      "entrada": "q igual a beng con credencial válida.",
       "esperado": "200 sin la llave en el cuerpo ni en los encabezados.",
       "validaciones": [
         "Sin la llave en el cuerpo",
@@ -1688,18 +1688,18 @@
     {
       "id": "SEG-10",
       "endpoint": "GET /images/search",
-      "objetivo": "El servicio no debe decir con que esta hecho.",
+      "objetivo": "El servicio no debe decir con qué está hecho.",
       "entrada": "limit igual a 1.",
       "esperado": "200 sin x-powered-by ni encabezados similares.",
       "validaciones": [
-        "Sin encabezados que revelen la tecnologia"
+        "Sin encabezados que revelen la tecnología"
       ],
       "prioridad": "Media",
       "tipo": "Seguridad",
       "riesgo": "RT-04",
       "statusEsperado": "200",
       "statusReal": "200",
-      "resultadoReal": "Correcto. No aparecen x-powered-by, x-aspnet-version ni x-runtime.",
+      "resultadoReal": "Correcto. No aparecen x-powered-by, x-aspnet-versión ni x-runtime.",
       "peticiones": [
         "GET /images/search?limit=1"
       ],
@@ -1711,9 +1711,9 @@
     {
       "id": "NFN-01",
       "endpoint": "GET /images/search",
-      "objetivo": "Medir cuanto tarda la busqueda de imagenes.",
+      "objetivo": "Medir cuánto tarda la búsqueda de imágenes.",
       "entrada": "Diez peticiones consecutivas con limit igual a 1.",
-      "esperado": "200 en las 10. Mediana 298 ms, maximo 320 ms.",
+      "esperado": "200 en las 10. Mediana 298 ms, máximo 320 ms.",
       "validaciones": [
         "Mediana por debajo de 1500 ms",
         "Percentil 95 por debajo de 3000 ms"
@@ -1735,9 +1735,9 @@
     {
       "id": "NFN-02",
       "endpoint": "GET /breeds/search",
-      "objetivo": "Medir cuanto tarda la busqueda de razas.",
+      "objetivo": "Medir cuánto tarda la búsqueda de razas.",
       "entrada": "Diez peticiones consecutivas con q igual a beng.",
-      "esperado": "200 en las 10. Mediana 138 ms, maximo 146 ms.",
+      "esperado": "200 en las 10. Mediana 138 ms, máximo 146 ms.",
       "validaciones": [
         "Mediana por debajo de 1500 ms",
         "Percentil 95 por debajo de 3000 ms"
@@ -1747,7 +1747,7 @@
       "riesgo": "RT-03",
       "statusEsperado": "200",
       "statusReal": "200",
-      "resultadoReal": "Correcto y muy estable: 12 ms de dispersion en 10 lecturas.",
+      "resultadoReal": "Correcto y muy estable: 12 ms de dispersión en 10 lecturas.",
       "peticiones": [
         "GET /breeds/search?q=beng (10 repeticiones)"
       ],
@@ -1759,11 +1759,11 @@
     {
       "id": "NFN-03",
       "endpoint": "GET /images/search",
-      "objetivo": "Ver si pedir 100 imagenes tarda mucho mas que pedir 1.",
+      "objetivo": "Ver si pedir 100 imágenes tarda mucho más que pedir 1.",
       "entrada": "Cinco mediciones con limit igual a 1 y cinco con limit igual a 100.",
-      "esperado": "300 ms con 1 imagen y 303 ms con 100: un 1 por ciento mas.",
+      "esperado": "300 ms con 1 imagen y 303 ms con 100: un 1 por ciento más.",
       "validaciones": [
-        "Comparacion de medianas"
+        "Comparación de medianas"
       ],
       "prioridad": "Media",
       "tipo": "No funcional",
@@ -1788,7 +1788,7 @@
       "entrada": "limit igual a 100 con encabezado Accept-Encoding que admite gzip, deflate y br.",
       "esperado": "200 con Content-Encoding zstd.",
       "validaciones": [
-        "Compresion presente"
+        "Compresión presente"
       ],
       "prioridad": "Media",
       "tipo": "No funcional",
@@ -1818,7 +1818,7 @@
       "riesgo": "RT-04",
       "statusEsperado": "200",
       "statusReal": "200",
-      "resultadoReal": "Correcto. La politica de origen cruzado esta declarada.",
+      "resultadoReal": "Correcto. La política de origen cruzado está declarada.",
       "peticiones": [
         "GET /images/search?limit=1 con encabezado Origin"
       ],
@@ -1830,18 +1830,18 @@
     {
       "id": "NFN-06",
       "endpoint": "GET /images/search",
-      "objetivo": "Las respuestas aleatorias no deben venir de cache.",
+      "objetivo": "Las respuestas aleatorias no deben venir de caché.",
       "entrada": "Cinco lecturas consecutivas con limit igual a 1 y order igual a RANDOM.",
-      "esperado": "5 lecturas seguidas dan 5 imagenes distintas.",
+      "esperado": "5 lecturas seguidas dan 5 imágenes distintas.",
       "validaciones": [
-        "Mas de un identificador distinto"
+        "Más de un identificador distinto"
       ],
       "prioridad": "Alta",
       "tipo": "No funcional",
       "riesgo": "RT-07",
       "statusEsperado": "200",
       "statusReal": "200",
-      "resultadoReal": "Correcto. No hay cache intermedia sirviendo la misma respuesta.",
+      "resultadoReal": "Correcto. No hay caché intermedia sirviendo la misma respuesta.",
       "peticiones": [
         "GET /images/search?limit=1&order=RANDOM (5 repeticiones)"
       ],
@@ -1855,7 +1855,7 @@
       "endpoint": "GET /images/search",
       "objetivo": "El servicio debe aguantar una tanda de peticiones.",
       "entrada": "Veinte peticiones consecutivas con limit igual a 1.",
-      "esperado": "20 de 20 con codigo 200.",
+      "esperado": "20 de 20 con código 200.",
       "validaciones": [
         "Disponibilidad de al menos el 95 por ciento"
       ],
@@ -1876,7 +1876,7 @@
     {
       "id": "NFN-08",
       "endpoint": "GET /breeds/search",
-      "objetivo": "Un catalogo estable debe traer ETag.",
+      "objetivo": "Un catálogo estable debe traer ETag.",
       "entrada": "q igual a beng.",
       "esperado": "200 con ETag.",
       "validaciones": [
@@ -1887,7 +1887,7 @@
       "riesgo": "RT-07",
       "statusEsperado": "200",
       "statusReal": "200",
-      "resultadoReal": "Correcto. El ETag permite revalidacion condicional.",
+      "resultadoReal": "Correcto. El ETag permite revalidación condicional.",
       "peticiones": [
         "GET /breeds/search?q=beng"
       ],
@@ -1902,17 +1902,17 @@
       "tipo": "Funcional",
       "prioridad": "Alta",
       "riesgo": "RF-01",
-      "objetivo": "El filtro breed_ids debe traer solo imagenes de esa raza.",
+      "objetivo": "El filtro breed_ids debe traer solo imágenes de esa raza.",
       "entrada": "limit=10 y breed_ids=beng. Con credencial.",
-      "esperado": "200 con 10 imagenes, todas de la raza beng.",
+      "esperado": "200 con 10 imágenes, todas de la raza beng.",
       "validaciones": [
-        "Codigo 200",
-        "Llegan 10 imagenes",
+        "Código 200",
+        "Llegan 10 imágenes",
         "Cada una es de la raza pedida"
       ],
       "statusEsperado": "200",
       "statusReal": "200",
-      "resultadoReal": "Correcto. El filtro se cumple en los 10 resultados. Es el unico filtro del endpoint que funciona.",
+      "resultadoReal": "Correcto. El filtro se cumple en los 10 resultados. Es el único filtro del endpoint que funciona.",
       "peticiones": [
         "GET /images/search?limit=10&breed_ids=beng"
       ],
@@ -1928,7 +1928,7 @@
       "entrada": "limit=10 y breed_ids=beng,abys.",
       "esperado": "200. Cada imagen es de beng o de abys.",
       "validaciones": [
-        "Codigo 200",
+        "Código 200",
         "Cada imagen pertenece a una de las razas"
       ],
       "statusEsperado": "200",
@@ -1945,16 +1945,16 @@
       "tipo": "Negativo",
       "prioridad": "Media",
       "riesgo": "RF-05",
-      "objetivo": "Una raza que no existe debe dar lista vacia.",
+      "objetivo": "Una raza que no existe debe dar lista vacía.",
       "entrada": "limit=5 y breed_ids=razainexistente.",
-      "esperado": "200 con lista vacia.",
+      "esperado": "200 con lista vacía.",
       "validaciones": [
-        "Codigo 200",
-        "Lista vacia"
+        "Código 200",
+        "Lista vacía"
       ],
       "statusEsperado": "200",
       "statusReal": "200",
-      "resultadoReal": "Correcto. Sin coincidencias devuelve coleccion vacia, no error.",
+      "resultadoReal": "Correcto. Sin coincidencias devuelve colección vacía, no error.",
       "peticiones": [
         "GET /images/search?limit=5&breed_ids=razainexistente"
       ],
@@ -1968,14 +1968,14 @@
       "riesgo": "RF-01",
       "objetivo": "Ver si el filtro sub_id funciona.",
       "entrada": "limit=10 y sub_id=demo-9252f4.",
-      "esperado": "200 con 10 imagenes y ninguna tiene el sub_id pedido. Hallazgo H-13.",
+      "esperado": "200 con 10 imágenes y ninguna tiene el sub_id pedido. Hallazgo H-13.",
       "validaciones": [
-        "Codigo 200",
-        "Comparacion del sub_id de cada imagen"
+        "Código 200",
+        "Comparación del sub_id de cada imagen"
       ],
       "statusEsperado": "200",
       "statusReal": "200",
-      "resultadoReal": "Se pidio sub_id=demo-9252f4 y ningun elemento lo trae. El filtro se acepta y no se aplica. Hallazgo H-13.",
+      "resultadoReal": "Se pidió sub_id=demo-9252f4 y ningún elemento lo trae. El filtro se acepta y no se aplica. Hallazgo H-13.",
       "peticiones": [
         "GET /images/search?limit=10&sub_id=demo-9252f4"
       ],
@@ -1989,14 +1989,14 @@
       "riesgo": "RF-01",
       "objetivo": "Ver si el filtro category_ids funciona.",
       "entrada": "limit=10 y category_ids=1.",
-      "esperado": "200 con 10 imagenes, ninguna con categoria. Hallazgo H-14.",
+      "esperado": "200 con 10 imágenes, ninguna con categoría. Hallazgo H-14.",
       "validaciones": [
-        "Codigo 200",
-        "Conteo de imagenes con categoria"
+        "Código 200",
+        "Conteo de imágenes con categoría"
       ],
       "statusEsperado": "200",
       "statusReal": "200",
-      "resultadoReal": "Ningun resultado trae categorias. Hallazgo H-14. Conviene confirmar si la credencial de demostracion tiene acceso a las categorias antes de clasificarlo como defecto.",
+      "resultadoReal": "Ningún resultado trae categorías. Hallazgo H-14. Conviene confirmar si la credencial de demostración tiene acceso a las categorías antes de clasificarlo como defecto.",
       "peticiones": [
         "GET /images/search?limit=10&category_ids=1"
       ],
@@ -2008,12 +2008,12 @@
       "tipo": "Funcional",
       "prioridad": "Media",
       "riesgo": "RF-03",
-      "objetivo": "El valor RAND de la especificacion debe funcionar.",
+      "objetivo": "El valor RAND de la especificación debe funcionar.",
       "entrada": "Dos llamadas con limit=5 y order=RAND.",
       "esperado": "200 en ambas, con resultados distintos. El error del servicio dice RANDOM. Hallazgo H-15.",
       "validaciones": [
-        "Codigo 200",
-        "Llegan 5 imagenes",
+        "Código 200",
+        "Llegan 5 imágenes",
         "Resultados distintos"
       ],
       "statusEsperado": "200",
@@ -2031,16 +2031,16 @@
       "tipo": "Borde",
       "prioridad": "Baja",
       "riesgo": "RF-01",
-      "objetivo": "order debe funcionar tambien en minusculas.",
+      "objetivo": "order debe funcionar también en minúsculas.",
       "entrada": "limit=3 y order=rand.",
-      "esperado": "200 con 3 imagenes.",
+      "esperado": "200 con 3 imágenes.",
       "validaciones": [
-        "Codigo 200",
-        "Llegan 3 imagenes"
+        "Código 200",
+        "Llegan 3 imágenes"
       ],
       "statusEsperado": "200",
       "statusReal": "200",
-      "resultadoReal": "Correcto. El parametro no distingue mayusculas de minusculas.",
+      "resultadoReal": "Correcto. El parámetro no distingue mayúsculas de minúsculas.",
       "peticiones": [
         "GET /images/search?limit=3&order=rand"
       ],
@@ -2053,17 +2053,17 @@
       "prioridad": "Media",
       "riesgo": "RT-04",
       "objetivo": "Pedir una imagen por su id debe devolver esa imagen.",
-      "entrada": "Identificador 0XYvRd7oD, usado como ejemplo en la especificacion.",
+      "entrada": "Identificador 0XYvRd7oD, usado como ejemplo en la especificación.",
       "esperado": "200 con un objeto, no una lista, con id 0XYvRd7oD.",
       "validaciones": [
-        "Codigo 200",
+        "Código 200",
         "Es un objeto",
         "id correcto",
         "url con https y medidas positivas"
       ],
       "statusEsperado": "200",
       "statusReal": "200",
-      "resultadoReal": "Correcto. Coincide con el ejemplo de la especificacion.",
+      "resultadoReal": "Correcto. Coincide con el ejemplo de la especificación.",
       "peticiones": [
         "GET /images/0XYvRd7oD"
       ],
@@ -2075,12 +2075,12 @@
       "tipo": "Contrato",
       "prioridad": "Alta",
       "riesgo": "RT-04",
-      "objetivo": "Comparar la raza dentro de una imagen con la de la busqueda.",
-      "entrada": "Una imagen con raza asociada y una busqueda de la misma raza.",
+      "objetivo": "Comparar la raza dentro de una imagen con la de la búsqueda.",
+      "entrada": "Una imagen con raza asociada y una búsqueda de la misma raza.",
       "esperado": "Campos distintos en cada caso. Hallazgo H-16.",
       "validaciones": [
-        "Comparacion de campos",
-        "Los campos comunes estan en ambas"
+        "Comparación de campos",
+        "Los campos comunes están en ambas"
       ],
       "statusEsperado": "200",
       "statusReal": "200, 200",
@@ -2097,17 +2097,17 @@
       "tipo": "Borde",
       "prioridad": "Alta",
       "riesgo": "RF-01",
-      "objetivo": "Los parametros que la especificacion no declara deben ignorarse.",
+      "objetivo": "Los parámetros que la especificación no declara deben ignorarse.",
       "entrada": "size=small, mime_types=gif y format=src, en tres llamadas.",
       "esperado": "200 en los tres: size, mime_types y format. Ninguno cambia nada. Hallazgo H-17.",
       "validaciones": [
-        "Codigo 200 en los tres",
+        "Código 200 en los tres",
         "Tipo JSON",
-        "Lista valida"
+        "Lista válida"
       ],
       "statusEsperado": "200",
       "statusReal": "200, 200, 200",
-      "resultadoReal": "Aceptado y no aplicado. Se pidio gif y llegaron jpg. Devuelve JSON. Los tres parametros que el enunciado lista y la especificacion no declara son inertes. Hallazgo H-17.",
+      "resultadoReal": "Aceptado y no aplicado. Se pidió gif y llegaron jpg. Devuelve JSON. Los tres parámetros que el enunciado lista y la especificación no declara son inertes. Hallazgo H-17.",
       "peticiones": [
         "GET /images/search?limit=2&size=small",
         "GET /images/search?limit=2&mime_types=gif",

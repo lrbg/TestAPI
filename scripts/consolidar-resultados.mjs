@@ -25,15 +25,15 @@ const DIRECTORIO = 'resultados';
 function contextoDeEjecucion() {
   const disparadores = {
     workflow_dispatch: 'Manual',
-    pull_request: 'Solicitud de incorporacion',
+    pull_request: 'Solicitud de incorporación',
     schedule: 'Programada',
-    push: 'Integracion en la rama principal',
+    push: 'Integración en la rama principal',
   };
 
   return {
     id: process.env.GITHUB_RUN_ID ?? `local-${Date.now()}`,
     numero: process.env.GITHUB_RUN_NUMBER ?? '0',
-    disparador: disparadores[process.env.GITHUB_EVENT_NAME] ?? 'Ejecucion local',
+    disparador: disparadores[process.env.GITHUB_EVENT_NAME] ?? 'Ejecución local',
     eventoCrudo: process.env.GITHUB_EVENT_NAME ?? 'local',
     rama: process.env.GITHUB_REF_NAME ?? 'desconocida',
     commit: (process.env.GITHUB_SHA ?? '').slice(0, 7),
@@ -271,7 +271,7 @@ function principal() {
   const destino = join(DIRECTORIO, 'resumen.json');
   writeFileSync(destino, JSON.stringify(resumen, null, 2));
 
-  console.log(`Resumen de ejecucion escrito en ${destino}`);
+  console.log(`Resumen de ejecución escrito en ${destino}`);
   console.log(`Veredicto: ${resumen.veredicto}`);
 
   if (funcional.disponible) {

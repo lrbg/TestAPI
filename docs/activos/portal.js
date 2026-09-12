@@ -64,7 +64,7 @@ function color(nombre) {
  */
 export function graficaDeResultados(contenedor, historico) {
   if (!historico || historico.length === 0) {
-    contenedor.innerHTML = '<p class="tenue">Todavia no hay ejecuciones registradas.</p>';
+    contenedor.innerHTML = '<p class="tenue">Todavía no hay ejecuciones registradas.</p>';
     return;
   }
 
@@ -119,7 +119,7 @@ export function graficaDeResultados(contenedor, historico) {
         `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${anchoBarra.toFixed(1)}" height="${Math.max(
           altura,
           1
-        ).toFixed(1)}" fill="${segmento.tono}" rx="1"><title>Ejecucion ${entrada.numero} del ${fecha(
+        ).toFixed(1)}" fill="${segmento.tono}" rx="1"><title>Ejecución ${entrada.numero} del ${fecha(
           entrada.fecha
         )}: ${f.aprobadas} aprobadas, ${f.fallidas} fallidas, ${f.omitidas} omitidas</title></rect>`
       );
@@ -138,11 +138,11 @@ export function graficaDeResultados(contenedor, historico) {
   piezas.push(
     `<text x="${ancho / 2}" y="${alto - 6}" text-anchor="middle" font-size="11" fill="${color(
       '--texto-3'
-    )}">Numero de ejecucion</text>`
+    )}">Número de ejecución</text>`
   );
 
   contenedor.innerHTML =
-    `<svg class="grafica" viewBox="0 0 ${ancho} ${alto}" role="img" aria-label="Resultados por ejecucion">${piezas.join(
+    `<svg class="grafica" viewBox="0 0 ${ancho} ${alto}" role="img" aria-label="Resultados por ejecución">${piezas.join(
       ''
     )}</svg>` +
     `<div class="leyenda">
@@ -160,7 +160,7 @@ export function graficaDeDesempeno(contenedor, historico) {
 
   if (serie.length < 2) {
     contenedor.innerHTML =
-      '<p class="tenue">Se necesitan al menos dos ejecuciones con mediciones de desempeno para trazar la evolucion.</p>';
+      '<p class="tenue">Se necesitan al menos dos ejecuciones con mediciones de desempeño para trazar la evolución.</p>';
     return;
   }
 
@@ -206,7 +206,7 @@ export function graficaDeDesempeno(contenedor, historico) {
 
     for (const p of puntos) {
       piezas.push(
-        `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3" fill="${tono}"><title>${escenario}, ejecucion ${
+        `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3" fill="${tono}"><title>${escenario}, ejecución ${
           p.entrada.numero
         }: ${Math.round(p.valor)} ms</title></circle>`
       );

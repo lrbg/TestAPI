@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Portal de calidad | Evaluacion tecnica de API</title>
+<title>Portal de calidad | Evaluación técnica de API</title>
 <meta name="description" content="Analisis, plan de pruebas, cobertura y reporte historico de la evaluacion de calidad de los endpoints de busqueda de imagenes y razas.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231f5c8b'/%3E%3Cpath d='M9 16.4l4.7 4.7L23 11.8' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="activos/estilos.css">
@@ -12,31 +12,31 @@
 
 <header class="cabecera">
   <div class="cabecera-interior">
-    <a class="marca" href="index.html">Portal de calidad<span>Evaluacion tecnica de API</span></a>
+    <a class="marca" href="index.html">Portal de calidad<span>Evaluación técnica de API</span></a>
     <nav class="navegacion">
       <a href="index.html">Inicio</a>
-      <a href="analisis.html">Analisis</a>
+      <a href="analisis.html">Análisis</a>
       <a href="plan.html">Plan de pruebas</a>
       <a href="casos.html">Casos</a>
       <a href="evidencia.html">Evidencia</a>
-      <a href="historico.html">Historico</a>
-      <a href="reporte-funcional/index.html">Ultimo reporte</a>
+      <a href="historico.html">Histórico</a>
+      <a href="reporte-funcional/index.html">Último reporte</a>
     </nav>
   </div>
 </header>
 
 <main>
 
-  <h1>Aseguramiento de calidad de los endpoints de busqueda</h1>
+  <h1>Aseguramiento de calidad de los endpoints de búsqueda</h1>
   <p class="entradilla">
-    Este portal concentra el analisis del servicio bajo prueba, el plan de pruebas que lo cubre,
-    el catalogo de casos con su respuesta esperada y el registro historico de cada ejecucion.
-    Se publica de forma automatica en cada corrida de la suite.
+    Este portal concentra el análisis del servicio bajo prueba, el plan de pruebas que lo cubre,
+    el catalogo de casos con su respuesta esperada y el registro histórico de cada ejecución.
+    Se pública de forma automática en cada corrida de la suite.
   </p>
 
   <div class="aviso">
-    <p><strong>Sistema bajo prueba.</strong> Todas las pruebas se ejecutan contra TheCatAPI version 1,
-    en su entorno de produccion. URL base: <code>https://api.thecatapi.com/v1</code></p>
+    <p><strong>Sistema bajo prueba.</strong> Todas las pruebas se ejecutan contra TheCatAPI versión 1,
+    en su entorno de producción. URL base: <code>https://api.thecatapi.com/v1</code></p>
     <p style="margin-bottom:0">
       <code>GET https://api.thecatapi.com/v1/images/search</code><br>
       <code>GET https://api.thecatapi.com/v1/breeds/search</code>
@@ -48,20 +48,20 @@
   <h2>El requerimiento</h2>
 
   <p>
-    Se solicito validar la calidad de dos endpoints de un servicio publico de consulta de imagenes
-    y razas de gatos, analizando la especificacion entregada y elaborando y ejecutando un plan de
-    pruebas funcional y tecnico.
+    Se solicito validar la calidad de dos endpoints de un servicio público de consulta de imágenes
+    y razas de gatos, analizando la especificación entregada y elaborando y ejecutando un plan de
+    pruebas funcional y técnico.
   </p>
 
   <div class="envoltura-tabla">
     <table>
       <thead>
-        <tr><th>Recurso</th><th>Proposito declarado</th><th>Parametros contemplados</th></tr>
+        <tr><th>Recurso</th><th>Propósito declarado</th><th>Parámetros contemplados</th></tr>
       </thead>
       <tbody>
         <tr>
           <td class="mono">GET https://api.thecatapi.com/v1/images/search</td>
-          <td>Buscar o devolver imagenes aleatorias</td>
+          <td>Buscar o devolver imágenes aleatorias</td>
           <td><code>size</code>, <code>mime_types</code>, <code>format</code>, <code>has_breeds</code>, <code>order</code>, <code>page</code>, <code>limit</code></td>
         </tr>
         <tr>
@@ -74,52 +74,52 @@
   </div>
 
   <p>
-    La especificacion menciona ademas que la busqueda de imagenes puede devolver los encabezados
-    de paginacion <code>Pagination-Count</code>, <code>Pagination-Page</code> y
-    <code>Pagination-Limit</code>, y que la busqueda de razas puede devolver informacion de imagen
+    La especificación menciona además que la búsqueda de imágenes puede devolver los encabezados
+    de paginación <code>Pagination-Count</code>, <code>Pagination-Page</code> y
+    <code>Pagination-Limit</code>, y que la búsqueda de razas puede devolver información de imagen
     asociada cuando <code>attach_image</code> vale 1.
   </p>
 
   <div class="aviso alerta">
     <p>
       <strong>Observacion de partida.</strong> El enunciado remite a una
-      <a href="https://developers.thecatapi.com/view-account/ylX4blBYT9FaoVd6OhvR?report=FJkYOq9tW">especificacion
-      publicada por el proveedor</a> que declara siete parametros con su tipo y valor por defecto,
-      el metodo de autenticacion y el limite anonimo. Enunciado y especificacion no listan los mismos
-      parametros: el enunciado anade <code>size</code>, <code>mime_types</code> y <code>format</code>,
+      <a href="https://developers.thecatapi.com/view-account/ylX4blBYT9FaoVd6OhvR?report=FJkYOq9tW">especificación
+      publicada por el proveedor</a> que declara siete parámetros con su tipo y valor por defecto,
+      el método de autenticación y el límite anonimo. Enunciado y especificación no listan los mismos
+      parámetros: el enunciado añade <code>size</code>, <code>mime_types</code> y <code>format</code>,
       que el servicio ignora, y omite <code>breed_ids</code>, <code>category_ids</code> y
-      <code>sub_id</code>, de los cuales <code>breed_ids</code> es el unico filtro que funciona.
-      El comportamiento real se reconstruyo con mas de 170 peticiones: 17 desviaciones comprobadas.
+      <code>sub_id</code>, de los cuales <code>breed_ids</code> es el único filtro que funciona.
+      El comportamiento real se reconstruyo con más de 170 peticiones: 17 desviaciones comprobadas.
     </p>
   </div>
 
   <h2>El flujo de aseguramiento</h2>
 
   <p>
-    El flujo va del disparo de la ejecucion a la publicacion del resultado y al seguimiento de los
-    defectos, sin intervencion manual en ningun paso intermedio.
+    El flujo va del disparo de la ejecución a la publicación del resultado y al seguimiento de los
+    defectos, sin intervencion manual en ningún paso intermedio.
   </p>
 
   <ol class="pasos">
     <li>
-      <strong>Disparo.</strong> La suite arranca por tres vias independientes: a demanda desde la
-      pestana de acciones, de forma automatica ante toda solicitud de incorporacion a la rama
-      principal, y de forma programada todos los dias a las 16:00 hora de la Ciudad de Mexico.
+      <strong>Disparo.</strong> La suite arranca por tres vías independientes: a demanda desde la
+      pestaña de acciones, de forma automática ante toda solicitud de incorporación a la rama
+      principal, y de forma programada todos los días a las 16:00 hora de la Ciudad de Mexico.
     </li>
     <li>
-      <strong>Ejecucion funcional.</strong> La suite de Playwright cubre los escenarios funcionales,
+      <strong>Ejecución funcional.</strong> La suite de Playwright cubre los escenarios funcionales,
       negativos, de borde, de contrato, de seguridad de superficie y las verificaciones no
-      funcionales de una sola peticion. Cada caso adjunta al reporte la peticion realizada, el
-      codigo de estado, los encabezados relevantes, el tiempo de respuesta y la respuesta obtenida.
+      funcionales de una sola petición. Cada caso adjunta al reporte la petición realizada, el
+      código de estado, los encabezados relevantes, el tiempo de respuesta y la respuesta obtenida.
     </li>
     <li>
-      <strong>Ejecucion de desempeno.</strong> Los escenarios de k6 miden el comportamiento temporal
+      <strong>Ejecución de desempeno.</strong> Los escenarios de k6 miden el comportamiento temporal
       y la capacidad del servicio. El escenario de humo y el de carga nominal forman parte de la
-      ejecucion habitual; los de estres, pico y resistencia se lanzan de forma deliberada.
+      ejecución habitual; los de estrés, pico y resistencia se lanzan de forma deliberada.
     </li>
     <li>
-      <strong>Consolidacion.</strong> Los reportes de ambas herramientas se normalizan en un unico
-      resumen de ejecucion, del que se derivan el veredicto, el reporte historico y el triaje.
+      <strong>Consolidación.</strong> Los reportes de ambas herramientas se normalizan en un único
+      resumen de ejecución, del que se derivan el veredicto, el reporte histórico y el triaje.
     </li>
     <li>
       <strong>Triaje.</strong> El agente interpreta el resumen, abre una incidencia por cada fallo
@@ -128,15 +128,15 @@
       vuelto a pasar.
     </li>
     <li>
-      <strong>Publicacion.</strong> El resultado se incorpora al registro historico y este portal se
-      vuelve a publicar con las cifras actualizadas y el reporte navegable de la ultima ejecucion.
+      <strong>Publicación.</strong> El resultado se incorpora al registro histórico y este portal se
+      vuelve a publicar con las cifras actualizadas y el reporte navegable de la última ejecución.
     </li>
   </ol>
 
   <h2>Cobertura</h2>
 
   <p>
-    La cobertura se organiza segun el modelo de calidad de la norma ISO/IEC 25010:2023. Las
+    La cobertura se organiza según el modelo de calidad de la norma ISO/IEC 25010:2023. Las
     caracteristicas que quedan fuera se declaran de forma explicita, con su motivo.
   </p>
 
@@ -153,8 +153,8 @@
       <tbody>
         <tr>
           <td>Adecuacion funcional</td>
-          <td>Completitud, correccion y pertinencia</td>
-          <td>Escenarios funcionales sobre ambos recursos y todos sus parametros</td>
+          <td>Completitud, corrección y pertinencia</td>
+          <td>Escenarios funcionales sobre ambos recursos y todos sus parámetros</td>
           <td><span class="distintivo exito">Cubierta</span></td>
         </tr>
         <tr>
@@ -166,7 +166,7 @@
         <tr>
           <td>Compatibilidad</td>
           <td>Interoperabilidad</td>
-          <td>Validacion de contrato por esquema y politica de origen cruzado</td>
+          <td>Validación de contrato por esquema y política de origen cruzado</td>
           <td><span class="distintivo exito">Cubierta</span></td>
         </tr>
         <tr>
@@ -178,19 +178,19 @@
         <tr>
           <td>Seguridad</td>
           <td>Confidencialidad e integridad</td>
-          <td>Control de acceso, entradas hostiles y fuga de informacion</td>
+          <td>Control de acceso, entradas hostiles y fuga de información</td>
           <td><span class="distintivo alerta">Parcial</span></td>
         </tr>
         <tr>
           <td>Usabilidad</td>
-          <td>Proteccion frente a errores del usuario</td>
+          <td>Protección frente a errores del usuario</td>
           <td>Calidad y utilidad de los mensajes de error</td>
           <td><span class="distintivo alerta">Parcial</span></td>
         </tr>
         <tr>
           <td>Mantenibilidad</td>
           <td>Modularidad y capacidad de prueba</td>
-          <td>No aplicable: no se dispone del codigo del servicio</td>
+          <td>No aplicable: no se dispone del código del servicio</td>
           <td><span class="distintivo neutro">Fuera de alcance</span></td>
         </tr>
         <tr>
@@ -202,7 +202,7 @@
         <tr>
           <td>Flexibilidad</td>
           <td>Escalabilidad</td>
-          <td>No verificable sin autorizacion del proveedor para cargas elevadas</td>
+          <td>No verificable sin autorización del proveedor para cargas elevadas</td>
           <td><span class="distintivo neutro">Fuera de alcance</span></td>
         </tr>
       </tbody>
@@ -219,23 +219,23 @@
       <tbody>
         <tr>
           <td class="mono">ISO/IEC 25010:2023</td>
-          <td>Modelo de calidad del producto. Ordena la cobertura por caracteristica y evita que la verificacion se reduzca a lo funcional.</td>
+          <td>Modelo de calidad del producto. Ordena la cobertura por caracteristica y evita que la verificación se reduzca a lo funcional.</td>
         </tr>
         <tr>
           <td class="mono">ISO/IEC/IEEE 29119-1 y 29119-2</td>
-          <td>Conceptos y proceso de prueba. Sustentan la estructura del plan y el ciclo de diseno, ejecucion y cierre.</td>
+          <td>Conceptos y proceso de prueba. Sustentan la estructura del plan y el ciclo de diseño, ejecución y cierre.</td>
         </tr>
         <tr>
           <td class="mono">ISO/IEC/IEEE 29119-3</td>
-          <td>Documentacion de prueba. Define la forma del plan, de la especificacion de casos, de la bitacora de ejecucion, del reporte de incidencias y del informe de cierre.</td>
+          <td>Documentación de prueba. Define la forma del plan, de la especificación de casos, de la bitácora de ejecución, del reporte de incidencias y del informe de cierre.</td>
         </tr>
         <tr>
           <td class="mono">ISO/IEC/IEEE 29119-4</td>
-          <td>Tecnicas de prueba. Particion de equivalencia, analisis de valores frontera y prueba basada en riesgo aplicadas al diseno de los casos.</td>
+          <td>Técnicas de prueba. Particion de equivalencia, análisis de valores frontera y prueba basada en riesgo aplicadas al diseño de los casos.</td>
         </tr>
         <tr>
           <td class="mono">ISO/IEC 20000-1</td>
-          <td>Gestion del servicio. Encuadra el acuerdo de nivel de servicio, la gestion de incidencias y el seguimiento continuo del desempeno.</td>
+          <td>Gestión del servicio. Encuadra el acuerdo de nivel de servicio, la gestión de incidencias y el seguimiento continuo del desempeno.</td>
         </tr>
       </tbody>
     </table>
@@ -245,7 +245,7 @@
 
 <footer class="pie">
   <p>
-    Portal publicado automaticamente desde el repositorio en cada ejecucion de la suite.
+    Portal publicado automaticamente desde el repositorio en cada ejecución de la suite.
     <span id="sello-publicacion"></span>
   </p>
 </footer>

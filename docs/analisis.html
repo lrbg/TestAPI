@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Analisis del API | Portal de calidad</title>
+<title>Análisis del API | Portal de calidad</title>
 <meta name="description" content="Ambiguedades, riesgos funcionales y tecnicos, dependencias externas e informacion requerida antes de ejecutar pruebas.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231f5c8b'/%3E%3Cpath d='M9 16.4l4.7 4.7L23 11.8' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="activos/estilos.css">
@@ -12,48 +12,48 @@
 
 <header class="cabecera">
   <div class="cabecera-interior">
-    <a class="marca" href="index.html">Portal de calidad<span>Evaluacion tecnica de API</span></a>
+    <a class="marca" href="index.html">Portal de calidad<span>Evaluación técnica de API</span></a>
     <nav class="navegacion">
       <a href="index.html">Inicio</a>
-      <a href="analisis.html">Analisis</a>
+      <a href="analisis.html">Análisis</a>
       <a href="plan.html">Plan de pruebas</a>
       <a href="casos.html">Casos</a>
       <a href="evidencia.html">Evidencia</a>
-      <a href="historico.html">Historico</a>
-      <a href="reporte-funcional/index.html">Ultimo reporte</a>
+      <a href="historico.html">Histórico</a>
+      <a href="reporte-funcional/index.html">Último reporte</a>
     </nav>
   </div>
 </header>
 
 <main>
 
-  <h1>Analisis del API</h1>
+  <h1>Análisis del API</h1>
   <p class="entradilla">
-    Contraste entre lo que la especificacion declara y lo que el servicio hace. La especificacion
-    esta publicada por el proveedor y declara siete parametros con su tipo y valor por defecto, el
-    metodo de autenticacion y el limite para consumidores anonimos. No cubre la busqueda de razas ni
+    Contraste entre lo que la especificación declara y lo que el servicio hace. La especificación
+    esta publicada por el proveedor y declara siete parámetros con su tipo y valor por defecto, el
+    método de autenticación y el límite para consumidores anonimos. No cubre la búsqueda de razas ni
     la forma de los errores. Las diferencias entre lo declarado, lo que pide el enunciado y lo que el
-    servicio hace son el cuerpo de este analisis.
+    servicio hace son el cuerpo de este análisis.
   </p>
 
-  <h2>Metodo</h2>
+  <h2>Método</h2>
 
   <p>
-    Se lanzaron mas de 170 peticiones reales al servicio, con llave y sin ella. De cada parametro se
-    probaron cinco variantes: un valor normal, los valores limite, uno fuera de rango, uno de tipo
-    equivocado y la omision. De cada respuesta se guardo el codigo, los encabezados, el cuerpo y el
-    tiempo. Todo lo que se afirma aqui esta respaldado por esa evidencia.
+    Se lanzaron más de 170 peticiones reales al servicio, con llave y sin ella. De cada parámetro se
+    probaron cinco variantes: un valor normal, los valores límite, uno fuera de rango, uno de tipo
+    equivocado y la omisión. De cada respuesta se guardo el código, los encabezados, el cuerpo y el
+    tiempo. Todo lo que se afirma aquí esta respaldado por esa evidencia.
   </p>
 
   <div class="aviso">
     <p>
-      El volumen se mantuvo bajo a proposito. El servicio es de otra empresa y esta en produccion:
-      no hay entorno de pruebas y cada peticion gasta cuota real. Esta es la limitacion que mas
+      El volumen se mantuvo bajo a propósito. El servicio es de otra empresa y esta en producción:
+      no hay entorno de pruebas y cada petición gasta cuota real. Esta es la limitacion que más
       condiciona la estrategia.
     </p>
   </div>
 
-  <h2>Dudas y ambiguedades detectadas</h2>
+  <h2>Dudas y ambigüedades detectadas</h2>
 
   <p>
     Puntos que impiden saber si algo esta bien o mal. Cada uno necesita respuesta del equipo del
@@ -63,58 +63,58 @@
   <div class="envoltura-tabla">
     <table>
       <thead>
-        <tr><th style="width:52px">Clave</th><th>Ambiguedad</th><th>Por que importa</th></tr>
+        <tr><th style="width:52px">Clave</th><th>Ambigüedad</th><th>Por que importa</th></tr>
       </thead>
       <tbody>
         <tr>
           <td class="mono">A-01</td>
-          <td>El enunciado no menciona la autenticacion. La especificacion si.</td>
-          <td>El buscador de razas responde 403 sin llave. Quien se quede en el enunciado cree que el ejercicio 2 no se puede hacer. Falta acordar con que llave y con que plan se ejecutan las pruebas, porque de eso dependen el limite de consumo y los campos que llegan.</td>
+          <td>El enunciado no menciona la autenticación. La especificación si.</td>
+          <td>El buscador de razas responde 403 sin llave. Quien se quede en el enunciado cree que el ejercicio 2 no se puede hacer. Falta acordar con que llave y con que plan se ejecutan las pruebas, porque de eso dependen el límite de consumo y los campos que llegan.</td>
         </tr>
         <tr>
           <td class="mono">A-02</td>
-          <td>La especificacion no declara <code>size</code>, <code>mime_types</code> ni <code>format</code>, pero el enunciado si los lista.</td>
-          <td>No se puede saber que valor es valido, que es la base de toda prueba negativa. El servicio los acepta todos y no los aplica, asi que tampoco se deducen probando.</td>
+          <td>La especificación no declara <code>size</code>, <code>mime_types</code> ni <code>format</code>, pero el enunciado si los lista.</td>
+          <td>No se puede saber que valor es válido, que es la base de toda prueba negativa. El servicio los acepta todos y no los aplica, así que tampoco se deducen probando.</td>
         </tr>
         <tr>
           <td class="mono">A-03</td>
-          <td>La especificacion declara <code>limit</code> de 1 a 100 y <code>page</code> desde 0, pero no dice que pasa fuera de rango.</td>
-          <td>Los valores limite son el objeto de las pruebas de borde. El comportamiento real se dedujo de los mensajes de error del servicio.</td>
+          <td>La especificación declara <code>limit</code> de 1 a 100 y <code>page</code> desde 0, pero no dice que pasa fuera de rango.</td>
+          <td>Los valores límite son el objeto de las pruebas de borde. El comportamiento real se dedujo de los mensajes de error del servicio.</td>
         </tr>
         <tr>
           <td class="mono">A-04</td>
-          <td>La especificacion dice que los encabezados de paginacion "pueden" aparecer, sin precisar cuando.</td>
-          <td>Un condicional sin condicion no es verificable. Un cliente que los lea siempre obtendra valores nulos en la mayoria de las llamadas y no sabra si se trata de un fallo.</td>
+          <td>La especificación dice que los encabezados de paginación "pueden" aparecer, sin precisar cuando.</td>
+          <td>Un condicional sin condición no es verificable. Un cliente que los lea siempre obtendrá valores nulos en la mayoría de las llamadas y no sabrá si se trata de un fallo.</td>
         </tr>
         <tr>
           <td class="mono">A-05</td>
-          <td>La especificacion dice que <code>attach_image = 1</code> "puede" devolver informacion de imagen.</td>
-          <td>Misma objecion. Ademas, el comportamiento observado contradice la lectura natural del enunciado, segun se detalla en el hallazgo H-01.</td>
+          <td>La especificación dice que <code>attach_image = 1</code> "puede" devolver información de imagen.</td>
+          <td>Misma objecion. Además, el comportamiento observado contradice la lectura natural del enunciado, según se detalla en el hallazgo H-01.</td>
         </tr>
         <tr>
           <td class="mono">A-06</td>
-          <td>No se define el comportamiento esperado ante una busqueda sin coincidencias.</td>
-          <td>Devolver una coleccion vacia con codigo 200 y devolver 404 son dos disenos legitimos y opuestos. El consumidor necesita saber cual rige antes de escribir su manejo de errores.</td>
+          <td>No se define el comportamiento esperado ante una búsqueda sin coincidencias.</td>
+          <td>Devolver una colección vacía con código 200 y devolver 404 son dos diseños legitimos y opuestos. El consumidor necesita saber cual rige antes de escribir su manejo de errores.</td>
         </tr>
         <tr>
           <td class="mono">A-07</td>
-          <td>No se define el formato del cuerpo de error ni el catalogo de codigos.</td>
-          <td>Sin contrato de error no hay forma de verificar que el servicio comunica los fallos de manera util y estable.</td>
+          <td>No se define el formato del cuerpo de error ni el catalogo de códigos.</td>
+          <td>Sin contrato de error no hay forma de verificar que el servicio comunica los fallos de manera útil y estable.</td>
         </tr>
         <tr>
           <td class="mono">A-08</td>
-          <td>No se declara politica de limitacion de consumo ni de cuotas.</td>
-          <td>Determina el perfil maximo admisible de las pruebas de desempeno y explica por si sola buena parte de los fallos intermitentes que un equipo podria atribuir al servicio.</td>
+          <td>No se declara política de limitacion de consumo ni de cuotas.</td>
+          <td>Determina el perfil máximo admisible de las pruebas de desempeno y explica por si sola buena parte de los fallos intermitentes que un equipo podría atribuir al servicio.</td>
         </tr>
         <tr>
           <td class="mono">A-09</td>
-          <td>No se declara version del API ni politica de compatibilidad.</td>
+          <td>No se declara versión del API ni política de compatibilidad.</td>
           <td>Sin ella no hay criterio para distinguir un cambio anunciado de una ruptura de contrato, que es justamente lo que las pruebas de contrato deben detectar.</td>
         </tr>
         <tr>
           <td class="mono">A-10</td>
           <td>No se define el acuerdo de nivel de servicio esperado.</td>
-          <td>Todo umbral de desempeno que se fije sera una suposicion del equipo de pruebas. Los umbrales de este trabajo se derivaron de una linea base medida y se declaran como tales.</td>
+          <td>Todo umbral de desempeno que se fije sera una suposición del equipo de pruebas. Los umbrales de este trabajo se derivaron de una línea base medida y se declaran como tales.</td>
         </tr>
       </tbody>
     </table>
@@ -123,7 +123,7 @@
   <h2>Hallazgos</h2>
 
   <p>
-    Diferencias comprobadas entre lo que deberia pasar y lo que pasa. Cada uno tiene un caso de
+    Diferencias comprobadas entre lo que debería pasar y lo que pasa. Cada uno tiene un caso de
     prueba que lo reproduce, y el agente de triaje abre una incidencia cuando alguno cambia de
     estado.
   </p>
@@ -145,48 +145,48 @@
           <td>Los filtros declarados no se aplican y el consumidor recibe datos que cree filtrados.</td>
           <td>Alta</td>
           <td>Alto</td>
-          <td>Casos que verifican el cumplimiento efectivo del filtro sobre el contenido devuelto, no solo el codigo de estado.</td>
+          <td>Casos que verifican el cumplimiento efectivo del filtro sobre el contenido devuelto, no solo el código de estado.</td>
         </tr>
         <tr>
           <td class="mono">RF-02</td>
-          <td>La paginacion pierde o duplica elementos entre paginas consecutivas.</td>
+          <td>La paginación pierde o duplica elementos entre páginas consecutivas.</td>
           <td>Media</td>
           <td>Alto</td>
-          <td>Comparacion de identificadores entre paginas contiguas y verificacion de la ultima pagina util calculada desde el total informado.</td>
+          <td>Comparación de identificadores entre páginas contiguas y verificación de la última página útil calculada desde el total informado.</td>
         </tr>
         <tr>
           <td class="mono">RF-03</td>
-          <td>La aleatoriedad declarada no es tal y una cache intermedia devuelve siempre el mismo conjunto.</td>
+          <td>La aleatoriedad declarada no es tal y una caché intermedia devuelve siempre el mismo conjunto.</td>
           <td>Media</td>
           <td>Medio</td>
-          <td>Extracciones repetidas con verificacion de variabilidad entre ellas.</td>
+          <td>Extracciones repetidas con verificación de variabilidad entre ellas.</td>
         </tr>
         <tr>
           <td class="mono">RF-04</td>
-          <td>La busqueda de razas omite coincidencias legitimas por sensibilidad a mayusculas, acentos o espacios.</td>
+          <td>La búsqueda de razas omite coincidencias legitimas por sensibilidad a mayúsculas, acentos o espacios.</td>
           <td>Media</td>
           <td>Medio</td>
           <td>Casos con variantes de escritura, nombres compuestos y coincidencias parciales.</td>
         </tr>
         <tr>
           <td class="mono">RF-05</td>
-          <td>La ausencia de coincidencias se comunica como error y no como resultado vacio.</td>
+          <td>La ausencia de coincidencias se comunica como error y no como resultado vacío.</td>
           <td>Baja</td>
           <td>Medio</td>
           <td>Caso especifico sobre una consulta deliberadamente sin resultados.</td>
         </tr>
         <tr>
           <td class="mono">RF-06</td>
-          <td>Un valor frontera aceptado por la validacion no es atendido por la logica.</td>
+          <td>Un valor frontera aceptado por la validación no es atendido por la lógica.</td>
           <td>Alta</td>
           <td>Alto</td>
-          <td>Analisis de valores frontera en ambos extremos de cada rango, comparando lo solicitado con lo entregado.</td>
+          <td>Análisis de valores frontera en ambos extremos de cada rango, comparando lo solicitado con lo entregado.</td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <h2>Riesgos tecnicos</h2>
+  <h2>Riesgos técnicos</h2>
 
   <div class="envoltura-tabla">
     <table>
@@ -196,7 +196,7 @@
       <tbody>
         <tr>
           <td class="mono">RT-01</td>
-          <td>La aleatoriedad del recurso hace que cualquier asercion de igualdad sea inestable por diseno.</td>
+          <td>La aleatoriedad del recurso hace que cualquier asercion de igualdad sea inestable por diseño.</td>
           <td>Alta</td>
           <td>Alto</td>
           <td>Ninguna asercion compara contra un identificador fijo. Se verifican invariantes de contrato y de comportamiento.</td>
@@ -206,28 +206,28 @@
           <td>La limitacion de consumo devuelve 429 o 403 y se interpreta como fallo del servicio.</td>
           <td>Alta</td>
           <td>Medio</td>
-          <td>Metrica propia que contabiliza las respuestas de limitacion por separado, y perfiles de carga moderados.</td>
+          <td>Métrica propia que contabiliza las respuestas de limitacion por separado, y perfiles de carga moderados.</td>
         </tr>
         <tr>
           <td class="mono">RT-03</td>
-          <td>La variabilidad de la red publica produce fallos que no corresponden a defectos.</td>
+          <td>La variabilidad de la red pública produce fallos que no corresponden a defectos.</td>
           <td>Alta</td>
           <td>Medio</td>
-          <td>Un reintento en integracion continua, umbrales con margen sobre la linea base y percentiles en lugar de maximos.</td>
+          <td>Un reintento en integración continua, umbrales con margen sobre la línea base y percentiles en lugar de máximos.</td>
         </tr>
         <tr>
           <td class="mono">RT-04</td>
           <td>El contrato de respuesta cambia sin aviso y rompe a los consumidores.</td>
           <td>Media</td>
           <td>Alto</td>
-          <td>Validacion por esquema en cada ejecucion programada, que detecta la ruptura antes que los consumidores.</td>
+          <td>Validación por esquema en cada ejecución programada, que detecta la ruptura antes que los consumidores.</td>
         </tr>
         <tr>
           <td class="mono">RT-05</td>
-          <td>No existe entorno de pruebas: toda ejecucion impacta produccion y consume cuota real.</td>
+          <td>No existe entorno de pruebas: toda ejecución impacta producción y consume cuota real.</td>
           <td>Alta</td>
           <td>Alto</td>
-          <td>Volumen acotado, escenarios de carga elevada excluidos de la ejecucion programada y sujetos a autorizacion expresa.</td>
+          <td>Volumen acotado, escenarios de carga elevada excluidos de la ejecución programada y sujetos a autorización expresa.</td>
         </tr>
         <tr>
           <td class="mono">RT-06</td>
@@ -238,17 +238,17 @@
         </tr>
         <tr>
           <td class="mono">RT-07</td>
-          <td>Una cache intermedia devuelve respuestas antiguas y enmascara una regresion.</td>
+          <td>Una caché intermedia devuelve respuestas antiguas y enmascara una regresión.</td>
           <td>Media</td>
           <td>Medio</td>
-          <td>Verificacion explicita de variabilidad en las respuestas aleatorias y registro del estado de cache en la evidencia.</td>
+          <td>Verificación explicita de variabilidad en las respuestas aleatorias y registro del estado de caché en la evidencia.</td>
         </tr>
         <tr>
           <td class="mono">RT-08</td>
-          <td>Las imagenes se sirven desde un dominio distinto al del API, con su propia disponibilidad.</td>
+          <td>Las imágenes se sirven desde un dominio distinto al del API, con su propia disponibilidad.</td>
           <td>Media</td>
           <td>Bajo</td>
-          <td>Se verifica que la direccion sea valida y este cifrada; la descarga del recurso queda fuera de alcance por decision explicita.</td>
+          <td>Se verifica que la dirección sea válida y este cifrada; la descarga del recurso queda fuera de alcance por decisión explicita.</td>
         </tr>
       </tbody>
     </table>
@@ -258,43 +258,43 @@
 
   <ul>
     <li>
-      <strong>Servicio de terceros en produccion.</strong> No hay entorno de pruebas, ni control
+      <strong>Servicio de terceros en producción.</strong> No hay entorno de pruebas, ni control
       sobre los datos, ni posibilidad de sembrar un estado conocido. Toda prueba es de caja negra
       sobre un sistema vivo.
     </li>
     <li>
       <strong>Credencial obligatoria para el recurso de razas.</strong> Sin ella el ejercicio 2 es
-      inejecutable. La suite usa la credencial publica de demostracion por defecto para ser
-      ejecutable sin configuracion previa, y admite una credencial propia mediante el secreto
-      <code>CAT_API_KEY</code>. La credencial de demostracion comparte su cuota con todos sus
-      usuarios, de modo que sus limites son impredecibles.
+      inejecutable. La suite usa la credencial pública de demostración por defecto para ser
+      ejecutable sin configuración previa, y admite una credencial propia mediante el secreto
+      <code>CAT_API_KEY</code>. La credencial de demostración comparte su cuota con todos sus
+      usuarios, de modo que sus límites son impredecibles.
     </li>
     <li>
-      <strong>Datos no controlados.</strong> El catalogo de imagenes cambia por aportaciones de
+      <strong>Datos no controlados.</strong> El catalogo de imágenes cambia por aportaciones de
       terceros. El catalogo de razas es estable y por eso se usa como fuente de los datos de prueba
       deterministas.
     </li>
     <li>
-      <strong>Red publica.</strong> Los tiempos medidos incluyen la latencia entre el agente de
-      ejecucion y el servicio, que no es atribuible al sistema bajo prueba. Se mitiga con
+      <strong>Red pública.</strong> Los tiempos medidos incluyen la latencia entre el agente de
+      ejecución y el servicio, que no es atribuible al sistema bajo prueba. Se mitiga con
       percentiles y margen en los umbrales, no con promedios.
     </li>
     <li>
-      <strong>Distribucion de contenido intermedia.</strong> El servicio se sirve a traves de una
-      capa de cache y distribucion. Los tiempos observados dependen del estado de esa capa, y una
-      respuesta servida desde cache no mide el servicio de origen.
+      <strong>Distribución de contenido intermedia.</strong> El servicio se sirve a traves de una
+      capa de caché y distribución. Los tiempos observados dependen del estado de esa capa, y una
+      respuesta servida desde caché no mide el servicio de origen.
     </li>
     <li>
       <strong>Restriccion etica y contractual.</strong> Las pruebas de carga elevada, de agotamiento
-      de recursos y de intrusion sobre un servicio ajeno requieren autorizacion escrita del
-      proveedor. En ausencia de ella quedan fuera de alcance, y asi se declara.
+      de recursos y de intrusión sobre un servicio ajeno requieren autorización escrita del
+      proveedor. En ausencia de ella quedan fuera de alcance, y así se declara.
     </li>
   </ul>
 
-  <h2>Informacion requerida antes de ejecutar pruebas</h2>
+  <h2>Información requerida antes de ejecutar pruebas</h2>
 
   <p>
-    Peticiones concretas al equipo responsable del servicio. Sin ellas la verificacion puede
+    Peticiones concretas al equipo responsable del servicio. Sin ellas la verificación puede
     ejecutarse, pero su resultado no puede considerarse concluyente.
   </p>
 
@@ -304,37 +304,37 @@
         <tr><th style="width:52px">Clave</th><th>Solicitud</th><th>Bloquea</th></tr>
       </thead>
       <tbody>
-        <tr><td class="mono">I-01</td><td>Especificacion formal del contrato, preferentemente en OpenAPI, con esquemas de respuesta y catalogo de errores.</td><td>Pruebas de contrato concluyentes</td></tr>
-        <tr><td class="mono">I-02</td><td>Definicion del mecanismo de autenticacion, del plan aplicable y de una credencial dedicada al equipo de pruebas.</td><td>Ejercicio 2 completo</td></tr>
-        <tr><td class="mono">I-03</td><td>Conjunto de valores admitidos por <code>size</code>, <code>mime_types</code> y <code>format</code>, y comportamiento esperado ante un valor invalido.</td><td>Pruebas negativas de esos parametros</td></tr>
-        <tr><td class="mono">I-04</td><td>Condiciones exactas bajo las que se emiten los encabezados de paginacion.</td><td>Verificacion de paginacion</td></tr>
+        <tr><td class="mono">I-01</td><td>Especificación formal del contrato, preferentemente en OpenAPI, con esquemas de respuesta y catalogo de errores.</td><td>Pruebas de contrato concluyentes</td></tr>
+        <tr><td class="mono">I-02</td><td>Definición del mecanismo de autenticación, del plan aplicable y de una credencial dedicada al equipo de pruebas.</td><td>Ejercicio 2 completo</td></tr>
+        <tr><td class="mono">I-03</td><td>Conjunto de valores admitidos por <code>size</code>, <code>mime_types</code> y <code>format</code>, y comportamiento esperado ante un valor inválido.</td><td>Pruebas negativas de esos parámetros</td></tr>
+        <tr><td class="mono">I-04</td><td>Condiciones exactas bajo las que se emiten los encabezados de paginación.</td><td>Verificación de paginación</td></tr>
         <tr><td class="mono">I-05</td><td>Efecto esperado de <code>attach_image</code> sobre la respuesta.</td><td>Cierre del hallazgo H-01</td></tr>
-        <tr><td class="mono">I-06</td><td>Politica de limitacion de consumo: cuota, ventana y codigo devuelto al superarla.</td><td>Diseno del perfil de carga</td></tr>
-        <tr><td class="mono">I-07</td><td>Acuerdo de nivel de servicio comprometido: disponibilidad y tiempo de respuesta objetivo por percentil.</td><td>Criterios de aceptacion de desempeno</td></tr>
-        <tr><td class="mono">I-08</td><td>Politica de versionado y de notificacion de cambios incompatibles.</td><td>Estrategia de regresion</td></tr>
-        <tr><td class="mono">I-09</td><td>Disponibilidad de un entorno de pruebas o de una ventana autorizada para ejecutar escenarios de carga elevada.</td><td>Escenarios de estres, pico y resistencia</td></tr>
-        <tr><td class="mono">I-10</td><td>Confirmacion de si el truncamiento descrito en H-02 es una decision de producto o un defecto.</td><td>Clasificacion de H-02</td></tr>
+        <tr><td class="mono">I-06</td><td>Política de limitacion de consumo: cuota, ventana y código devuelto al superarla.</td><td>Diseño del perfil de carga</td></tr>
+        <tr><td class="mono">I-07</td><td>Acuerdo de nivel de servicio comprometido: disponibilidad y tiempo de respuesta objetivo por percentil.</td><td>Criterios de aceptación de desempeno</td></tr>
+        <tr><td class="mono">I-08</td><td>Política de versionado y de notificación de cambios incompatibles.</td><td>Estrategia de regresión</td></tr>
+        <tr><td class="mono">I-09</td><td>Disponibilidad de un entorno de pruebas o de una ventana autorizada para ejecutar escenarios de carga elevada.</td><td>Escenarios de estrés, pico y resistencia</td></tr>
+        <tr><td class="mono">I-10</td><td>Confirmacion de si el truncamiento descrito en H-02 es una decisión de producto o un defecto.</td><td>Clasificación de H-02</td></tr>
       </tbody>
     </table>
   </div>
 
-  <h2>Observacion sobre el material de la evaluacion</h2>
+  <h2>Observacion sobre el material de la evaluación</h2>
 
   <div class="aviso alerta">
     <p>
       El enunciado incluye un enlace a la vista de cuenta del servicio que contiene un identificador
-      de acceso incrustado en la direccion. Un identificador de ese tipo circulando en un documento
+      de acceso incrustado en la dirección. Un identificador de ese tipo circulando en un documento
       distribuido es una exposicion de credenciales, con independencia de su alcance. Se recomienda
-      sustituir el enlace por una referencia a la documentacion publica y entregar cualquier
-      credencial por un canal separado. Se senala en el mismo espiritu con que se reportaria en un
-      proyecto real: el material de trabajo tambien forma parte de la superficie de riesgo.
+      sustituir el enlace por una referencia a la documentación pública y entregar cualquier
+      credencial por un canal separado. Se señala en el mismo espiritu con que se reportaria en un
+      proyecto real: el material de trabajo también forma parte de la superficie de riesgo.
     </p>
   </div>
 
 </main>
 
 <footer class="pie">
-  <p>Portal publicado automaticamente desde el repositorio en cada ejecucion de la suite.</p>
+  <p>Portal publicado automaticamente desde el repositorio en cada ejecución de la suite.</p>
 </footer>
 
 <script type="module">

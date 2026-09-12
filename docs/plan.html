@@ -12,15 +12,15 @@
 
 <header class="cabecera">
   <div class="cabecera-interior">
-    <a class="marca" href="index.html">Portal de calidad<span>Evaluacion tecnica de API</span></a>
+    <a class="marca" href="index.html">Portal de calidad<span>Evaluación técnica de API</span></a>
     <nav class="navegacion">
       <a href="index.html">Inicio</a>
-      <a href="analisis.html">Analisis</a>
+      <a href="analisis.html">Análisis</a>
       <a href="plan.html">Plan de pruebas</a>
       <a href="casos.html">Casos</a>
       <a href="evidencia.html">Evidencia</a>
-      <a href="historico.html">Historico</a>
-      <a href="reporte-funcional/index.html">Ultimo reporte</a>
+      <a href="historico.html">Histórico</a>
+      <a href="reporte-funcional/index.html">Último reporte</a>
     </nav>
   </div>
 </header>
@@ -29,24 +29,24 @@
 
   <h1>Plan de pruebas</h1>
   <p class="entradilla">
-    Estructurado segun los elementos que la norma ISO/IEC/IEEE 29119-3 establece para un plan de
-    pruebas de nivel de componente. Las tecnicas de diseno provienen de la parte 4 de la misma
-    serie y la clasificacion de la cobertura del modelo de calidad de ISO/IEC 25010:2023.
+    Estructurado según los elementos que la norma ISO/IEC/IEEE 29119-3 establece para un plan de
+    pruebas de nivel de componente. Las técnicas de diseño provienen de la parte 4 de la misma
+    serie y la clasificación de la cobertura del modelo de calidad de ISO/IEC 25010:2023.
   </p>
 
   <h2>1. Objetivo</h2>
 
   <p>
     Determinar si los endpoints <code>GET /images/search</code> y <code>GET /breeds/search</code>
-    cumplen con el comportamiento declarado en su especificacion, se comportan de forma predecible
-    ante entradas invalidas y de borde, mantienen un contrato de respuesta estable, y sostienen
-    tiempos de respuesta y disponibilidad adecuados para un consumo en produccion.
+    cumplen con el comportamiento declarado en su especificación, se comportan de forma predecible
+    ante entradas inválidas y de borde, mantienen un contrato de respuesta estable, y sostienen
+    tiempos de respuesta y disponibilidad adecuados para un consumo en producción.
   </p>
 
   <p>
     De forma subordinada, el plan persigue un segundo objetivo: dejar constancia documentada de las
-    ambiguedades de la especificacion, de modo que el equipo responsable del servicio pueda
-    resolverlas y la verificacion pase de ser una exploracion a ser una comprobacion.
+    ambigüedades de la especificación, de modo que el equipo responsable del servicio pueda
+    resolverlas y la verificación pase de ser una exploracion a ser una comprobación.
   </p>
 
   <h2>2. Alcance</h2>
@@ -54,13 +54,13 @@
   <h3>2.1 Dentro de alcance</h3>
 
   <ul>
-    <li>Los dos endpoints indicados, en su version 1, sobre el entorno de produccion.</li>
-    <li>La totalidad de los parametros declarados para cada uno de ellos.</li>
+    <li>Los dos endpoints indicados, en su versión 1, sobre el entorno de producción.</li>
+    <li>La totalidad de los parámetros declarados para cada uno de ellos.</li>
     <li>Los dos modos de consumo posibles: anonimo y autenticado con credencial.</li>
     <li>Escenarios funcionales, negativos, de borde y de contrato.</li>
-    <li>Verificacion de codigos de estado, encabezados, tipo de contenido y estructura del cuerpo.</li>
+    <li>Verificación de códigos de estado, encabezados, tipo de contenido y estructura del cuerpo.</li>
     <li>Comportamiento temporal y disponibilidad bajo carga de humo y carga nominal.</li>
-    <li>Seguridad de superficie: control de acceso, tratamiento de entradas hostiles y ausencia de fuga de informacion.</li>
+    <li>Seguridad de superficie: control de acceso, tratamiento de entradas hostiles y ausencia de fuga de información.</li>
     <li>Calidad y utilidad de los mensajes de error desde la perspectiva del consumidor.</li>
   </ul>
 
@@ -78,13 +78,13 @@
       <tbody>
         <tr><td>Resto de endpoints del servicio</td><td>El requerimiento delimita dos recursos.</td></tr>
         <tr><td>Operaciones de escritura: cargar, votar, marcar como favorito</td><td>Fuera del requerimiento y con efectos persistentes sobre datos de terceros.</td></tr>
-        <tr><td>Pruebas de intrusion y analisis de vulnerabilidades</td><td>Requieren autorizacion escrita del proveedor del servicio.</td></tr>
-        <tr><td>Pruebas de carga por encima del perfil nominal en la ejecucion programada</td><td>Mismo motivo. Los escenarios existen y se lanzan de forma deliberada bajo autorizacion.</td></tr>
-        <tr><td>Descarga y verificacion del contenido de las imagenes</td><td>Se sirven desde un dominio distinto con disponibilidad propia; se verifica la validez de la direccion, no el recurso.</td></tr>
+        <tr><td>Pruebas de intrusión y análisis de vulnerabilidades</td><td>Requieren autorización escrita del proveedor del servicio.</td></tr>
+        <tr><td>Pruebas de carga por encima del perfil nominal en la ejecución programada</td><td>Mismo motivo. Los escenarios existen y se lanzan de forma deliberada bajo autorización.</td></tr>
+        <tr><td>Descarga y verificación del contenido de las imágenes</td><td>Se sirven desde un dominio distinto con disponibilidad propia; se verifica la validez de la dirección, no el recurso.</td></tr>
         <tr><td>Interfaz grafica y portal del proveedor</td><td>El requerimiento se limita a la interfaz de programacion.</td></tr>
-        <tr><td>Pruebas de compatibilidad entre versiones del API</td><td>No se declara politica de versionado. Depende de I-08.</td></tr>
+        <tr><td>Pruebas de compatibilidad entre versiones del API</td><td>No se declara política de versionado. Depende de I-08.</td></tr>
         <tr><td>Accesibilidad y localizacion</td><td>No aplicables a una interfaz de datos sin presentacion.</td></tr>
-        <tr><td>Mantenibilidad y portabilidad del servicio</td><td>No se dispone del codigo ni del control del despliegue.</td></tr>
+        <tr><td>Mantenibilidad y portabilidad del servicio</td><td>No se dispone del código ni del control del despliegue.</td></tr>
       </tbody>
     </table>
   </div>
@@ -92,13 +92,13 @@
   <h2>3. Supuestos</h2>
 
   <ol>
-    <li>El servicio se mantiene disponible durante la ventana de ejecucion; una indisponibilidad del proveedor invalida la corrida, no la convierte en un fallo del producto.</li>
-    <li>La credencial configurada es valida y su cuota alcanza para el volumen previsto.</li>
-    <li>La conectividad entre el agente de ejecucion y el servicio es estable y su latencia se mantiene dentro del margen previsto en los umbrales.</li>
+    <li>El servicio se mantiene disponible durante la ventana de ejecución; una indisponibilidad del proveedor inválida la corrida, no la convierte en un fallo del producto.</li>
+    <li>La credencial configurada es válida y su cuota alcanza para el volumen previsto.</li>
+    <li>La conectividad entre el agente de ejecución y el servicio es estable y su latencia se mantiene dentro del margen previsto en los umbrales.</li>
     <li>El catalogo de razas es estable y sus registros de referencia no cambian de identificador.</li>
-    <li>El catalogo de imagenes varia, por lo que ninguna verificacion depende de una imagen concreta.</li>
-    <li>Los rangos de validacion inferidos de los mensajes de error del servicio son los vigentes mientras no se publique una especificacion formal.</li>
-    <li>La hora de la ejecucion programada corresponde a la zona horaria de la Ciudad de Mexico, que no aplica horario de verano.</li>
+    <li>El catalogo de imágenes varia, por lo que ninguna verificación depende de una imagen concreta.</li>
+    <li>Los rangos de validación inferidos de los mensajes de error del servicio son los vigentes mientras no se publique una especificación formal.</li>
+    <li>La hora de la ejecución programada corresponde a la zona horaria de la Ciudad de Mexico, que no aplica horario de verano.</li>
   </ol>
 
   <h2>4. Datos de prueba</h2>
@@ -117,17 +117,17 @@
         <tr>
           <td>Razas de referencia</td>
           <td><code>beng</code> (Bengal), <code>siam</code> (Siamese), <code>mcoo</code> (Maine Coon), <code>abys</code> (Abyssinian)</td>
-          <td>Verificacion de contenido concreto en la busqueda de razas</td>
+          <td>Verificación de contenido concreto en la búsqueda de razas</td>
         </tr>
         <tr>
           <td>Valores frontera de <code>limit</code></td>
-          <td>0, 1, 10, 25, 50, 100, 101 y el valor no numerico <code>abc</code></td>
-          <td>Analisis de valores frontera y particion de equivalencia</td>
+          <td>0, 1, 10, 25, 50, 100, 101 y el valor no numérico <code>abc</code></td>
+          <td>Análisis de valores frontera y particion de equivalencia</td>
         </tr>
         <tr>
           <td>Valores frontera de <code>q</code></td>
-          <td>Cadena vacia, 1 caracter, 30 caracteres, 31 caracteres, nombre compuesto con espacio</td>
-          <td>Analisis de valores frontera sobre la longitud admitida</td>
+          <td>Cadena vacía, 1 carácter, 30 caracteres, 31 caracteres, nombre compuesto con espacio</td>
+          <td>Análisis de valores frontera sobre la longitud admitida</td>
         </tr>
         <tr>
           <td>Valores de <code>order</code></td>
@@ -136,18 +136,18 @@
         </tr>
         <tr>
           <td>Cargas hostiles</td>
-          <td>Inyeccion de sentencia, comodines de coincidencia, secuencia de comandos, recorrido de directorios</td>
+          <td>Inyección de sentencia, comodines de coincidencia, secuencia de comandos, recorrido de directorios</td>
           <td>Seguridad de superficie</td>
         </tr>
         <tr>
-          <td>Terminos de busqueda para desempeno</td>
-          <td>Diez terminos representativos recorridos de forma ciclica</td>
-          <td>Evitar que la cache del servicio distorsione la medicion</td>
+          <td>Términos de búsqueda para desempeno</td>
+          <td>Diez términos representativos recorridos de forma ciclica</td>
+          <td>Evitar que la caché del servicio distorsione la medición</td>
         </tr>
         <tr>
           <td>Credenciales</td>
-          <td>Valida, invalida, vacia, en blanco y ausente</td>
-          <td>Verificacion del control de acceso</td>
+          <td>Válida, inválida, vacía, en blanco y ausente</td>
+          <td>Verificación del control de acceso</td>
         </tr>
       </tbody>
     </table>
@@ -155,9 +155,9 @@
 
   <div class="aviso">
     <p>
-      Ningun dato de prueba se almacena en el repositorio en forma de credencial. La llave de acceso
-      se resuelve en tiempo de ejecucion desde el secreto <code>CAT_API_KEY</code>, y en su ausencia
-      se emplea la credencial publica de demostracion del proveedor, cuyo uso esta previsto para ese
+      Ningún dato de prueba se almacena en el repositorio en forma de credencial. La llave de acceso
+      se resuelve en tiempo de ejecución desde el secreto <code>CAT_API_KEY</code>, y en su ausencia
+      se emplea la credencial pública de demostración del proveedor, cuyo uso esta previsto para ese
       fin.
     </p>
   </div>
@@ -168,9 +168,9 @@
 
   <p>
     Prueba de caja negra guiada por riesgo. Cada caso existe porque mitiga un riesgo enunciado en el
-    analisis, y todo riesgo enunciado tiene al menos un caso que lo cubre. Esta correspondencia es
-    lo que permite defender la cobertura ante una pregunta incomoda, y lo que evita el error mas
-    comun en una suite de API: escribir muchos casos que verifican lo mismo.
+    análisis, y todo riesgo enunciado tiene al menos un caso que lo cubre. Esta correspondencia es
+    lo que permite defender la cobertura ante una pregunta incomoda, y lo que evita el error más
+    común en una suite de API: escribir muchos casos que verifican lo mismo.
   </p>
 
   <h3>5.2 Niveles y tipos</h3>
@@ -178,47 +178,47 @@
   <div class="envoltura-tabla">
     <table>
       <thead>
-        <tr><th>Tipo</th><th>Proposito</th><th>Tecnica de diseno</th><th>Herramienta</th></tr>
+        <tr><th>Tipo</th><th>Propósito</th><th>Técnica de diseño</th><th>Herramienta</th></tr>
       </thead>
       <tbody>
-        <tr><td>Funcional</td><td>Confirmar el comportamiento declarado con entradas validas</td><td>Particion de equivalencia</td><td>Playwright</td></tr>
-        <tr><td>Negativo</td><td>Verificar el rechazo uniforme y accionable de lo invalido</td><td>Particion de equivalencia sobre clases invalidas</td><td>Playwright</td></tr>
-        <tr><td>De borde</td><td>Cubrir los valores frontera de cada rango</td><td>Analisis de valores frontera</td><td>Playwright</td></tr>
-        <tr><td>De contrato</td><td>Detectar rupturas de compatibilidad antes que los consumidores</td><td>Validacion por esquema</td><td>Playwright con esquemas JSON</td></tr>
-        <tr><td>De seguridad de superficie</td><td>Control de acceso, entradas hostiles y fuga de informacion</td><td>Prueba basada en casos de abuso</td><td>Playwright</td></tr>
-        <tr><td>No funcional en linea</td><td>Tiempo de respuesta, compresion, cache y disponibilidad</td><td>Medicion sobre series cortas</td><td>Playwright</td></tr>
+        <tr><td>Funcional</td><td>Confirmar el comportamiento declarado con entradas válidas</td><td>Particion de equivalencia</td><td>Playwright</td></tr>
+        <tr><td>Negativo</td><td>Verificar el rechazo uniforme y accionable de lo inválido</td><td>Particion de equivalencia sobre clases inválidas</td><td>Playwright</td></tr>
+        <tr><td>De borde</td><td>Cubrir los valores frontera de cada rango</td><td>Análisis de valores frontera</td><td>Playwright</td></tr>
+        <tr><td>De contrato</td><td>Detectar rupturas de compatibilidad antes que los consumidores</td><td>Validación por esquema</td><td>Playwright con esquemas JSON</td></tr>
+        <tr><td>De seguridad de superficie</td><td>Control de acceso, entradas hostiles y fuga de información</td><td>Prueba basada en casos de abuso</td><td>Playwright</td></tr>
+        <tr><td>No funcional en línea</td><td>Tiempo de respuesta, compresión, caché y disponibilidad</td><td>Medición sobre series cortas</td><td>Playwright</td></tr>
         <tr><td>De desempeno</td><td>Comportamiento temporal y capacidad bajo carga</td><td>Perfiles de carga por escenario</td><td>k6</td></tr>
       </tbody>
     </table>
   </div>
 
-  <h3>5.3 Decisiones de diseno que condicionan toda la suite</h3>
+  <h3>5.3 Decisiones de diseño que condicionan toda la suite</h3>
 
   <ol class="pasos">
     <li>
-      <strong>Ninguna asercion depende de un dato aleatorio concreto.</strong> El recurso de imagenes
-      devuelve resultados aleatorios por definicion. Verificar un identificador fijo produciria una
+      <strong>Ninguna asercion depende de un dato aleatorio concreto.</strong> El recurso de imágenes
+      devuelve resultados aleatorios por definición. Verificar un identificador fijo produciria una
       suite que falla sin que exista defecto alguno. Se verifican invariantes: forma, cardinalidad,
       unicidad, coherencia interna y cumplimiento del contrato.
     </li>
     <li>
       <strong>Cada caso adjunta su evidencia.</strong> El reporte incluye, para cada caso, la
-      peticion realizada, el codigo de estado, los encabezados relevantes, el tiempo de respuesta y
+      petición realizada, el código de estado, los encabezados relevantes, el tiempo de respuesta y
       la respuesta obtenida. Un reporte que solo dice "paso" o "fallo" obliga a reproducir la
-      ejecucion para entender que ocurrio.
+      ejecución para entender que ocurrio.
     </li>
     <li>
       <strong>Las desviaciones conocidas se afirman, no se ignoran.</strong> Cuando el
       comportamiento observado difiere del declarado y el defecto ya esta documentado, el caso
-      afirma el comportamiento real y registra la desviacion como anotacion. Asi la suite permanece
-      utilizable como red de regresion y el defecto sigue visible. El dia en que el proveedor lo
+      afirma el comportamiento real y registra la desviación como anotacion. Así la suite permanece
+      utilizable como red de regresión y el defecto sigue visible. El día en que el proveedor lo
       corrija, el caso fallara y obligara a revisar el hallazgo, que es exactamente lo que debe
       ocurrir.
     </li>
     <li>
       <strong>El volumen de las pruebas de desempeno se mantiene moderado.</strong> El sistema bajo
       prueba pertenece a un tercero. Los escenarios capaces de degradarlo existen en el repositorio
-      pero no forman parte de la ejecucion programada.
+      pero no forman parte de la ejecución programada.
     </li>
   </ol>
 
@@ -226,56 +226,56 @@
 
   <h3>6.1 Funcionales</h3>
   <ul>
-    <li>Busqueda de imagenes sin parametros y con el parametro de tamano en sus distintos valores.</li>
-    <li>Verificacion de los campos obligatorios y de la unicidad dentro de una misma pagina.</li>
+    <li>Búsqueda de imágenes sin parámetros y con el parámetro de tamaño en sus distintos valores.</li>
+    <li>Verificación de los campos obligatorios y de la unicidad dentro de una misma página.</li>
     <li>Variabilidad efectiva de los resultados aleatorios entre llamadas consecutivas.</li>
-    <li>Filtrado por raza asociada y verificacion de que el filtro se cumple sobre el contenido.</li>
-    <li>Recorrido de paginas consecutivas en orden determinista, sin traslape y de forma estable.</li>
-    <li>Presencia y coherencia de los encabezados de paginacion.</li>
-    <li>Busqueda de razas por nombre exacto, parcial, compuesto y en distintas variantes de escritura.</li>
-    <li>Verificacion de los campos descriptivos de la raza y de la imagen asociada.</li>
+    <li>Filtrado por raza asociada y verificación de que el filtro se cumple sobre el contenido.</li>
+    <li>Recorrido de páginas consecutivas en orden determinista, sin traslape y de forma estable.</li>
+    <li>Presencia y coherencia de los encabezados de paginación.</li>
+    <li>Búsqueda de razas por nombre exacto, parcial, compuesto y en distintas variantes de escritura.</li>
+    <li>Verificación de los campos descriptivos de la raza y de la imagen asociada.</li>
   </ul>
 
   <h3>6.2 Negativos</h3>
   <ul>
-    <li>Parametro de tamano igual a cero, negativo, no numerico y por encima del maximo declarado.</li>
-    <li>Numero de pagina negativo.</li>
+    <li>Parámetro de tamaño igual a cero, negativo, no numérico y por encima del máximo declarado.</li>
+    <li>Número de página negativo.</li>
     <li>Valor de ordenamiento fuera del conjunto permitido.</li>
-    <li>Criterio de busqueda vacio y criterio excesivamente largo.</li>
+    <li>Criterio de búsqueda vacío y criterio excesivamente largo.</li>
     <li>Verbo HTTP no soportado sobre un recurso de solo lectura.</li>
     <li>Ruta inexistente.</li>
-    <li>Acceso sin credencial, con credencial invalida, vacia o en blanco.</li>
+    <li>Acceso sin credencial, con credencial inválida, vacía o en blanco.</li>
     <li>Credencial enviada por la cadena de consulta en lugar del encabezado.</li>
   </ul>
 
   <h3>6.3 De borde</h3>
   <ul>
-    <li>Fronteras inferior y superior de cada rango numerico, en el valor limite y un paso fuera de el.</li>
-    <li>Longitud minima y maxima del criterio de busqueda.</li>
-    <li>Pagina situada mas alla del ultimo resultado disponible.</li>
-    <li>Ultima pagina util calculada a partir del total informado por el servicio.</li>
-    <li>Valores no contemplados en parametros sin dominio declarado.</li>
-    <li>Parametros desconocidos para el servicio.</li>
-    <li>Coleccion vacia como resultado legitimo de una busqueda.</li>
+    <li>Fronteras inferior y superior de cada rango numérico, en el valor límite y un paso fuera de el.</li>
+    <li>Longitud mínima y máxima del criterio de búsqueda.</li>
+    <li>Página situada más alla del último resultado disponible.</li>
+    <li>Última página útil calculada a partir del total informado por el servicio.</li>
+    <li>Valores no contemplados en parámetros sin dominio declarado.</li>
+    <li>Parámetros desconocidos para el servicio.</li>
+    <li>Colección vacía como resultado legitimo de una búsqueda.</li>
   </ul>
 
-  <h3>6.4 Validaciones tecnicas</h3>
+  <h3>6.4 Validaciones técnicas</h3>
   <ul>
-    <li>Codigo de estado correcto para cada clase de resultado.</li>
+    <li>Código de estado correcto para cada clase de resultado.</li>
     <li>Tipo de contenido declarado y coherente con el cuerpo entregado.</li>
-    <li>Estructura del cuerpo validada contra esquema, en sus dos variantes segun el modo de autenticacion.</li>
-    <li>Estructura uniforme del cuerpo de error en todos los codigos de fallo.</li>
-    <li>Presencia y coherencia de los encabezados de paginacion cuando corresponde.</li>
-    <li>Declaracion de la politica de origen cruzado.</li>
-    <li>Compresion de las respuestas de volumen apreciable.</li>
-    <li>Presencia de un validador de cache en los recursos estables.</li>
+    <li>Estructura del cuerpo validada contra esquema, en sus dos variantes según el modo de autenticación.</li>
+    <li>Estructura uniforme del cuerpo de error en todos los códigos de fallo.</li>
+    <li>Presencia y coherencia de los encabezados de paginación cuando corresponde.</li>
+    <li>Declaracion de la política de origen cruzado.</li>
+    <li>Compresión de las respuestas de volumen apreciable.</li>
+    <li>Presencia de un validador de caché en los recursos estables.</li>
     <li>Ausencia de encabezados que revelen la pila tecnologica.</li>
     <li>Transporte cifrado tanto en el API como en los recursos referidos.</li>
   </ul>
 
-  <h2>7. Criterios de aceptacion</h2>
+  <h2>7. Criterios de aceptación</h2>
 
-  <p>Una ejecucion se considera aprobada cuando se cumplen todas las condiciones siguientes.</p>
+  <p>Una ejecución se considera aprobada cuando se cumplen todas las condiciones siguientes.</p>
 
   <div class="envoltura-tabla">
     <table>
@@ -283,7 +283,7 @@
         <tr><th style="width:56px">Clave</th><th>Criterio</th><th>Umbral</th></tr>
       </thead>
       <tbody>
-        <tr><td class="mono">CA-01</td><td>Casos marcados como criticos que pasan</td><td>100 por ciento</td></tr>
+        <tr><td class="mono">CA-01</td><td>Casos marcados como críticos que pasan</td><td>100 por ciento</td></tr>
         <tr><td class="mono">CA-02</td><td>Casos totales que pasan</td><td>No menos del 98 por ciento</td></tr>
         <tr><td class="mono">CA-03</td><td>Defectos abiertos de severidad alta sin analizar</td><td>Ninguno</td></tr>
         <tr><td class="mono">CA-04</td><td>Mediana del tiempo de respuesta</td><td>Por debajo de 1500 ms</td></tr>
@@ -298,10 +298,10 @@
   </div>
 
   <p>
-    Los umbrales de tiempo se derivan de una linea base medida durante el analisis: mediana en torno
+    Los umbrales de tiempo se derivan de una línea base medida durante el análisis: mediana en torno
     a 170 ms y percentil 95 por debajo de 520 ms en condiciones de uso individual. El margen sobre
-    esa linea absorbe la variabilidad de la red publica sin dejar de detectar una degradacion real.
-    En cuanto el proveedor publique su acuerdo de nivel de servicio, estos valores deben sustituirse
+    esa línea absorbe la variabilidad de la red pública sin dejar de detectar una degradacion real.
+    En cuánto el proveedor publique su acuerdo de nivel de servicio, estos valores deben sustituirse
     por los comprometidos.
   </p>
 
@@ -310,13 +310,13 @@
   <p>El ciclo de pruebas se da por concluido cuando concurren las condiciones siguientes.</p>
 
   <ol>
-    <li>Todos los casos disenados han sido ejecutados, o su omision esta justificada y registrada.</li>
-    <li>Se cumplen los criterios de aceptacion CA-01 a CA-10, o su incumplimiento ha sido aceptado de forma expresa por el responsable del producto.</li>
-    <li>Todo defecto de severidad alta esta corregido y verificado, o dispone de una decision documentada de aplazamiento con su justificacion y su riesgo residual.</li>
+    <li>Todos los casos disenados han sido ejecutados, o su omisión esta justificada y registrada.</li>
+    <li>Se cumplen los criterios de aceptación CA-01 a CA-10, o su incumplimiento ha sido aceptado de forma expresa por el responsable del producto.</li>
+    <li>Todo defecto de severidad alta esta corregido y verificado, o dispone de una decisión documentada de aplazamiento con su justificacion y su riesgo residual.</li>
     <li>Los defectos de severidad media y baja estan registrados, clasificados y planificados.</li>
-    <li>Las ambiguedades A-01 a A-10 han sido respondidas, o consta la decision de continuar sin respuesta y el riesgo que ello implica.</li>
+    <li>Las ambigüedades A-01 a A-10 han sido respondidas, o consta la decisión de continuar sin respuesta y el riesgo que ello implica.</li>
     <li>El informe de cierre esta publicado e incluye la cobertura alcanzada, los defectos abiertos y los riesgos residuales.</li>
-    <li>La suite automatizada esta incorporada al flujo de integracion continua y ha completado al menos tres ejecuciones programadas consecutivas de forma estable.</li>
+    <li>La suite automatizada esta incorporada al flujo de integración continua y ha completado al menos tres ejecuciones programadas consecutivas de forma estable.</li>
   </ol>
 
   <h2>9. Entorno y herramientas</h2>
@@ -324,16 +324,16 @@
   <div class="envoltura-tabla">
     <table>
       <thead>
-        <tr><th>Elemento</th><th>Definicion</th></tr>
+        <tr><th>Elemento</th><th>Definición</th></tr>
       </thead>
       <tbody>
-        <tr><td>Sistema bajo prueba</td><td>Version 1 del API, entorno de produccion del proveedor</td></tr>
-        <tr><td>Agente de ejecucion</td><td>Runner de GitHub sobre Ubuntu, Node.js 20</td></tr>
+        <tr><td>Sistema bajo prueba</td><td>Versión 1 del API, entorno de producción del proveedor</td></tr>
+        <tr><td>Agente de ejecución</td><td>Runner de GitHub sobre Ubuntu, Node.js 20</td></tr>
         <tr><td>Suite funcional</td><td>Playwright en modo de peticiones, sin navegador</td></tr>
-        <tr><td>Validacion de contrato</td><td>Esquemas JSON evaluados con Ajv</td></tr>
+        <tr><td>Validación de contrato</td><td>Esquemas JSON evaluados con Ajv</td></tr>
         <tr><td>Suite de desempeno</td><td>k6</td></tr>
-        <tr><td>Gestion de incidencias</td><td>Tablero de incidencias del repositorio, alimentado por el agente de triaje</td></tr>
-        <tr><td>Publicacion de resultados</td><td>GitHub Pages, con registro historico acumulado</td></tr>
+        <tr><td>Gestión de incidencias</td><td>Tablero de incidencias del repositorio, alimentado por el agente de triaje</td></tr>
+        <tr><td>Publicación de resultados</td><td>GitHub Pages, con registro histórico acumulado</td></tr>
       </tbody>
     </table>
   </div>
@@ -343,17 +343,17 @@
   <ul>
     <li>
       <strong>Dependencia de un servicio ajeno.</strong> Una indisponibilidad del proveedor detiene
-      la verificacion. Se mitiga distinguiendo en el reporte un fallo del producto de una
+      la verificación. Se mitiga distinguiendo en el reporte un fallo del producto de una
       indisponibilidad del entorno.
     </li>
     <li>
-      <strong>Umbrales fijados por suposicion.</strong> Sin acuerdo de nivel de servicio publicado,
-      los criterios de desempeno son una estimacion informada. Se declaran como tales y se revisaran
-      en cuanto exista el dato.
+      <strong>Umbrales fijados por suposición.</strong> Sin acuerdo de nivel de servicio publicado,
+      los criterios de desempeno son una estimación informada. Se declaran como tales y se revisaran
+      en cuánto exista el dato.
     </li>
     <li>
       <strong>Erosion de la suite.</strong> Una suite que falla por causas ajenas al producto deja
-      de leerse. Se mitiga con el reintento unico, el uso de percentiles y la separacion explicita
+      de leerse. Se mitiga con el reintento único, el uso de percentiles y la separacion explicita
       de las respuestas por limitacion de cuota.
     </li>
   </ul>
@@ -361,7 +361,7 @@
 </main>
 
 <footer class="pie">
-  <p>Portal publicado automaticamente desde el repositorio en cada ejecucion de la suite.</p>
+  <p>Portal publicado automaticamente desde el repositorio en cada ejecución de la suite.</p>
 </footer>
 
 <script type="module">

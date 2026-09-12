@@ -29,15 +29,15 @@
 
 <header class="cabecera">
   <div class="cabecera-interior">
-    <a class="marca" href="index.html">Portal de calidad<span>Evaluacion tecnica de API</span></a>
+    <a class="marca" href="index.html">Portal de calidad<span>Evaluación técnica de API</span></a>
     <nav class="navegacion">
       <a href="index.html">Inicio</a>
-      <a href="analisis.html">Analisis</a>
+      <a href="analisis.html">Análisis</a>
       <a href="plan.html">Plan de pruebas</a>
       <a href="casos.html">Casos</a>
       <a href="evidencia.html">Evidencia</a>
-      <a href="historico.html">Historico</a>
-      <a href="reporte-funcional/index.html">Ultimo reporte</a>
+      <a href="historico.html">Histórico</a>
+      <a href="reporte-funcional/index.html">Último reporte</a>
     </nav>
   </div>
 </header>
@@ -46,33 +46,33 @@
 
   <h1>Evidencia por caso</h1>
   <p class="entradilla">
-    Peticion, respuesta y resultado real de cada caso, capturados contra el servicio en produccion.
+    Petición, respuesta y resultado real de cada caso, capturados contra el servicio en producción.
   </p>
 
   <div class="aviso">
     <p style="margin-bottom:0"><strong>Endpoints bajo prueba.</strong>
     <code>GET https://api.thecatapi.com/v1/images/search</code> y
     <code>GET https://api.thecatapi.com/v1/breeds/search</code>.
-    Autenticacion por encabezado <code>x-api-key</code>.</p>
+    Autenticación por encabezado <code>x-api-key</code>.</p>
   </div>
 
   <div class="rejilla" id="resumen"></div>
 
   <div class="aviso">
     <p>
-      <strong>Como leer cada ficha.</strong> Peticion es la URL exacta enviada. Autenticacion indica
-      si se envio la llave y por que canal. Respuesta trae el codigo de estado, el tiempo y el
-      numero de elementos. Encabezados recoge solo los relevantes para el caso. Cuerpo es la
+      <strong>Como leer cada ficha.</strong> Petición es la URL exacta enviada. Autenticación indica
+      si se envio la llave y por que canal. Respuesta trae el código de estado, el tiempo y el
+      número de elementos. Encabezados recoge solo los relevantes para el caso. Cuerpo es la
       respuesta, recortada cuando es extensa. Resultado dice si el comportamiento fue correcto o
-      que desviacion se detecto.
+      que desviación se detecto.
     </p>
   </div>
 
   <div class="filtros" id="filtros">
     <button data-grupo="todos" aria-pressed="true">Todos</button>
-    <button data-grupo="IMG-F" aria-pressed="false">Imagenes funcional</button>
-    <button data-grupo="IMG-N" aria-pressed="false">Imagenes negativo</button>
-    <button data-grupo="IMG-B" aria-pressed="false">Imagenes borde</button>
+    <button data-grupo="IMG-F" aria-pressed="false">Imágenes funcional</button>
+    <button data-grupo="IMG-N" aria-pressed="false">Imágenes negativo</button>
+    <button data-grupo="IMG-B" aria-pressed="false">Imágenes borde</button>
     <button data-grupo="BRD" aria-pressed="false">Razas</button>
     <button data-grupo="CTR" aria-pressed="false">Contrato</button>
     <button data-grupo="SEG" aria-pressed="false">Seguridad</button>
@@ -85,7 +85,7 @@
 </main>
 
 <footer class="pie">
-  <p>Portal publicado automaticamente desde el repositorio en cada ejecucion de la suite.</p>
+  <p>Portal publicado automaticamente desde el repositorio en cada ejecución de la suite.</p>
 </footer>
 
 <script type="module">
