@@ -1,0 +1,176 @@
+{
+  "version": 1,
+  "descripcion": "Diferencias comprobadas entre lo que la especificacion dice y lo que el servicio hace. Fuente unica: la usan el portal y el documento de entrega.",
+  "hallazgos": [
+    {
+      "clave": "H-01",
+      "severidad": "Alta",
+      "titulo": "attach_image no hace nada",
+      "dice": "La informacion de la imagen llega cuando attach_image vale 1.",
+      "hace": "Llega siempre. Con 0, con 1 y con 9 la respuesta es identica, incluido el mismo ETag.",
+      "evidencia": "attach_image=1  ->  200, ETag W/\"371-b4hmnUL8...\", trae image\nattach_image=0  ->  200, ETag W/\"371-b4hmnUL8...\", trae image",
+      "impacto": "Quien use attach_image=0 para gastar menos datos no ahorra nada. No hay error, solo un coste que nadie ve.",
+      "caso": "BRD-N-06"
+    },
+    {
+      "clave": "H-03",
+      "severidad": "Alta",
+      "titulo": "mime_types no filtra",
+      "dice": "El enunciado lo lista como filtro por tipo de imagen. La especificacion no lo declara.",
+      "hace": "Se acepta y no se aplica. Tampoco se valida: un tipo que no es de imagen tambien devuelve 200.",
+      "evidencia": "GET /images/search?limit=10&mime_types=png\n  ->  200, llegan: 21o.gif, 4K82ZeIgat.jpg, 91a.jpg, 94n.jpg\nGET /images/search?mime_types=application/pdf\n  ->  200, llega 5ip.jpg",
+      "impacto": "Quien necesite png por transparencia o gif por animacion recibe archivos que no puede usar.",
+      "caso": "IMG-B-07 e IMG-B-08"
+    },
+    {
+      "clave": "H-09",
+      "severidad": "Alta",
+      "titulo": "La respuesta cambia segun se use llave o no",
+      "dice": "No hay contrato de respuesta declarado.",
+      "hace": "Sin llave cada imagen trae 4 campos. Con llave trae hasta 10. Ademas cambia el dominio desde el que se sirven las imagenes.",
+      "evidencia": "Sin llave: id, url, width, height\n           url: https://s3.us-west-2.amazonaws.com/...\nCon llave: id, url, width, height, sub_id, created_at,\n           breeds, categories, colours, tags\n           url: https://cdn2.thecatapi.com/...",
+      "impacto": "Una validacion de esquema falla a ratos si no fija el modo. Un cliente hecho con llave y desplegado sin ella deja de encontrar campos, sin recibir ningun error.",
+      "caso": "CTR-03"
+    },
+    {
+      "clave": "H-13",
+      "severidad": "Alta",
+      "titulo": "El filtro sub_id no se aplica",
+      "dice": "La especificacion lo declara como filtro por el identificador propio que se usa al subir una imagen.",
+      "hace": "Se acepta y no filtra. De diez imagenes pedidas con un sub_id concreto, ninguna lo tiene.",
+      "evidencia": "GET /images/search?limit=10&sub_id=demo-9252f4\n  ->  200, sub_id que llegan:\n      123, (ninguno) x8, demo-c45459",
+      "impacto": "Quien sube imagenes con un identificador propio no puede recuperarlas por el. La funcion no existe.",
+      "caso": "ESP-04"
+    },
+    {
+      "clave": "H-16",
+      "severidad": "Alta",
+      "titulo": "La raza tiene dos formas distintas",
+      "dice": "La especificacion muestra una raza dentro de una imagen, con alt_names y wikipedia_url.",
+      "hace": "La raza que viene dentro de una imagen y la que devuelve la busqueda de razas no traen los mismos campos.",
+      "evidencia": "Dentro de una imagen: ... alt_names, wikipedia_url\nEn la busqueda:       ... country_codes, weight, height, image\nComunes: id, name, species_id, life_span, temperament,\n         origin, description, bred_for, breed_group, history",
+      "impacto": "Quien use el mismo modelo de datos para los dos casos encontrara campos ausentes segun de donde venga la raza.",
+      "caso": "ESP-09"
+    },
+    {
+      "clave": "H-17",
+      "severidad": "Alta",
+      "titulo": "El enunciado y la especificacion no coinciden",
+      "dice": "La especificacion declara siete parametros: limit, page, order, has_breeds, breed_ids, category_ids y sub_id.",
+      "hace": "El enunciado lista size, mime_types y format, que la especificacion no declara y el servicio ignora. Y omite breed_ids, category_ids y sub_id, de los cuales breed_ids funciona bien.",
+      "evidencia": "Solo en el enunciado:      size, mime_types, format\n  ->  200, sin ningun efecto\nSolo en la especificacion: breed_ids\n  ->  200, filtra correctamente\n                           category_ids, sub_id\n  ->  200, sin ningun efecto",
+      "impacto": "Siguiendo solo el enunciado se prueban funciones que no existen y se deja sin probar el unico filtro que si funciona. Hay que acordar cual de las dos fuentes manda.",
+      "caso": "ESP-10 y ESP-01"
+    },
+    {
+      "clave": "H-02",
+      "severidad": "Media",
+      "titulo": "Sin llave llegan 10 imagenes aunque se pidan mas",
+      "dice": "La especificacion lo dice: sin llave el maximo es 10. Tambien aclara que los parametros solo se aplican con una llave valida.",
+      "hace": "El recorte ocurre como esta escrito. El problema es la contradiccion: sin llave, pedir 101 devuelve un 400 que afirma que el maximo es 100, cuando para ese consumidor es 10. Y nada en la respuesta avisa del recorte.",
+      "evidencia": "Sin llave: limit=50   ->  200, llegan 10, sin aviso\nSin llave: limit=101  ->  400, \"limit must not be greater than 100\"\nCon llave: limit=50   ->  200, llegan 50",
+      "impacto": "El mensaje de error confunde sobre el limite que aplica. Sin aviso en la respuesta, una paginacion se detiene antes de tiempo. Baja de alta a media porque el recorte esta documentado.",
+      "caso": "IMG-B-03"
+    },
+    {
+      "clave": "H-04",
+      "severidad": "Media",
+      "titulo": "Unos parametros se validan y otros no",
+      "dice": "No se declara que pasa con un valor invalido.",
+      "hace": "Cuatro parametros se validan de forma estricta. Seis aceptan cualquier valor y lo ignoran.",
+      "evidencia": "order=SIDEWAYS    ->  400, con la lista de valores validos\nsize=gigantesco   ->  200, con resultados\nformat=xml        ->  200, con resultados\nparametro_inventado=valor  ->  200, con resultados",
+      "impacto": "Escribir mal order se detecta al momento. El mismo error en size pasa desapercibido y el cliente cree que el filtro se aplico.",
+      "caso": "IMG-B-06, IMG-B-09 e IMG-N-06"
+    },
+    {
+      "clave": "H-05",
+      "severidad": "Media",
+      "titulo": "format no cambia lo que llega",
+      "dice": "El enunciado lo lista como parametro. La especificacion no lo declara.",
+      "hace": "Los tres valores probados devuelven la misma lista JSON con el mismo tipo de contenido.",
+      "evidencia": "format=json  ->  200, Content-Type: application/json\nformat=src   ->  200, Content-Type: application/json\nformat=xml   ->  200, Content-Type: application/json",
+      "impacto": "La documentacion publica describe format=src como el modo que entrega la imagen. Una pagina que apunte una etiqueta de imagen a esa URL mostrara texto JSON.",
+      "caso": "IMG-B-10"
+    },
+    {
+      "clave": "H-06",
+      "severidad": "Media",
+      "titulo": "Los datos de paginacion solo llegan a veces",
+      "dice": "El enunciado dice que los tres encabezados \"pueden\" llegar, sin decir cuando.",
+      "hace": "Llegan solo si hay llave y el orden es fijo, es decir ASC o DESC. Con RANDOM no llegan.",
+      "evidencia": "order=ASC&page=2&limit=5  ->  Pagination-Count: 13492,\n                              Pagination-Page: 2,\n                              Pagination-Limit: 5\norder=RANDOM&limit=5      ->  sin encabezados\nSin llave                 ->  sin encabezados",
+      "impacto": "Quien lea los encabezados sin comprobar que existen calculara mal el numero de paginas.",
+      "caso": "IMG-F-10 e IMG-B-11"
+    },
+    {
+      "clave": "H-08",
+      "severidad": "Media",
+      "titulo": "No mandar el termino y mandarlo vacio dan resultados opuestos",
+      "dice": "No se define que pasa cuando no hay termino de busqueda.",
+      "hace": "Sin el parametro llega un listado. Con el parametro vacio llega un error.",
+      "evidencia": "GET /breeds/search      ->  200, 10 razas\nGET /breeds/search?q=   ->  400, \"q must be longer than\n                              or equal to 1 characters\"",
+      "impacto": "Un formulario que mande el campo vacio recibe un error. El mismo formulario que omita el parametro recibe un listado. Depende de un detalle del cliente.",
+      "caso": "BRD-F-10 y BRD-N-01"
+    },
+    {
+      "clave": "H-10",
+      "severidad": "Media",
+      "titulo": "El campo message cambia de tipo",
+      "dice": "No hay contrato de error declarado.",
+      "hace": "En los errores 400 message es una lista. En los 403 y 404 es un texto.",
+      "evidencia": "GET /images/search?limit=0   ->  400,\n  \"message\":[\"limit must not be less than 1\"]\nGET /recurso/inexistente     ->  404,\n  \"message\":\"Cannot GET /v1/recurso/inexistente\"",
+      "impacto": "Quien muestre el mensaje al usuario sin comprobar el tipo vera el texto correcto unas veces y algo ilegible otras.",
+      "caso": "CTR-07"
+    },
+    {
+      "clave": "H-12",
+      "severidad": "Media",
+      "titulo": "Hay imagenes con extension .false",
+      "dice": "No aplica. Es un problema de datos.",
+      "hace": "Algunas imagenes llegan con la extension literal .false en lugar de su formato real.",
+      "evidencia": "GET /images/search?limit=1  con llave\n  ->  200, url: https://cdn2.thecatapi.com/images/DxlC8ufjq.false\nOtras: VnCVpMNntO.false, j9jnwmu-T.false, 1J0ddrSeP.false",
+      "impacto": "Quien deduzca el formato por la extension no podra mostrar esas imagenes. Parece un booleano pegado donde iba la extension.",
+      "caso": "IMG-F-02"
+    },
+    {
+      "clave": "H-14",
+      "severidad": "Media",
+      "titulo": "El filtro category_ids no trae imagenes con categoria",
+      "dice": "La especificacion lo declara como filtro por identificadores de categoria.",
+      "hace": "Responde 200, pero ninguno de los diez resultados trae categorias.",
+      "evidencia": "GET /images/search?limit=10&category_ids=1\n  ->  200, el campo categories llega vacio en las 10",
+      "impacto": "Quien filtre por categoria recibe resultados sin relacion con lo pedido. Antes de darlo por defecto conviene confirmar si la llave de demostracion llega a las categorias.",
+      "caso": "ESP-05"
+    },
+    {
+      "clave": "H-15",
+      "severidad": "Media",
+      "titulo": "La especificacion dice RAND y el error dice RANDOM",
+      "dice": "La tabla de parametros declara order con los valores ASC, DESC y RAND, y RAND como valor por defecto.",
+      "hace": "Los dos valores funcionan. Pero el mensaje de error ante un valor invalido lista ASC, DESC y RANDOM, sin mencionar RAND.",
+      "evidencia": "order=RAND      ->  200, resultados distintos entre llamadas\norder=rand      ->  200\norder=SIDEWAYS  ->  400, \"order must be one of the following\n                     values: ASC, DESC, RANDOM\"",
+      "impacto": "Quien siga el mensaje descarta el valor que la especificacion declara por defecto. Quien siga la especificacion no lo encuentra en la lista que le devuelve el servicio.",
+      "caso": "ESP-06"
+    },
+    {
+      "clave": "H-11",
+      "severidad": "Baja",
+      "titulo": "La llave se acepta en la URL",
+      "dice": "La especificacion lo admite: la llave va en el encabezado x-api-key o como parametro ?api_key=.",
+      "hace": "Autentica por los dos canales, como esta escrito.",
+      "evidencia": "GET /breeds/search?q=beng                    (sin llave)  ->  403\nGET /breeds/search?q=beng  con x-api-key     (valida)    ->  200\nGET /breeds/search?q=beng&api_key=<valida>               ->  200",
+      "impacto": "No es un defecto: esta documentado. Queda como aviso de seguridad, porque una llave en la URL acaba en los registros del servidor, el historial del navegador y los proxies. Conviene usar siempre el encabezado.",
+      "caso": "SEG-04"
+    },
+    {
+      "clave": "H-07",
+      "severidad": "Baja",
+      "titulo": "Un metodo no permitido responde 404",
+      "dice": "No se declara que metodos se admiten.",
+      "hace": "Un POST sobre un recurso de solo lectura devuelve 404 y no incluye el encabezado Allow.",
+      "evidencia": "POST /images/search        ->  404, \"Cannot POST /v1/images/search\"\nPOST /breeds/search?q=beng ->  404, \"Cannot POST /v1/breeds/search\"",
+      "impacto": "El cliente no distingue entre una ruta que no existe y un metodo mal usado sobre una ruta que si existe. Lo correcto seria 405 con el encabezado Allow.",
+      "caso": "IMG-N-07 y BRD-N-07"
+    }
+  ]
+}

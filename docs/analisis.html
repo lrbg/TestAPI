@@ -39,29 +39,25 @@
   <h2>Metodo</h2>
 
   <p>
-    Se ejecutaron de forma manual y controlada alrededor de setenta peticiones exploratorias contra
-    el servicio en produccion, combinando los dos modos de consumo posibles: anonimo y autenticado.
-    Para cada parametro se probaron un valor tipico, los valores frontera de su rango, un valor
-    fuera de rango, un valor de tipo incorrecto y la omision del parametro. Las respuestas se
-    registraron con su codigo de estado, sus encabezados, su cuerpo y su tiempo. Todas las
-    afirmaciones de este documento estan respaldadas por esa evidencia y son reproducibles con los
-    casos publicados en el catalogo.
+    Se lanzaron mas de 170 peticiones reales al servicio, con llave y sin ella. De cada parametro se
+    probaron cinco variantes: un valor normal, los valores limite, uno fuera de rango, uno de tipo
+    equivocado y la omision. De cada respuesta se guardo el codigo, los encabezados, el cuerpo y el
+    tiempo. Todo lo que se afirma aqui esta respaldado por esa evidencia.
   </p>
 
   <div class="aviso">
     <p>
-      El volumen de la exploracion se mantuvo deliberadamente bajo. El sistema bajo prueba es un
-      servicio de terceros en produccion y no existe un entorno dedicado: toda peticion consume su
-      cuota real. Este es, por si mismo, el condicionante mas importante de la estrategia.
+      El volumen se mantuvo bajo a proposito. El servicio es de otra empresa y esta en produccion:
+      no hay entorno de pruebas y cada peticion gasta cuota real. Esta es la limitacion que mas
+      condiciona la estrategia.
     </p>
   </div>
 
   <h2>Dudas y ambiguedades detectadas</h2>
 
   <p>
-    Son los puntos en los que la especificacion no permite decidir si un comportamiento es correcto.
-    Cada uno requiere una respuesta del equipo que define el servicio antes de poder considerar
-    cerrada la verificacion.
+    Puntos que impiden saber si algo esta bien o mal. Cada uno necesita respuesta del equipo del
+    servicio.
   </p>
 
   <div class="envoltura-tabla">
@@ -72,18 +68,18 @@
       <tbody>
         <tr>
           <td class="mono">A-01</td>
-          <td>La autenticacion no se menciona en ningun punto de la especificacion.</td>
-          <td>Es la ambiguedad de mayor impacto. El recurso de razas responde 403 a todo consumidor sin credencial, de modo que el ejercicio 2 es inejecutable tal como esta redactado. Sin definir si las pruebas se ejecutan con credencial y de que plan, no se puede fijar ni el resultado esperado ni el limite de consumo.</td>
+          <td>El enunciado no menciona la autenticacion. La especificacion si.</td>
+          <td>El buscador de razas responde 403 sin llave. Quien se quede en el enunciado cree que el ejercicio 2 no se puede hacer. Falta acordar con que llave y con que plan se ejecutan las pruebas, porque de eso dependen el limite de consumo y los campos que llegan.</td>
         </tr>
         <tr>
           <td class="mono">A-02</td>
-          <td>No se declaran los valores admitidos por <code>size</code>, <code>mime_types</code> ni <code>format</code>.</td>
-          <td>Sin el conjunto valido no se puede distinguir una entrada invalida de una valida, que es la base de toda prueba negativa. En la practica el servicio los acepta todos, lo que impide siquiera inferir el conjunto por observacion.</td>
+          <td>La especificacion no declara <code>size</code>, <code>mime_types</code> ni <code>format</code>, pero el enunciado si los lista.</td>
+          <td>No se puede saber que valor es valido, que es la base de toda prueba negativa. El servicio los acepta todos y no los aplica, asi que tampoco se deducen probando.</td>
         </tr>
         <tr>
           <td class="mono">A-03</td>
-          <td>No se declara el rango de <code>limit</code> ni el de <code>page</code>.</td>
-          <td>Los valores frontera son el objeto de las pruebas de borde. El rango real, obtenido de los mensajes de error del servicio, resulto ser de 1 a 100 para <code>limit</code> y mayor o igual a 0 para <code>page</code>.</td>
+          <td>La especificacion declara <code>limit</code> de 1 a 100 y <code>page</code> desde 0, pero no dice que pasa fuera de rango.</td>
+          <td>Los valores limite son el objeto de las pruebas de borde. El comportamiento real se dedujo de los mensajes de error del servicio.</td>
         </tr>
         <tr>
           <td class="mono">A-04</td>
@@ -127,176 +123,14 @@
   <h2>Hallazgos</h2>
 
   <p>
-    Diferencias comprobadas entre lo que la especificacion declara y lo que el servicio hace.
-    Cada hallazgo tiene un caso de prueba asociado que lo reproduce, y el agente de triaje abre
-    una incidencia cuando alguno cambia de estado.
+    Diferencias comprobadas entre lo que deberia pasar y lo que pasa. Cada uno tiene un caso de
+    prueba que lo reproduce, y el agente de triaje abre una incidencia cuando alguno cambia de
+    estado.
   </p>
 
-  <details open>
-    <summary>H-01 &nbsp; <span class="distintivo fallo">Severidad alta</span> &nbsp; El parametro <code>attach_image</code> no tiene ningun efecto</summary>
-    <p>
-      La especificacion establece que la informacion de imagen asociada se devuelve cuando
-      <code>attach_image</code> vale 1. Al comparar las respuestas de
-      <code>/breeds/search?q=siam&amp;attach_image=1</code> y
-      <code>/breeds/search?q=siam&amp;attach_image=0</code>, ambas resultaron identicas byte a byte,
-      y las dos incluyeron el objeto <code>image</code> completo. El parametro tampoco altera la
-      respuesta con valores fuera del par 0 y 1.
-    </p>
-    <p>
-      <strong>Consecuencia.</strong> Un cliente movil que use <code>attach_image=0</code> para
-      reducir el tamano de la carga util no obtendra ninguna reduccion y seguira transfiriendo la
-      informacion de imagen en cada consulta. El defecto es silencioso: no hay error, solo un coste
-      que nadie percibe.
-    </p>
-    <p><strong>Caso asociado:</strong> <code>BRD-N-06</code>.</p>
-  </details>
+  <div class="rejilla" id="resumen-hallazgos"></div>
 
-  <details open>
-    <summary>H-02 &nbsp; <span class="distintivo fallo">Severidad alta</span> &nbsp; La coleccion se trunca en silencio para el consumidor sin credencial</summary>
-    <p>
-      Un consumidor anonimo que solicita <code>limit=50</code> recibe codigo 200 y exactamente diez
-      elementos. El mismo consumidor con <code>limit=101</code> recibe un error 400 cuyo mensaje
-      afirma que el maximo es 100. Es decir: el servicio valida el parametro contra un rango que
-      despues no respeta, y no emite ningun encabezado que informe el truncamiento. El mismo
-      <code>limit=50</code> con credencial devuelve los cincuenta elementos.
-    </p>
-    <p>
-      <strong>Consecuencia.</strong> El consumidor no puede distinguir entre "no hay mas datos" y
-      "tu plan no alcanza". Una paginacion construida sobre esa respuesta se detiene antes de tiempo
-      y pierde datos sin que nadie lo advierta. Es el hallazgo con mayor potencial de dano
-      silencioso de todo el analisis.
-    </p>
-    <p><strong>Caso asociado:</strong> <code>IMG-B-03</code>.</p>
-  </details>
-
-  <details open>
-    <summary>H-03 &nbsp; <span class="distintivo fallo">Severidad alta</span> &nbsp; El filtro <code>mime_types</code> no restringe los resultados</summary>
-    <p>
-      Con <code>mime_types=png</code> el servicio devuelve imagenes cuya direccion termina en
-      <code>.jpg</code>. Con <code>mime_types=gif</code> devuelve una mezcla de <code>.jpg</code> y
-      <code>.png</code>. Incluso un valor sin sentido para el recurso, como
-      <code>application/pdf</code>, devuelve imagenes con codigo 200.
-    </p>
-    <p>
-      <strong>Consecuencia.</strong> Un cliente que dependa del filtro para garantizar transparencia
-      o animacion recibira contenido que no puede procesar. El filtro se acepta, no se aplica y no
-      se avisa.
-    </p>
-    <p><strong>Casos asociados:</strong> <code>IMG-B-07</code> e <code>IMG-B-08</code>.</p>
-  </details>
-
-  <details open>
-    <summary>H-04 &nbsp; <span class="distintivo alerta">Severidad media</span> &nbsp; La validacion de parametros no es uniforme</summary>
-    <p>
-      Dentro del mismo recurso conviven dos criterios opuestos. <code>order</code>,
-      <code>limit</code> y <code>page</code> se validan de forma estricta y devuelven 400 con un
-      mensaje preciso que incluso enumera los valores admitidos. <code>size</code>,
-      <code>mime_types</code> y <code>format</code> aceptan cualquier cadena y la ignoran. Los
-      parametros no reconocidos tampoco se rechazan.
-    </p>
-    <p>
-      <strong>Consecuencia.</strong> Un error de escritura en <code>order</code> se detecta de
-      inmediato; el mismo error en <code>size</code> pasa inadvertido y produce resultados que el
-      consumidor creera filtrados. La inconsistencia es en si misma un defecto de diseno, porque
-      obliga a conocer caso por caso que parametro avisa y cual no.
-    </p>
-    <p><strong>Casos asociados:</strong> <code>IMG-B-06</code>, <code>IMG-B-09</code>, <code>IMG-N-06</code>.</p>
-  </details>
-
-  <details>
-    <summary>H-05 &nbsp; <span class="distintivo alerta">Severidad media</span> &nbsp; El parametro <code>format</code> no altera la representacion</summary>
-    <p>
-      Tanto <code>format=json</code> como <code>format=src</code> y un valor arbitrario como
-      <code>format=xml</code> devuelven la misma coleccion JSON, con el mismo tipo de contenido.
-      La documentacion publica del servicio describe <code>format=src</code> como el modo que
-      entrega la imagen directamente.
-    </p>
-    <p>
-      <strong>Consecuencia.</strong> Una interfaz que apunte una etiqueta de imagen al endpoint con
-      <code>format=src</code> mostrara texto JSON en lugar de una imagen.
-    </p>
-    <p><strong>Caso asociado:</strong> <code>IMG-B-10</code>.</p>
-  </details>
-
-  <details>
-    <summary>H-06 &nbsp; <span class="distintivo alerta">Severidad media</span> &nbsp; Los encabezados de paginacion aparecen bajo una condicion no documentada</summary>
-    <p>
-      Los tres encabezados solo acompanan a las peticiones que reunen dos condiciones a la vez:
-      credencial valida y orden determinista, es decir <code>order=ASC</code> o
-      <code>order=DESC</code>. Con <code>order=RANDOM</code>, con <code>has_breeds</code> o sin
-      credencial, no aparecen. Verificado: <code>order=ASC&amp;page=2&amp;limit=5</code> devolvio
-      <code>Pagination-Count: 13492</code>, <code>Pagination-Page: 2</code> y
-      <code>Pagination-Limit: 5</code>.
-    </p>
-    <p>
-      <strong>Consecuencia.</strong> Un cliente que construya su paginador leyendo los encabezados
-      sin verificar su presencia obtendra valores nulos y calculara mal el total de paginas.
-      La condicion es razonable pero debe documentarse.
-    </p>
-    <p><strong>Casos asociados:</strong> <code>IMG-F-10</code> e <code>IMG-B-11</code>.</p>
-  </details>
-
-  <details>
-    <summary>H-07 &nbsp; <span class="distintivo neutro">Severidad baja</span> &nbsp; Un verbo no soportado se responde con 404 en lugar de 405</summary>
-    <p>
-      Una peticion <code>POST /images/search</code> devuelve 404 con el mensaje
-      <code>Cannot POST /v1/images/search</code>. La respuesta correcta segun el estandar HTTP es
-      405 acompanada del encabezado <code>Allow</code> con los metodos admitidos.
-    </p>
-    <p>
-      <strong>Consecuencia.</strong> Un cliente no puede distinguir entre una ruta que no existe y
-      un metodo mal empleado sobre una ruta que si existe, lo que dificulta el diagnostico.
-    </p>
-    <p><strong>Casos asociados:</strong> <code>IMG-N-07</code> y <code>BRD-N-07</code>.</p>
-  </details>
-
-  <details>
-    <summary>H-08 &nbsp; <span class="distintivo alerta">Severidad media</span> &nbsp; Omitir el criterio de busqueda y enviarlo vacio producen respuestas opuestas</summary>
-    <p>
-      <code>/breeds/search</code> sin el parametro <code>q</code> devuelve 200 con un listado
-      general de razas. <code>/breeds/search?q=</code> devuelve 400 con el mensaje
-      <code>q must be longer than or equal to 1 characters</code>. Dos formas equivalentes de no
-      especificar un criterio producen resultados contrarios.
-    </p>
-    <p>
-      <strong>Consecuencia.</strong> Un formulario de busqueda que envie el campo vacio recibira un
-      error, mientras que el mismo formulario que omita el parametro recibira un listado. El
-      comportamiento depende de un detalle de implementacion del cliente.
-    </p>
-    <p><strong>Casos asociados:</strong> <code>BRD-F-10</code> y <code>BRD-N-01</code>.</p>
-  </details>
-
-  <details open>
-    <summary>H-09 &nbsp; <span class="distintivo fallo">Severidad alta</span> &nbsp; El contrato de respuesta cambia segun la credencial</summary>
-    <p>
-      El mismo recurso devuelve dos representaciones distintas. Sin credencial, cada imagen expone
-      cuatro campos: <code>id</code>, <code>url</code>, <code>width</code> y <code>height</code>.
-      Con credencial expone nueve: los cuatro anteriores mas <code>created_at</code>,
-      <code>breeds</code>, <code>categories</code>, <code>colours</code> y <code>tags</code>.
-    </p>
-    <p>
-      <strong>Consecuencia.</strong> Toda validacion de esquema debe fijar de antemano el modo de
-      autenticacion, o fallara de forma intermitente sin causa aparente. Mas grave aun: un cliente
-      desarrollado contra el modo autenticado y desplegado con una credencial caducada dejara de
-      encontrar campos que daba por garantizados, sin recibir ningun error.
-    </p>
-    <p><strong>Caso asociado:</strong> <code>CTR-03</code>.</p>
-  </details>
-
-  <details>
-    <summary>H-10 &nbsp; <span class="distintivo alerta">Severidad media</span> &nbsp; El campo <code>message</code> del error cambia de tipo segun el codigo</summary>
-    <p>
-      En los errores 400 el campo es un arreglo de cadenas, con un elemento por regla de validacion
-      incumplida. En los errores 403 y 404 es una unica cadena. La estructura restante del cuerpo de
-      error es consistente en los tres casos.
-    </p>
-    <p>
-      <strong>Consecuencia.</strong> Un cliente que muestre el mensaje al usuario final sin
-      normalizar el tipo mostrara el texto correcto en unos casos y una representacion interna del
-      arreglo en otros.
-    </p>
-    <p><strong>Caso asociado:</strong> <code>CTR-07</code>.</p>
-  </details>
+  <div id="lista-hallazgos"></div>
 
   <h2>Riesgos funcionales</h2>
 
@@ -504,7 +338,49 @@
 </footer>
 
 <script type="module">
-import './activos/portal.js';
+import { cargarDatos, escapar } from './activos/portal.js';
+
+const datos = await cargarDatos('hallazgos.json');
+const lista = document.getElementById('lista-hallazgos');
+const hallazgos = datos?.hallazgos ?? [];
+
+if (hallazgos.length === 0) {
+  lista.innerHTML = '<p class="tenue">La lista de hallazgos no esta disponible.</p>';
+} else {
+  const porSeveridad = (s) => hallazgos.filter((h) => h.severidad === s).length;
+
+  document.getElementById('resumen-hallazgos').innerHTML = `
+    <div class="indicador"><div class="etiqueta">Hallazgos</div><div class="valor">${hallazgos.length}</div><div class="nota">Todos con evidencia</div></div>
+    <div class="indicador"><div class="etiqueta">Severidad alta</div><div class="valor fallo">${porSeveridad('Alta')}</div><div class="nota">Bloquean una liberacion</div></div>
+    <div class="indicador"><div class="etiqueta">Severidad media</div><div class="valor alerta">${porSeveridad('Media')}</div><div class="nota">Degradan sin impedir el uso</div></div>
+    <div class="indicador"><div class="etiqueta">Severidad baja</div><div class="valor">${porSeveridad('Baja')}</div><div class="nota">Desviaciones menores</div></div>`;
+
+  const clase = (s) => (s === 'Alta' ? 'fallo' : s === 'Media' ? 'alerta' : 'neutro');
+
+  lista.innerHTML = hallazgos
+    .map(
+      (h, i) => `
+      <details${i < 3 ? ' open' : ''}>
+        <summary>
+          <code>${escapar(h.clave)}</code>
+          <span class="distintivo ${clase(h.severidad)}">${escapar(h.severidad)}</span>
+          &nbsp;${escapar(h.titulo)}
+        </summary>
+        <div class="envoltura-tabla">
+          <table>
+            <tbody>
+              <tr><th style="width:170px">Que deberia pasar</th><td>${escapar(h.dice)}</td></tr>
+              <tr><th>Que pasa de verdad</th><td>${escapar(h.hace)}</td></tr>
+              <tr><th>Evidencia</th><td><pre style="margin:0"><code>${escapar(h.evidencia)}</code></pre></td></tr>
+              <tr><th>A quien le duele</th><td>${escapar(h.impacto)}</td></tr>
+              <tr><th>Caso que lo reproduce</th><td class="mono">${escapar(h.caso)}</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>`
+    )
+    .join('');
+}
 </script>
 
 </body>

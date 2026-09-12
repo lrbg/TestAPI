@@ -198,6 +198,7 @@ const ficha = (pares, anchoEtiqueta = 1900, total = ANCHO_V) => {
 const raiz = path.join(__dirname, '..');
 const catalogo = JSON.parse(fs.readFileSync(path.join(raiz, 'docs/datos/catalogo.json'), 'utf8'));
 const evidencias = JSON.parse(fs.readFileSync(path.join(raiz, 'docs/datos/evidencias.json'), 'utf8'));
+const HALLAZGOS = JSON.parse(fs.readFileSync(path.join(raiz, 'docs/datos/hallazgos.json'), 'utf8')).hallazgos;
 
 const CASOS = catalogo.casos;
 const BASE_API = 'https://api.thecatapi.com/v1';
@@ -327,18 +328,11 @@ const resumen = [
 
   p('Se ejecutaron mas de 170 peticiones reales contra el servicio. Resultado: 17 desviaciones comprobadas entre lo declarado y lo que el servicio hace, y 10 puntos que la especificacion sigue sin definir.'),
 
-  h3('Hallazgos de severidad alta'),
+  h3('Los mas graves'),
 
   tabla(
-    ['Clave', 'Que ocurre', 'Impacto'],
-    [
-      ['H-01', 'attach_image no hace nada. Las respuestas con valor 0 y con valor 1 son identicas, incluido el mismo ETag.', 'Un cliente que use el parametro para reducir el tamano de la respuesta no obtiene ninguna reduccion.'],
-      ['H-03', 'mime_types no filtra. Al pedir png devuelve gif y jpg. La especificacion no declara este parametro.', 'Un cliente que necesite un formato concreto recibe archivos que no puede procesar.'],
-      ['H-13', 'El filtro sub_id, declarado en la especificacion, no se aplica. Se piden 10 imagenes con un sub_id concreto y ninguna lo tiene.', 'Quien suba imagenes con un identificador propio no puede recuperarlas por el. La funcionalidad no existe.'],
-      ['H-16', 'El objeto raza tiene dos formas distintas segun venga dentro de una imagen o de la busqueda de razas.', 'Un cliente que reutilice el mismo modelo para ambos casos encontrara campos ausentes.'],
-      ['H-17', 'El enunciado lista tres parametros que la especificacion no declara y omite tres que si declara.', 'Se pueden disenar pruebas sobre funcionalidad inexistente y dejar sin cubrir la que si funciona.'],
-      ['H-09', 'El contrato cambia con la llave: 4 campos sin ella, hasta 10 con ella. Tambien cambia el dominio de las imagenes.', 'Una validacion de esquema falla de forma intermitente si no fija el modo de autenticacion.'],
-    ],
+    ['Clave', 'Que pasa', 'A quien le duele'],
+    HALLAZGOS.filter((h) => h.severidad === 'Alta').map((h) => [h.clave, h.hace, h.impacto]),
     [800, 4400, ANCHO_V - 5200]
   ),
 
@@ -371,9 +365,9 @@ const hallazgo = (clave, severidad, titulo, dice, hace, evidencia, impacto, caso
   h3(`${clave}. ${titulo}`),
   ficha([
     ['Severidad', severidad, { color: severidad === 'Alta' ? ROJO : severidad === 'Media' ? AMBAR : TENUE }],
-    ['Que dice la especificacion', dice],
-    ['Que hace el servicio', hace],
-    ['Evidencia', evidencia, { font: 'Consolas', size: 15 }],
+    ['Que deberia pasar', dice],
+    ['Que pasa de verdad', hace],
+    ['Evidencia', String(evidencia).split('\n').map((l) => codigo(l))],
     ['Impacto', impacto],
     ['Caso que lo reproduce', caso, { font: 'Consolas' }],
   ], 2700),
@@ -394,7 +388,7 @@ const analisis = [
 
   h2('2.2 Como se hizo el analisis'),
 
-  p('Se ejecutaron peticiones reales contra el servicio en produccion, en los dos modos de consumo: anonimo y con llave. Para cada parametro se probaron cinco variantes:'),
+  p('Se lanzaron peticiones reales al servicio, con llave y sin ella. De cada parametro se probaron cinco variantes:'),
 
   numerado('Un valor tipico.'),
   numerado('Los valores frontera de su rango.'),
@@ -402,16 +396,16 @@ const analisis = [
   numerado('Un valor de tipo incorrecto.'),
   numerado('La omision del parametro.'),
 
-  p('De cada respuesta se registro el codigo de estado, los encabezados, el cuerpo y el tiempo. El capitulo 5 contiene ese registro.'),
+  p('De cada respuesta se guardo el codigo, los encabezados, el cuerpo y el tiempo. Todo esta en el capitulo 5.'),
 
   nota(
-    'Limite del relevamiento.',
-    'El servicio es de un tercero y esta en produccion. No hay entorno de pruebas. Cada peticion consume cuota real. Por eso el volumen se mantuvo bajo y las pruebas de carga alta quedaron fuera del alcance automatico.'
+    'Una limitacion importante.',
+    'El servicio es de otra empresa y esta en produccion. No hay entorno de pruebas y cada peticion gasta cuota real. Por eso el volumen se mantuvo bajo y la carga alta no corre de forma automatica.'
   ),
 
   h2('2.3 Lo que la especificacion no dice'),
 
-  p('Diez puntos que impiden decidir si un comportamiento es correcto. Cada uno necesita respuesta del equipo del servicio.'),
+  p('Diez puntos que impiden saber si algo esta bien o mal. Cada uno necesita respuesta del equipo del servicio.'),
 
   tabla(
     ['Clave', 'Que falta', 'Por que importa'],
@@ -434,7 +428,7 @@ const analisis = [
 
   h2('2.4 Reglas reales de cada parametro'),
 
-  p('Ninguna de estas reglas figura en la especificacion. Se obtuvieron probando valores y leyendo los mensajes de error del servicio.'),
+  p('Estas reglas se dedujeron probando valores y leyendo los mensajes de error que devuelve el servicio.'),
 
   tabla(
     ['Parametro', 'Rango real', 'Valida', 'Mensaje o comportamiento observado'],
@@ -456,8 +450,8 @@ const analisis = [
   espacio(160),
 
   nota(
-    'Nota sobre la validacion.',
-    'Cuatro parametros se validan de forma estricta y seis no se validan en absoluto. Un error de escritura en order se detecta al momento; el mismo error en size pasa inadvertido. Esta inconsistencia esta registrada como hallazgo H-04.',
+    'Ojo con esto.',
+    'Cuatro parametros se validan y seis no. Escribir mal order da error al momento; escribir mal size no da ningun aviso y el cliente cree que el filtro se aplico. Es el hallazgo H-04.',
     AMBAR
   ),
 
@@ -468,182 +462,15 @@ const analisis = [
   p('Diferencias comprobadas entre lo que la especificacion declara y lo que el servicio hace.'),
 
   tabla(
-    ['Clave', 'Severidad', 'Hallazgo', 'Caso'],
-    [
-      ['H-01', 'Alta', 'attach_image no tiene efecto.', 'BRD-N-06'],
-      ['H-03', 'Alta', 'mime_types no filtra. La especificacion no declara el parametro.', 'IMG-B-07'],
-      ['H-09', 'Alta', 'El contrato de respuesta cambia con la llave.', 'CTR-03'],
-      ['H-13', 'Alta', 'El filtro sub_id, declarado en la especificacion, no se aplica.', 'ESP-04'],
-      ['H-16', 'Alta', 'El objeto raza tiene dos formas distintas segun el recurso.', 'ESP-09'],
-      ['H-17', 'Alta', 'El enunciado y la especificacion no listan los mismos parametros.', 'ESP-10'],
-      ['H-02', 'Media', 'El recorte a 10 sin llave esta documentado, pero el mensaje de limit=101 lo contradice y ningun encabezado lo informa.', 'IMG-B-03'],
-      ['H-04', 'Media', 'La validacion de parametros no es uniforme.', 'IMG-B-06'],
-      ['H-05', 'Media', 'format no cambia la representacion devuelta.', 'IMG-B-10'],
-      ['H-06', 'Media', 'Los encabezados de paginacion tienen una condicion no documentada.', 'IMG-B-11'],
-      ['H-08', 'Media', 'Omitir q y enviarlo vacio dan respuestas opuestas.', 'BRD-F-10'],
-      ['H-10', 'Media', 'El campo message cambia de tipo segun el codigo.', 'CTR-07'],
-      ['H-12', 'Media', 'Hay direcciones de imagen con extension .false.', 'IMG-F-02'],
-      ['H-14', 'Media', 'El filtro category_ids no devuelve imagenes con categoria.', 'ESP-05'],
-      ['H-15', 'Media', 'La especificacion declara RAND y el mensaje de error enumera RANDOM.', 'ESP-06'],
-      ['H-11', 'Baja', 'La llave se acepta en la cadena de consulta. Es comportamiento documentado, con implicacion de seguridad.', 'SEG-04'],
-      ['H-07', 'Baja', 'Un verbo no soportado responde 404 en lugar de 405.', 'IMG-N-07'],
-    ],
+    ['Clave', 'Severidad', 'Que pasa', 'Caso'],
+    HALLAZGOS.map((h) => [h.clave, h.severidad, h.titulo + '.', h.caso]),
     [800, 1200, ANCHO_V - 3300, 1300]
   ),
 
   espacio(240),
 
-  ...hallazgo(
-    'H-01', 'Alta', 'attach_image no tiene efecto',
-    'La informacion de imagen se devuelve cuando attach_image vale 1.',
-    'Se devuelve siempre. Con valor 0, con valor 1 y con valor 9 la respuesta es identica, incluido el mismo ETag.',
-    'attach_image=1  ->  200, ETag W/"371-b4hmnUL8+90ALgyxS8MOcno5V8Y", incluye image\nattach_image=0  ->  200, ETag W/"371-b4hmnUL8+90ALgyxS8MOcno5V8Y", incluye image',
-    'Un cliente movil que use attach_image=0 para ahorrar ancho de banda no ahorra nada. No hay error, solo un coste que nadie ve.',
-    'BRD-N-06'
-  ),
-
-  ...hallazgo(
-    'H-02', 'Media', 'El recorte a 10 elementos sin llave esta documentado, pero el servicio se contradice',
-    'La especificacion lo dice de forma expresa: "there is a maximum of 10 without using an API Key". Tambien aclara que los parametros de consulta solo se aplican con una llave valida.',
-    'El recorte ocurre como esta documentado. El problema es la contradiccion: sin llave, limit=101 devuelve un 400 que afirma que el maximo es 100, cuando el maximo real para ese consumidor es 10. Y ningun encabezado informa del recorte.',
-    'Sin llave: GET /images/search?limit=50   ->  200, 10 elementos, sin encabezado de aviso\nSin llave: GET /images/search?limit=101  ->  400, "limit must not be greater than 100"\nCon llave: GET /images/search?limit=50   ->  200, 50 elementos',
-    'El mensaje de validacion induce a error sobre el limite que aplica al consumidor. Sin una senal en la respuesta, una paginacion se detiene antes de tiempo. Se reclasifica de alta a media porque el comportamiento base esta documentado.',
-    'IMG-B-03'
-  ),
-
-  ...hallazgo(
-    'H-03', 'Alta', 'mime_types no filtra',
-    'El endpoint acepta un parametro mime_types para filtrar por tipo de imagen.',
-    'El filtro se acepta y no se aplica. Tampoco se valida: un tipo que no corresponde a una imagen tambien devuelve 200.',
-    'GET /images/search?limit=10&mime_types=png\n  ->  200, direcciones devueltas: 21o.gif, 4K82ZeIgat.jpg, 91a.jpg, 94n.jpg, ...\nGET /images/search?mime_types=application/pdf\n  ->  200, devuelve 5ip.jpg',
-    'Un cliente que necesite png por transparencia, o gif por animacion, recibe archivos que no puede usar.',
-    'IMG-B-07 e IMG-B-08'
-  ),
-
-  ...hallazgo(
-    'H-09', 'Alta', 'El contrato de respuesta cambia con la llave',
-    'No hay contrato de respuesta declarado.',
-    'Sin llave cada imagen trae 4 campos. Con llave trae hasta 10. Ademas cambia el dominio desde el que se sirven las imagenes.',
-    'Sin llave: id, url, width, height\n           url: https://s3.us-west-2.amazonaws.com/cdn2.thecatapi.com/images/e9d.jpg\nCon llave: id, url, width, height, sub_id, created_at, breeds, categories, colours, tags\n           url: https://cdn2.thecatapi.com/images/ZZEs0Ozsy.jpg',
-    'Una validacion de esquema falla de forma intermitente si no fija el modo de autenticacion. Un cliente desarrollado con llave y desplegado sin ella deja de encontrar campos, sin recibir ningun error.',
-    'CTR-03'
-  ),
-
-  ...hallazgo(
-    'H-11', 'Baja', 'La llave se acepta en la cadena de consulta',
-    'La especificacion lo admite de forma expresa: la llave se envia "as the x-api-key header, or ?api_key= query string parameter".',
-    'El servicio autentica por ambos canales, como esta documentado.',
-    'GET /breeds/search?q=beng                        (sin llave)  ->  403\nGET /breeds/search?q=beng  con x-api-key valida   ->  200\nGET /breeds/search?q=beng&api_key=<llave valida>  ->  200',
-    'No es un defecto: es una decision de diseno documentada. Se deja registrada como observacion de seguridad porque una credencial en la URL queda en los registros del servidor, el historial del navegador, las cabeceras de referencia y los proxies intermedios. Conviene que el consumidor use siempre el encabezado.',
-    'SEG-04'
-  ),
-
-  ...hallazgo(
-    'H-13', 'Alta', 'El filtro sub_id no se aplica',
-    'La especificacion declara sub_id como "Filter images that have the sub_id value you used when uploading them".',
-    'El parametro se acepta y no filtra nada. De diez imagenes pedidas con un sub_id concreto, ninguna lo tiene.',
-    'GET /images/search?limit=10&sub_id=demo-9252f4\n  ->  200, valores de sub_id devueltos:\n      123, (ausente) x8, demo-c45459',
-    'Quien sube imagenes con un identificador propio no puede recuperarlas por el. La funcionalidad documentada no existe.',
-    'ESP-04'
-  ),
-
-  ...hallazgo(
-    'H-14', 'Media', 'El filtro category_ids no devuelve imagenes con categoria',
-    'La especificacion declara category_ids como filtro por identificadores de categoria.',
-    'La peticion responde 200, pero ninguno de los diez resultados trae categorias.',
-    'GET /images/search?limit=10&category_ids=1\n  ->  200, el arreglo categories viene vacio en los 10 elementos',
-    'Un cliente que filtre por categoria recibe resultados sin relacion con lo pedido. Antes de clasificarlo como defecto conviene confirmar con el proveedor si la credencial de demostracion tiene acceso a las categorias.',
-    'ESP-05'
-  ),
-
-  ...hallazgo(
-    'H-15', 'Media', 'La especificacion declara RAND y el mensaje de error enumera RANDOM',
-    'La tabla de parametros declara order con los valores ASC, DESC y RAND, siendo RAND el valor por defecto.',
-    'Ambos valores funcionan y aleatorizan. Pero el mensaje que devuelve el servicio ante un valor invalido enumera ASC, DESC y RANDOM, sin mencionar RAND.',
-    'GET /images/search?limit=5&order=RAND      ->  200, resultados distintos entre llamadas\nGET /images/search?limit=5&order=rand      ->  200\nGET /images/search?limit=2&order=SIDEWAYS  ->  400, "order must be one of the following values: ASC, DESC, RANDOM"',
-    'Quien siga el mensaje de error descartara el valor que la especificacion declara por defecto. Quien siga la especificacion no encontrara RAND en la lista de valores validos que le devuelve el servicio.',
-    'ESP-06'
-  ),
-
-  ...hallazgo(
-    'H-16', 'Alta', 'El objeto raza tiene dos formas distintas',
-    'La especificacion muestra un ejemplo de raza incrustada en una imagen, con alt_names y wikipedia_url.',
-    'La raza que viene dentro de una imagen y la que devuelve la busqueda de razas no tienen los mismos campos.',
-    'Dentro de una imagen: ... alt_names, wikipedia_url, reference_image_id\nEn la busqueda de razas: ... country_codes, weight, height, image\nNucleo comun: id, name, species_id, life_span, temperament, origin, description, bred_for, perfect_for, breed_group, history',
-    'Un cliente que reutilice el mismo modelo de datos para ambos casos encontrara campos ausentes segun de donde venga la raza. Conviene documentar las dos formas o unificarlas.',
-    'ESP-09'
-  ),
-
-  ...hallazgo(
-    'H-17', 'Alta', 'El enunciado y la especificacion no listan los mismos parametros',
-    'La especificacion declara siete parametros para la busqueda de imagenes: limit, page, order, has_breeds, breed_ids, category_ids y sub_id.',
-    'El enunciado de la evaluacion lista size, mime_types y format, que la especificacion no declara y el servicio ignora. Y omite breed_ids, category_ids y sub_id, de los cuales breed_ids funciona correctamente.',
-    'Solo en el enunciado: size, mime_types, format    ->  200, sin efecto observable\nSolo en la especificacion: breed_ids            ->  200, filtra correctamente\n                           category_ids, sub_id  ->  200, sin efecto observable',
-    'Es el hallazgo de mayor impacto sobre el propio trabajo de prueba: siguiendo solo el enunciado se disenan casos sobre funcionalidad que no existe y se deja sin cubrir el unico filtro que si funciona. Antes de cerrar el alcance hay que acordar cual de las dos fuentes rige.',
-    'ESP-10 y ESP-01'
-  ),
-
-  ...hallazgo(
-    'H-04', 'Media', 'La validacion de parametros no es uniforme',
-    'No se declara el comportamiento ante un valor invalido.',
-    'Cuatro parametros se validan de forma estricta. Seis aceptan cualquier valor y lo ignoran.',
-    'order=SIDEWAYS    ->  400 con mensaje que enumera los valores validos\nsize=gigantesco   ->  200 con resultados\nformat=xml        ->  200 con resultados\nparametro_inexistente=valor  ->  200 con resultados',
-    'Un error de escritura en order se detecta al momento. El mismo error en size pasa inadvertido y el cliente cree que el filtro se aplico.',
-    'IMG-B-06, IMG-B-09 e IMG-N-06'
-  ),
-
-  ...hallazgo(
-    'H-05', 'Media', 'format no cambia la representacion',
-    'El endpoint acepta un parametro format.',
-    'Los tres valores probados devuelven la misma coleccion JSON con el mismo tipo de contenido.',
-    'format=json  ->  200, Content-Type: application/json\nformat=src   ->  200, Content-Type: application/json\nformat=xml   ->  200, Content-Type: application/json',
-    'La documentacion publica del servicio describe format=src como el modo que entrega la imagen. Una interfaz que apunte una etiqueta de imagen a esa URL mostrara texto JSON.',
-    'IMG-B-10'
-  ),
-
-  ...hallazgo(
-    'H-06', 'Media', 'Los encabezados de paginacion tienen una condicion no documentada',
-    'La busqueda "puede" devolver los tres encabezados de paginacion.',
-    'Aparecen solo cuando hay llave y el orden es determinista, es decir ASC o DESC. Con RANDOM no aparecen.',
-    'order=ASC&page=2&limit=5  ->  Pagination-Count: 13492, Pagination-Page: 2, Pagination-Limit: 5\norder=RANDOM&limit=5      ->  sin encabezados de paginacion\nSin llave                 ->  sin encabezados de paginacion',
-    'Un cliente que lea los encabezados sin comprobar su presencia calculara mal el numero de paginas.',
-    'IMG-F-10 e IMG-B-11'
-  ),
-
-  ...hallazgo(
-    'H-08', 'Media', 'Omitir q y enviarlo vacio dan respuestas opuestas',
-    'No se define el comportamiento cuando no hay criterio de busqueda.',
-    'Sin el parametro devuelve un listado. Con el parametro vacio devuelve un error.',
-    'GET /breeds/search      ->  200, 10 razas\nGET /breeds/search?q=   ->  400, "q must be longer than or equal to 1 characters"',
-    'Un formulario que envie el campo vacio recibe un error. El mismo formulario que omita el parametro recibe un listado. El resultado depende de un detalle de implementacion del cliente.',
-    'BRD-F-10 y BRD-N-01'
-  ),
-
-  ...hallazgo(
-    'H-10', 'Media', 'El campo message cambia de tipo',
-    'No hay contrato de error declarado.',
-    'En los errores 400 el campo message es un arreglo. En los 403 y 404 es una cadena.',
-    'GET /images/search?limit=0   ->  400, "message":["limit must not be less than 1"]\nGET /recurso/inexistente     ->  404, "message":"Cannot GET /v1/recurso/inexistente"',
-    'Un cliente que muestre el mensaje al usuario sin normalizar el tipo mostrara el texto correcto en unos casos y una representacion interna del arreglo en otros.',
-    'CTR-07'
-  ),
-
-  ...hallazgo(
-    'H-12', 'Media', 'Hay direcciones de imagen con extension .false',
-    'No aplica. Es un defecto de datos.',
-    'Algunas imagenes se devuelven con la extension literal .false en lugar de su formato real.',
-    'GET /images/search?limit=1  con llave\n  ->  200, url: https://cdn2.thecatapi.com/images/DxlC8ufjq.false\nOtras observadas: VnCVpMNntO.false, j9jnwmu-T.false, 1J0ddrSeP.false, 8Z1KeS8Gn.false',
-    'Un cliente que deduzca el formato por la extension no podra mostrar esas imagenes. Sugiere que un valor booleano se concateno donde iba la extension.',
-    'IMG-F-02'
-  ),
-
-  ...hallazgo(
-    'H-07', 'Baja', 'Un verbo no soportado responde 404',
-    'No se declaran los metodos admitidos.',
-    'Una peticion POST sobre un recurso de solo lectura devuelve 404 sin encabezado Allow.',
-    'POST /images/search  ->  404, "message":"Cannot POST /v1/images/search"\nPOST /breeds/search?q=beng  ->  404, "message":"Cannot POST /v1/breeds/search?q=beng"',
-    'El cliente no distingue entre una ruta que no existe y un metodo mal usado sobre una ruta que si existe. El estandar HTTP prevee 405 con el encabezado Allow.',
-    'IMG-N-07 y BRD-N-07'
+  ...HALLAZGOS.flatMap((h) =>
+    hallazgo(h.clave, h.severidad, h.titulo, h.dice, h.hace, h.evidencia, h.impacto, h.caso)
   ),
 
   salto(),
@@ -703,7 +530,7 @@ const analisis = [
 
   h2('2.9 Informacion que falta'),
 
-  p('Peticiones concretas al equipo del servicio. Sin estas respuestas la verificacion se puede ejecutar, pero su resultado no es concluyente.'),
+  p('Lo que hace falta preguntar. Sin estas respuestas las pruebas corren, pero el resultado no es concluyente.'),
 
   tabla(
     ['Clave', 'Que se pide', 'Que desbloquea'],
@@ -743,7 +570,7 @@ const analisis = [
 const plan = [
   h1('3. Plan de pruebas'),
 
-  p('Estructurado con los elementos que la norma ISO/IEC/IEEE 29119-3 define para un plan de pruebas.'),
+  p('Que se prueba, que no, con que datos, con que criterio se aprueba y cuando se da por terminado.'),
 
   h2('3.1 Objetivo'),
 
@@ -753,7 +580,7 @@ const plan = [
   vineta('Mantienen un contrato de respuesta estable.'),
   vineta('Sostienen tiempos de respuesta y disponibilidad adecuados para produccion.'),
 
-  p('Objetivo secundario: dejar registrados los puntos sin definir de la especificacion, para que el equipo del servicio pueda cerrarlos.'),
+  p('Ademas, dejar por escrito lo que la especificacion no define, para que el equipo del servicio lo cierre.'),
 
   h2('3.2 Alcance'),
 
@@ -786,7 +613,7 @@ const plan = [
 
   h2('3.4 Datos de prueba'),
 
-  p('No hay forma de sembrar datos. La estrategia es apoyarse en lo estable y no depender de lo que cambia.'),
+  p('No se pueden crear datos de prueba. Se usa lo que no cambia y se evita depender de lo que si.'),
 
   tabla(
     ['Conjunto', 'Valores', 'Para que'],
@@ -806,7 +633,7 @@ const plan = [
 
   nota(
     'Credenciales.',
-    'No se guarda ninguna credencial en el repositorio. La llave se resuelve en tiempo de ejecucion desde un secreto y, si no existe, se usa la llave publica de demostracion del proveedor.'
+    'En el repositorio no hay ninguna llave. Se lee de un secreto al ejecutar y, si no existe, se usa la llave publica de demostracion del proveedor.'
   ),
 
   salto(),
@@ -814,7 +641,7 @@ const plan = [
   h2('3.5 Estrategia'),
 
   h3('Enfoque'),
-  p('Prueba de caja negra guiada por riesgo. Cada caso existe porque mitiga un riesgo del capitulo 2, y cada riesgo tiene al menos un caso que lo cubre. La columna de trazabilidad de la matriz del capitulo 4 hace visible esa correspondencia.'),
+  p('Se prueba desde fuera, sin ver el codigo, y se empieza por lo que mas dano haria si fallara. Cada caso nace de un riesgo del capitulo 2, y cada riesgo tiene al menos un caso. La columna de riesgo del capitulo 4 permite comprobarlo.'),
 
   h3('Tipos de prueba'),
 
@@ -836,10 +663,10 @@ const plan = [
 
   h3('Cuatro decisiones de diseno'),
 
-  numerado('Ninguna prueba compara contra un dato aleatorio concreto. El endpoint de imagenes devuelve resultados aleatorios por definicion. Se verifican invariantes: forma, cantidad, unicidad y cumplimiento del contrato.'),
-  numerado('Cada caso adjunta su evidencia al reporte: peticion, codigo, encabezados, tiempo y respuesta. El capitulo 5 recoge esa evidencia.'),
-  numerado('Cuando el servicio tiene un defecto ya documentado, el caso afirma el comportamiento real y registra la desviacion como anotacion. La suite sigue verde y el defecto sigue visible. Si el proveedor lo corrige, el caso falla y obliga a revisar el hallazgo.'),
-  numerado('El volumen de las pruebas de carga se mantiene bajo. Los escenarios que pueden degradar el servicio existen pero no corren de forma automatica.'),
+  numerado('Ninguna prueba espera una imagen concreta. El endpoint devuelve imagenes al azar, asi que se comprueba la forma, la cantidad y que no haya repetidas, nunca un identificador fijo.'),
+  numerado('Cada caso guarda su evidencia: peticion, codigo, encabezados, tiempo y respuesta. Esta en el capitulo 5.'),
+  numerado('Cuando un defecto ya esta documentado, la prueba comprueba lo que el servicio hace de verdad y deja anotada la diferencia. Asi la suite sigue en verde y el defecto sigue a la vista. Si lo corrigen, la prueba falla y avisa.'),
+  numerado('La carga se mantiene baja. Los escenarios que pueden afectar al servicio existen, pero no corren solos.'),
 
   h2('3.6 Escenarios'),
 
@@ -879,7 +706,7 @@ const plan = [
 
   espacio(160),
 
-  p('Los umbrales de tiempo se derivan de la medicion propia del capitulo 5: mediana de 204 ms y maximo de 320 ms en 20 lecturas consecutivas. El margen cubre la variabilidad de la red publica. Cuando el proveedor publique su acuerdo de nivel de servicio, estos valores deben sustituirse por los comprometidos.'),
+  p('Los tiempos salen de la medicion del capitulo 5: mediana de 204 ms y maximo de 320 ms en 20 lecturas. El margen cubre la variacion de la red. Si el proveedor publica sus compromisos, estos valores se sustituyen.'),
 
   h2('3.8 Criterios de salida'),
 
@@ -897,7 +724,7 @@ const plan = [
 
   h2('3.9 Cobertura declarada'),
 
-  p('Segun el modelo de calidad de ISO/IEC 25010:2023.'),
+  p('Que aspectos de la calidad se cubren y cuales no.'),
 
   tabla(
     ['Caracteristica', 'Como se verifica', 'Estado'],
@@ -1106,7 +933,7 @@ const evidencia = [
 
   nota(
     'Como leer cada ficha.',
-    'Peticion es la URL exacta enviada. Autenticacion indica si se envio la llave y por que canal. Respuesta trae el codigo de estado, el tiempo y el numero de elementos. Encabezados recoge solo los relevantes para el caso. Cuerpo es la respuesta, recortada cuando es extensa. Resultado dice si el comportamiento fue correcto o que desviacion se detecto.'
+    'Peticion: la URL exacta. Autenticacion: si se envio la llave y por donde. Respuesta: codigo, tiempo y cuantos elementos llegaron. Encabezados: solo los que importan al caso. Cuerpo: la respuesta, recortada si es larga. Resultado: si estuvo bien o que diferencia se encontro.'
   ),
 
   ...gruposEvidencia.flatMap((g) => {
@@ -1125,11 +952,11 @@ const evidencia = [
 const priorizacion = [
   h1('6. Priorizacion'),
 
-  p('Con dos horas disponibles, el criterio no es ejecutar lo mas rapido sino ejecutar aquello cuyo fallo impide liberar.'),
+  p('Con dos horas, se ejecuta primero lo que impediria liberar si fallara.'),
 
   h2('6.1 Primera fase: primeros 40 minutos'),
 
-  p('Los casos marcados como criticos. Responden a cuatro preguntas: el servicio devuelve datos, los devuelve con la forma acordada, rechaza lo invalido y no deja pasar a quien no tiene llave.'),
+  p('Los casos criticos. Responden a cuatro preguntas: devuelve datos, con la forma acordada, rechaza lo invalido y no deja pasar a quien no tiene llave.'),
 
   tabla(
     ['Bloque', 'Casos', 'Por que va primero'],
@@ -1275,7 +1102,7 @@ const automatizacion = [
 
   espacio(160),
 
-  p('La base de la piramide la ocupan las verificaciones de contrato: son rapidas y detectan el fallo mas costoso. Encima van los casos funcionales y de borde. Arriba, los escenarios de carga largos, que solo corren cuando alguien los pide.'),
+  p('Abajo van las pruebas de contrato: rapidas y detectan el fallo mas caro. Encima, los casos funcionales y de limites. Arriba, la carga larga, que solo corre si alguien la pide.'),
 
   salto(),
 ];
@@ -1321,7 +1148,7 @@ const implementacion = [
 
   h2('8.2 El agente de triaje'),
 
-  p('Lee el resumen de la ejecucion y mantiene al dia el tablero de incidencias. Identifica cada fallo por una huella derivada del identificador del caso, asi que un fallo intermitente genera una sola incidencia con su historial, no una por ejecucion.'),
+  p('Lee el resultado de cada corrida y mantiene al dia el tablero de incidencias. Reconoce cada fallo por el identificador del caso, asi que un fallo que va y viene genera una sola incidencia con su historial, no una por corrida.'),
 
   tabla(
     ['Situacion', 'Que hace el agente'],
@@ -1336,13 +1163,13 @@ const implementacion = [
 
   espacio(160),
 
-  p('Los comentarios y las etiquetas puestas a mano se conservan. El agente no sobrescribe el trabajo de una persona.'),
+  p('Lo que alguien escriba o etiquete a mano se conserva. El agente no pisa el trabajo de una persona.'),
 
   h2('8.3 Reporte historico'),
 
-  p('Cada ejecucion programada deja su registro en una rama separada de la principal, para que las mediciones no mezclen su historial con el del codigo ni disparen ejecuciones nuevas. Se conservan 180 ejecuciones, unos seis meses de corridas diarias.'),
+  p('Cada corrida diaria deja su registro en una rama aparte, para que las mediciones no se mezclen con el historial del codigo ni disparen corridas nuevas. Se guardan 180 corridas, unos seis meses.'),
 
-  p('El portal muestra los resultados por ejecucion, la evolucion del percentil 95 de cada escenario y la comparacion del valor actual con la media de las diez ejecuciones anteriores. Se usa el percentil 95 y no el promedio porque el promedio esconde los tiempos altos que sufre una parte de los clientes.'),
+  p('El portal muestra los resultados de cada corrida y como evoluciona el tiempo de respuesta, comparado con la media de las diez corridas anteriores. Se usa el percentil 95 y no el promedio porque el promedio esconde los tiempos altos que sufre una parte de los clientes.'),
 
   salto(),
 ];
